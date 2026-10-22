@@ -18,25 +18,63 @@
         <a href="#" class="flex items-center space-x-2">
           <span class="text-3xl font-black text-gray-900">Torque<span class="text-red-600">Line</span></span>
         </a>
-        <div class="hidden md:flex space-x-8">
+        <div class="hidden md:flex space-x-5 lg:space-x-8 items-center">
           <a href="#products" class="nav-link text-gray-700 hover:text-red-600 font-medium">Products</a>
           <a href="#brands" class="nav-link text-gray-700 hover:text-red-600 font-medium">Brands</a>
           <a href="#benefits" class="nav-link text-gray-700 hover:text-red-600 font-medium">Benefits</a>
           <a href="#testimonials" class="nav-link text-gray-700 hover:text-red-600 font-medium">Testimonials</a>
+          <a href="#payment" class="nav-link hidden lg:inline text-gray-700 hover:text-red-600 font-medium">Payment</a>
           <a href="#contact" class="nav-link text-gray-700 hover:text-red-600 font-medium">Contact</a>
         </div>
-        <button id="mobile-menu-btn" class="md:hidden text-gray-700 hover:text-red-600">
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-          </svg>
-        </button>
+        <div class="flex items-center gap-4">
+          <div class="relative hidden md:block">
+            <div class="search-wrapper">
+              <svg class="w-4 h-4 text-gray-400 pointer-events-none absolute left-3 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M17 11a6 6 0 11-12 0 6 6 0 0112 0z"></path>
+              </svg>
+              <input type="text" id="search-input" class="search-input w-40 lg:w-56 pl-9 pr-8 py-2 text-sm rounded-full border border-gray-300 focus:border-red-500 focus:ring-2 focus:ring-red-500/20 outline-none transition-all" placeholder="Search oils &amp; brands" autocomplete="off" />
+              <button id="search-clear" class="hidden absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-red-600 transition-colors" aria-label="Clear search">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+              </button>
+            </div>
+            <div id="search-results" class="search-results hidden absolute right-0 mt-2 w-96 max-h-[26rem] overflow-y-auto bg-white rounded-xl shadow-2xl border border-gray-200 z-50"></div>
+          </div>
+          <div class="relative">
+            <button id="cart-btn" class="text-gray-700 hover:text-red-600 transition-colors" aria-label="Open cart">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.3 4.6A1 1 0 005.4 19H19"></path>
+              </svg>
+            </button>
+            <span id="cart-badge" class="absolute -top-2 -right-2 z-10 min-w-[1.25rem] h-5 px-1 bg-red-600 text-white text-[0.625rem] leading-5 font-bold rounded-full flex items-center justify-center hidden">0</span>
+          </div>
+          <button id="mobile-menu-btn" class="md:hidden text-gray-700 hover:text-red-600">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+            </svg>
+          </button>
+        </div>
       </div>
       <div id="mobile-menu" class="hidden md:hidden mt-4 pb-4 border-t">
+        <div class="relative md:hidden mb-4">
+          <svg class="w-4 h-4 text-gray-400 pointer-events-none absolute left-3 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M17 11a6 6 0 11-12 0 6 6 0 0112 0z"></path>
+          </svg>
+          <input type="text" id="search-input-mobile" class="search-input w-full pl-9 pr-8 py-2 text-sm rounded-full border border-gray-300 focus:border-red-500 focus:ring-2 focus:ring-red-500/20 outline-none transition-all" placeholder="Search oils &amp; brands" autocomplete="off" />
+          <button id="search-clear-mobile" class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-red-600 transition-colors" aria-label="Clear search">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+          </button>
+          <div id="search-results-mobile" class="search-results hidden absolute left-0 right-0 mt-2 max-h-80 overflow-y-auto bg-white rounded-xl shadow-2xl border border-gray-200 z-50"></div>
+        </div>
         <div class="flex flex-col space-y-3 pt-4">
           <a href="#products" class="nav-link-mobile text-gray-700 hover:text-red-600 font-medium">Products</a>
           <a href="#brands" class="nav-link-mobile text-gray-700 hover:text-red-600 font-medium">Brands</a>
           <a href="#benefits" class="nav-link-mobile text-gray-700 hover:text-red-600 font-medium">Benefits</a>
           <a href="#testimonials" class="nav-link-mobile text-gray-700 hover:text-red-600 font-medium">Testimonials</a>
+          <a href="#payment" class="nav-link-mobile text-gray-700 hover:text-red-600 font-medium">Payment</a>
           <a href="#contact" class="nav-link-mobile text-gray-700 hover:text-red-600 font-medium">Contact</a>
         </div>
       </div>
@@ -64,7 +102,7 @@
           </p>
           <div class="flex flex-col sm:flex-row gap-4">
             <a href="#contact" class="btn-primary px-8 py-4 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg shadow-xl hover:shadow-red-500/30 transition-all duration-300 text-center">
-              Shop Now - Starting at $24.99
+              Shop Now - Starting at ₱1,399
             </a>
             <a href="#benefits" class="px-8 py-4 border-2 border-gray-400 hover:border-red-500 text-white font-semibold rounded-lg transition-all duration-300 text-center">
               Learn More
@@ -103,14 +141,15 @@
       <div class="grid md:grid-cols-3 gap-8">
         <!-- Product 1 -->
         <div class="product-card bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100 hover:shadow-2xl transition-all duration-500">
-          <div class="h-48 bg-gradient-to-br from-red-100 to-orange-100 flex items-center justify-center">
-            <div class="text-6xl font-black text-red-600">5W-30</div>
+          <div class="product-image-banner relative h-56 flex items-center justify-center">
+            <img src="images-5-blend.png" alt="Full Synthetic 5W-30 Motor Oil" class="product-banner-img w-full h-full object-contain p-5" />
+            <span class="absolute top-3 left-3 bg-red-600 text-white text-xs font-bold px-2.5 py-1 rounded-full">5W-30</span>
           </div>
           <div class="p-8">
             <h3 class="text-2xl font-bold text-gray-900 mb-2">Full Synthetic</h3>
             <p class="text-gray-600 mb-4">Ultimate protection for modern engines. Optimal viscosity across all temperatures.</p>
-            <div class="text-3xl font-black text-red-600 mb-6">$24.99</div>
-            <button onclick="addToCart('Full Synthetic 5W-30')" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 rounded-lg transition-colors">
+            <div class="text-3xl font-black text-red-600 mb-6">₱1,399</div>
+            <button onclick="addToCart({id: 'full-synthetic-5w30', name: 'Full Synthetic 5W-30', price: 1399, image: 'images-5-blend.png'})" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 rounded-lg transition-colors">
               Add to Cart
             </button>
           </div>
@@ -118,14 +157,16 @@
 
         <!-- Product 2 -->
         <div class="product-card bg-gray-50 rounded-2xl shadow-xl overflow-hidden border-2 border-red-600 hover:shadow-2xl transition-all duration-500">
-          <div class="h-48 bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">
-            <div class="text-6xl font-black text-gray-700">0W-20</div>
+          <div class="product-image-banner product-image-banner-alt relative h-56 flex items-center justify-center">
+            <img src="images-2-blend.png" alt="High Mileage 0W-20 Motor Oil" class="product-banner-img w-full h-full object-contain p-5" />
+            <span class="absolute top-3 left-3 bg-red-600 text-white text-xs font-bold px-2.5 py-1 rounded-full">0W-20</span>
+            <span class="absolute top-3 right-3 bg-gray-900 text-white text-xs font-bold px-2.5 py-1 rounded-full">75K+ MI</span>
           </div>
           <div class="p-8">
             <h3 class="text-2xl font-bold text-gray-900 mb-2">High Mileage</h3>
             <p class="text-gray-600 mb-4">Advanced formula for engines over 75,000 miles. Reduces oil consumption and leaks.</p>
-            <div class="text-3xl font-black text-red-600 mb-6">$27.99</div>
-            <button onclick="addToCart('High Mileage 0W-20')" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 rounded-lg transition-colors">
+            <div class="text-3xl font-black text-red-600 mb-6">₱1,549</div>
+            <button onclick="addToCart({id: 'high-mileage-0w20', name: 'High Mileage 0W-20', price: 1549, image: 'images-2-blend.png'})" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 rounded-lg transition-colors">
               Add to Cart
             </button>
           </div>
@@ -133,17 +174,211 @@
 
         <!-- Product 3 -->
         <div class="product-card bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100 hover:shadow-2xl transition-all duration-500">
-          <div class="h-48 bg-gradient-to-br from-blue-100 to-cyan-100 flex items-center justify-center">
-            <div class="text-6xl font-black text-blue-600">10W-40</div>
+          <div class="product-image-banner product-image-banner-blue relative h-56 flex items-center justify-center">
+            <img src="images-3-blend.png" alt="Diesel Blend 10W-40 Motor Oil" class="product-banner-img w-full h-full object-contain p-5" />
+            <span class="absolute top-3 left-3 bg-blue-600 text-white text-xs font-bold px-2.5 py-1 rounded-full">10W-40</span>
+            <span class="absolute top-3 right-3 bg-blue-900 text-white text-xs font-bold px-2.5 py-1 rounded-full">DIESEL</span>
           </div>
           <div class="p-8">
             <h3 class="text-2xl font-bold text-gray-900 mb-2">Diesel Blend</h3>
             <p class="text-gray-600 mb-4">Specialized for diesel engines. Superior lubrication under extreme pressure conditions.</p>
-            <div class="text-3xl font-black text-red-600 mb-6">$29.99</div>
-            <button onclick="addToCart('Diesel Blend 10W-40')" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 rounded-lg transition-colors">
+            <div class="text-3xl font-black text-red-600 mb-6">₱1,699</div>
+            <button onclick="addToCart({id: 'diesel-blend-10w40', name: 'Diesel Blend 10W-40', price: 1699, image: 'images-3-blend.png'})" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 rounded-lg transition-colors">
               Add to Cart
             </button>
           </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Voucher & Discount Campaign Banner -->
+  <section id="voucher" class="py-16 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="voucher-banner relative rounded-3xl overflow-hidden shadow-2xl">
+        <div class="voucher-glow voucher-glow-red" aria-hidden="true"></div>
+        <div class="voucher-glow voucher-glow-yellow" aria-hidden="true"></div>
+
+        <div class="voucher-grid">
+          <!-- Discount Copy -->
+          <div class="voucher-copy">
+            <span class="voucher-chip">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 9v4m0 4h.01M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L13.7 3.9a2 2 0 00-3.4 0z"></path>
+              </svg>
+              Shopee Exclusive
+            </span>
+
+            <h3 class="voucher-headline">
+              GET
+              <span class="voucher-amount">10% OFF</span>
+            </h3>
+
+            <div class="voucher-sub">
+              <span class="voucher-pill">₱100 VOUCHER</span>
+              <span class="voucher-subtext">on any full synthetic oil</span>
+            </div>
+
+            <p class="voucher-hook">Maintain Your Ride For Less.</p>
+
+            <div class="voucher-code">
+              <span class="voucher-code-label">Voucher Code</span>
+              <span class="voucher-code-value">TORQUE10</span>
+            </div>
+          </div>
+
+          <!-- Best Selling Canisters -->
+          <div class="voucher-canisters">
+            <div class="voucher-canister" style="--delay: 0s">
+              <span class="voucher-canister-tag">BEST SELLER</span>
+              <img src="images-5-blend.png" alt="Full Synthetic 5W-30 Motor Oil" class="voucher-canister-img" />
+              <span class="voucher-canister-label">5W-30</span>
+            </div>
+            <div class="voucher-canister" style="--delay: .6s">
+              <span class="voucher-canister-tag voucher-canister-tag-alt">HIGH MILEAGE</span>
+              <img src="images-2-blend.png" alt="High Mileage 0W-20 Motor Oil" class="voucher-canister-img" />
+              <span class="voucher-canister-label">0W-20</span>
+            </div>
+            <div class="voucher-canister" style="--delay: 1.2s">
+              <span class="voucher-canister-tag voucher-canister-tag-blue">DIESEL</span>
+              <img src="images-3-blend.png" alt="Diesel Blend 10W-40 Motor Oil" class="voucher-canister-img" />
+              <span class="voucher-canister-label">10W-40</span>
+            </div>
+          </div>
+
+          <!-- CTA -->
+          <div class="voucher-cta">
+            <button id="claim-voucher-btn" class="voucher-cta-btn">
+              Claim Voucher Now
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path>
+              </svg>
+            </button>
+            <p class="voucher-fineprint">Valid on orders over ₱2,500 &middot; Limited slots this week</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Sliding Banner -->
+  <section id="promo" class="py-16 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div id="banner-slider" class="banner-slider relative rounded-3xl overflow-hidden shadow-2xl">
+        <div id="banner-track" class="banner-track flex transition-transform duration-700 ease-[cubic-bezier(0.4,0,0.2,1)]">
+
+          <!-- Slide 1 -->
+          <div class="banner-slide w-full flex-shrink-0 grid md:grid-cols-2 items-center">
+            <div class="banner-copy p-10 md:p-16 bg-gradient-to-br from-gray-900 via-gray-800 to-red-900 text-white">
+              <span class="inline-block bg-red-600 text-white text-xs font-bold px-3 py-1 rounded-full mb-5">Launch Offer</span>
+              <h3 class="text-3xl md:text-4xl font-black leading-tight mb-4">20% Off Your<br>First Order</h3>
+              <p class="text-gray-300 mb-7 max-w-sm">Use code <span class="font-mono font-bold text-red-400 bg-black/30 px-2 py-1 rounded">TORQUE20</span> at checkout and save on any full synthetic oil.</p>
+              <div class="flex flex-wrap gap-3">
+                <a href="#products" class="px-6 py-3 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg transition-colors">Shop The Offer</a>
+                <a href="#contact" class="px-6 py-3 border-2 border-white/60 hover:bg-white/10 text-white font-semibold rounded-lg transition-colors">Ask Us</a>
+              </div>
+            </div>
+            <div class="banner-visual p-10 md:p-16 bg-gradient-to-br from-red-50 to-orange-50 flex items-center justify-center">
+              <button class="banner-image-btn" data-target="product" data-product="Full Synthetic" aria-label="Go to Full Synthetic 5W-30">
+                <img src="images-5-blend.png" alt="Full Synthetic 5W-30" class="w-full h-auto max-h-72 object-contain banner-img" />
+                <span class="banner-image-cta">View Product</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Slide 2 -->
+          <div class="banner-slide w-full flex-shrink-0 grid md:grid-cols-2 items-center">
+            <div class="banner-copy p-10 md:p-16 bg-gradient-to-br from-gray-900 via-gray-800 to-blue-900 text-white">
+              <span class="inline-block bg-blue-600 text-white text-xs font-bold px-3 py-1 rounded-full mb-5">Diesel Special</span>
+              <h3 class="text-3xl md:text-4xl font-black leading-tight mb-4">Built For<br>Hard Working Diesels</h3>
+              <p class="text-gray-300 mb-7 max-w-sm">TorqueLine Diesel Blend 10W-40 holds up under extreme pressure and extended service intervals. From ₱1,699.</p>
+              <div class="flex flex-wrap gap-3">
+                <a href="#products" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg transition-colors">Get Diesel Blend</a>
+                <a href="#brands" class="px-6 py-3 border-2 border-white/60 hover:bg-white/10 text-white font-semibold rounded-lg transition-colors">See Brands</a>
+              </div>
+            </div>
+            <div class="banner-visual p-10 md:p-16 bg-gradient-to-br from-blue-50 to-cyan-50 flex items-center justify-center">
+              <button class="banner-image-btn" data-target="product" data-product="Diesel Blend" aria-label="Go to Diesel Blend 10W-40">
+                <img src="images-3-blend.png" alt="Diesel Blend 10W-40" class="w-full h-auto max-h-72 object-contain banner-img" />
+                <span class="banner-image-cta">View Product</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Slide 3 -->
+          <div class="banner-slide w-full flex-shrink-0 grid md:grid-cols-2 items-center">
+            <div class="banner-copy p-10 md:p-16 bg-gradient-to-br from-gray-900 via-gray-800 to-emerald-900 text-white">
+              <span class="inline-block bg-emerald-600 text-white text-xs font-bold px-3 py-1 rounded-full mb-5">75K+ Miles</span>
+              <h3 class="text-3xl md:text-4xl font-black leading-tight mb-4">High Mileage<br>Protection</h3>
+              <p class="text-gray-300 mb-7 max-w-sm">Advanced seals and conditioners reduce oil consumption and stop leaks. Specifically formulated for engines over 75,000 miles.</p>
+              <div class="flex flex-wrap gap-3">
+                <a href="#products" class="px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg transition-colors">Shop High Mileage</a>
+                <a href="#benefits" class="px-6 py-3 border-2 border-white/60 hover:bg-white/10 text-white font-semibold rounded-lg transition-colors">Why TorqueLine</a>
+              </div>
+            </div>
+            <div class="banner-visual p-10 md:p-16 bg-gradient-to-br from-gray-50 to-emerald-50 flex items-center justify-center">
+              <button class="banner-image-btn" data-target="product" data-product="High Mileage" aria-label="Go to High Mileage 0W-20">
+                <img src="images-2-blend.png" alt="High Mileage 0W-20" class="w-full h-auto max-h-72 object-contain banner-img" />
+                <span class="banner-image-cta">View Product</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Slide 4 -->
+          <div class="banner-slide w-full flex-shrink-0 grid md:grid-cols-2 items-center">
+            <div class="banner-copy p-10 md:p-16 bg-gradient-to-br from-red-700 via-red-800 to-gray-900 text-white">
+              <span class="inline-block bg-white/20 text-white text-xs font-bold px-3 py-1 rounded-full mb-5">Authorized Distributor</span>
+              <h3 class="text-3xl md:text-4xl font-black leading-tight mb-4">Every Major Brand,<br>Factory Sealed</h3>
+              <p class="text-red-100 mb-7 max-w-sm">Mobil 1, Castrol EDGE, Shell Helix, Total Quartz and more — all authentic, all with full manufacturer warranty.</p>
+              <div class="flex flex-wrap gap-3">
+                <a href="#brands" class="px-6 py-3 bg-white text-red-700 hover:bg-gray-100 font-bold rounded-lg transition-colors">Browse Brands</a>
+                <a href="#contact" class="px-6 py-3 border-2 border-white/70 hover:bg-white/10 text-white font-semibold rounded-lg transition-colors">Find My Oil</a>
+              </div>
+            </div>
+            <div class="banner-visual p-10 md:p-16 bg-gradient-to-br from-red-50 to-gray-50 flex items-center justify-center">
+              <div class="grid grid-cols-3 gap-4 w-full max-w-sm">
+                <button class="banner-brand-btn" data-brand="Mobil 1" aria-label="View Mobil 1">
+                  <img src="brands/images-7_transparent.png" alt="Mobil 1" class="w-full h-24 object-contain banner-img" />
+                </button>
+                <button class="banner-brand-btn" data-brand="Castrol EDGE" aria-label="View Castrol EDGE">
+                  <img src="brands/images-6_transparent.png" alt="Castrol EDGE" class="w-full h-24 object-contain banner-img" />
+                </button>
+                <button class="banner-brand-btn" data-brand="Shell Helix" aria-label="View Shell Helix">
+                  <img src="brands/images-5_transparent.png" alt="Shell Helix" class="w-full h-24 object-contain banner-img" />
+                </button>
+                <button class="banner-brand-btn" data-brand="Total Quartz" aria-label="View Total Quartz">
+                  <img src="brands/images-4_transparent.png" alt="Total Quartz" class="w-full h-24 object-contain banner-img" />
+                </button>
+                <button class="banner-brand-btn" data-brand="BP VEG" aria-label="View BP VEG">
+                  <img src="brands/images-2_transparent.png" alt="BP VEG" class="w-full h-24 object-contain banner-img" />
+                </button>
+                <button class="banner-brand-btn" data-brand="Liqui Moly" aria-label="View Liqui Moly">
+                  <img src="brands/images_transparent.png" alt="Liqui Moly" class="w-full h-24 object-contain banner-img" />
+                </button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Arrows -->
+        <button id="banner-prev" class="banner-arrow absolute left-3 md:left-5 top-1/2 -translate-y-1/2 w-10 h-10 md:w-12 md:h-12 rounded-full bg-white/90 hover:bg-white text-gray-800 shadow-lg flex items-center justify-center transition-all hover:scale-110 z-20" aria-label="Previous slide">
+          <svg class="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"></path>
+          </svg>
+        </button>
+        <button id="banner-next" class="banner-arrow absolute right-3 md:right-5 top-1/2 -translate-y-1/2 w-10 h-10 md:w-12 md:h-12 rounded-full bg-white/90 hover:bg-white text-gray-800 shadow-lg flex items-center justify-center transition-all hover:scale-110 z-20" aria-label="Next slide">
+          <svg class="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path>
+          </svg>
+        </button>
+
+        <!-- Dots -->
+        <div id="banner-dots" class="absolute bottom-5 left-1/2 -translate-x-1/2 flex items-center gap-2 z-20">
+          <button class="banner-dot w-2.5 h-2.5 rounded-full bg-white/50 hover:bg-white/80 transition-all" data-index="0" aria-label="Go to slide 1"></button>
+          <button class="banner-dot w-2.5 h-2.5 rounded-full bg-white/50 hover:bg-white/80 transition-all" data-index="1" aria-label="Go to slide 2"></button>
+          <button class="banner-dot w-2.5 h-2.5 rounded-full bg-white/50 hover:bg-white/80 transition-all" data-index="2" aria-label="Go to slide 3"></button>
+          <button class="banner-dot w-2.5 h-2.5 rounded-full bg-white/50 hover:bg-white/80 transition-all" data-index="3" aria-label="Go to slide 4"></button>
         </div>
       </div>
     </div>
@@ -158,35 +393,35 @@
       </div>
 
       <div class="grid grid-cols-2 md:grid-cols-4 gap-8 items-center">
-        <div class="brand-card bg-gray-50 rounded-xl p-6 flex flex-col items-center justify-center h-32 hover:shadow-lg transition-all duration-300 cursor-pointer" data-brand="Mobil 1" data-image="brands/images-7_transparent.png" data-price="$29.99" data-viscosity="5W-30" data-size="4L">
+        <div class="brand-card bg-gray-50 rounded-xl p-6 flex flex-col items-center justify-center h-32 hover:shadow-lg transition-all duration-300 cursor-pointer" data-brand="Mobil 1" data-image="brands/images-7_transparent.png" data-price="1699" data-viscosity="5W-30" data-size="4L">
           <span class="text-3xl font-black text-red-600">Mobil 1</span>
           <span class="text-sm text-gray-500 mt-1">Synthetic</span>
         </div>
-        <div class="brand-card bg-gray-50 rounded-xl p-6 flex flex-col items-center justify-center h-32 hover:shadow-lg transition-all duration-300 cursor-pointer" data-brand="Castrol EDGE" data-image="brands/images-6_transparent.png" data-price="$27.50" data-viscosity="5W-30" data-size="4L">
+        <div class="brand-card bg-gray-50 rounded-xl p-6 flex flex-col items-center justify-center h-32 hover:shadow-lg transition-all duration-300 cursor-pointer" data-brand="Castrol EDGE" data-image="brands/images-6_transparent.png" data-price="1549" data-viscosity="5W-30" data-size="4L">
           <span class="text-3xl font-black text-blue-600">Castrol EDGE</span>
           <span class="text-sm text-gray-500 mt-1">Full Synthetic</span>
         </div>
-        <div class="brand-card bg-gray-50 rounded-xl p-6 flex flex-col items-center justify-center h-32 hover:shadow-lg transition-all duration-300 cursor-pointer" data-brand="Shell Helix" data-image="brands/images-5_transparent.png" data-price="$24.99" data-viscosity="5W-30" data-size="4L">
+        <div class="brand-card bg-gray-50 rounded-xl p-6 flex flex-col items-center justify-center h-32 hover:shadow-lg transition-all duration-300 cursor-pointer" data-brand="Shell Helix" data-image="brands/images-5_transparent.png" data-price="1399" data-viscosity="5W-30" data-size="4L">
           <span class="text-3xl font-black text-red-700">Shell Helix</span>
           <span class="text-sm text-gray-500 mt-1">Fully Synthetic</span>
         </div>
-        <div class="brand-card bg-gray-50 rounded-xl p-6 flex flex-col items-center justify-center h-32 hover:shadow-lg transition-all duration-300 cursor-pointer" data-brand="Total Quartz" data-image="brands/images-4_transparent.png" data-price="$26.50" data-viscosity="5W-40" data-size="4L">
+        <div class="brand-card bg-gray-50 rounded-xl p-6 flex flex-col items-center justify-center h-32 hover:shadow-lg transition-all duration-300 cursor-pointer" data-brand="Total Quartz" data-image="brands/images-4_transparent.png" data-price="1499" data-viscosity="5W-40" data-size="4L">
           <span class="text-3xl font-black text-green-700">Total Quartz</span>
           <span class="text-sm text-gray-500 mt-1">Quartz 9000</span>
         </div>
-        <div class="brand-card bg-gray-50 rounded-xl p-6 flex flex-col items-center justify-center h-32 hover:shadow-lg transition-all duration-300 cursor-pointer" data-brand="BP VEG" data-image="brands/images-2_transparent.png" data-price="$22.99" data-viscosity="10W-40" data-size="4L">
+        <div class="brand-card bg-gray-50 rounded-xl p-6 flex flex-col items-center justify-center h-32 hover:shadow-lg transition-all duration-300 cursor-pointer" data-brand="BP VEG" data-image="brands/images-2_transparent.png" data-price="1299" data-viscosity="10W-40" data-size="4L">
           <span class="text-3xl font-black text-yellow-700">BP VEG</span>
           <span class="text-sm text-gray-500 mt-1">Premium</span>
         </div>
-        <div class="brand-card bg-gray-50 rounded-xl p-6 flex flex-col items-center justify-center h-32 hover:shadow-lg transition-all duration-300 cursor-pointer" data-brand="ARKO Tection" data-image="brands/images-3_transparent.png" data-price="$19.99" data-viscosity="5W-30" data-size="4L">
+        <div class="brand-card bg-gray-50 rounded-xl p-6 flex flex-col items-center justify-center h-32 hover:shadow-lg transition-all duration-300 cursor-pointer" data-brand="ARKO Tection" data-image="brands/images-3_transparent.png" data-price="1149" data-viscosity="5W-30" data-size="4L">
           <span class="text-3xl font-black text-red-800">ARKO Tection</span>
           <span class="text-sm text-gray-500 mt-1">Semi-Synthetic</span>
         </div>
-        <div class="brand-card bg-gray-50 rounded-xl p-6 flex flex-col items-center justify-center h-32 hover:shadow-lg transition-all duration-300 cursor-pointer" data-brand="Liqui Moly" data-image="brands/images_transparent.png" data-price="$32.99" data-viscosity="10W-40" data-size="4L">
+        <div class="brand-card bg-gray-50 rounded-xl p-6 flex flex-col items-center justify-center h-32 hover:shadow-lg transition-all duration-300 cursor-pointer" data-brand="Liqui Moly" data-image="brands/images_transparent.png" data-price="1849" data-viscosity="10W-40" data-size="4L">
           <span class="text-3xl font-black text-purple-700">Liqui Moly</span>
           <span class="text-sm text-gray-500 mt-1">Top Tec</span>
         </div>
-        <div class="brand-card bg-gradient-to-br from-red-600 to-red-700 rounded-xl p-6 flex flex-col items-center justify-center h-32 text-white hover:shadow-lg transition-all duration-300 cursor-pointer" data-brand="TorqueLine Premium" data-image="diesel.jpeg" data-price="$24.99" data-viscosity="5W-30" data-size="4L">
+        <div class="brand-card bg-gradient-to-br from-red-600 to-red-700 rounded-xl p-6 flex flex-col items-center justify-center h-32 text-white hover:shadow-lg transition-all duration-300 cursor-pointer" data-brand="TorqueLine Premium" data-image="diesel.jpeg" data-price="1399" data-viscosity="5W-30" data-size="4L">
           <span class="text-3xl font-black">Torque<span class="block text-2xl">Line</span></span>
           <span class="text-sm mt-1">Premium</span>
         </div>
@@ -367,7 +602,7 @@
   <section class="py-20 bg-gradient-to-r from-red-600 to-red-700 text-white">
     <div class="max-w-4xl mx-auto text-center">
       <h2 class="text-4xl font-black mb-6">Ready to Transform Your Engine?</h2>
-      <p class="text-xl mb-8">Join 500,000+ satisfied customers. Order today and get free shipping on orders over $50.</p>
+      <p class="text-xl mb-8">Join 500,000+ satisfied customers. Order today and get free shipping on orders over ₱2,500.</p>
       <div class="flex flex-col sm:flex-row justify-center gap-4">
         <a href="#contact" class="px-8 py-4 bg-white text-red-600 font-black rounded-lg hover:bg-gray-100 transition-all duration-300 shadow-xl">
           Get Your Oil Now
@@ -375,6 +610,124 @@
         <a href="#contact" class="px-8 py-4 border-2 border-white text-white font-semibold rounded-lg hover:bg-white/10 transition-all duration-300">
           Request Free Sample
         </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Payment Methods Section -->
+  <section id="payment" class="py-20 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-14">
+        <span class="inline-flex items-center gap-2 bg-green-50 text-green-700 text-xs font-bold px-4 py-2 rounded-full mb-5">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+          </svg>
+          Safe &amp; Secure Checkout
+        </span>
+        <h2 class="text-4xl font-black text-gray-900 mb-4">Pay Your Way</h2>
+        <p class="text-lg text-gray-600 max-w-2xl mx-auto">Pay with the wallet you already love. Every transaction is encrypted end-to-end, and every order ships with a 100% satisfaction guarantee.</p>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- GCash -->
+        <div class="payment-card" data-method="gcash">
+          <div class="payment-card-icon" style="--pm-color:#007DFE">
+            <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M7 2h10a2 2 0 012 2v16a2 2 0 01-2 2H7a2 2 0 01-2-2V4a2 2 0 012-2z"></path>
+            </svg>
+          </div>
+          <h3 class="payment-card-title">GCash</h3>
+          <p class="payment-card-desc">Pay straight from your GCash wallet or a linked bank account.</p>
+          <span class="payment-card-tag" style="--pm-color:#007DFE">Cashback up to ₱150</span>
+        </div>
+
+        <!-- Maya -->
+        <div class="payment-card" data-method="maya">
+          <div class="payment-card-icon" style="--pm-color:#00C271">
+            <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7a2 2 0 012-2h14a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2V7zm0 4h18M6 12h.01M10 12h.01"></path>
+            </svg>
+          </div>
+          <h3 class="payment-card-title">Maya</h3>
+          <p class="payment-card-desc">Link your Maya wallet or debit card for a one-tap checkout.</p>
+          <span class="payment-card-tag" style="--pm-color:#00C271">Maya Rewards on every order</span>
+        </div>
+
+        <!-- ShopeePay -->
+        <div class="payment-card" data-method="shopeepay">
+          <div class="payment-card-icon" style="--pm-color:#EE4D2D">
+            <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4H6zM3 6h18M16 10a4 4 0 01-8 0"></path>
+            </svg>
+          </div>
+          <h3 class="payment-card-title">ShopeePay</h3>
+          <p class="payment-card-desc">Use your ShopeePay balance and collect Shopee Coins credit.</p>
+          <span class="payment-card-tag" style="--pm-color:#EE4D2D">Shopee Coins eligible</span>
+        </div>
+
+        <!-- Card -->
+        <div class="payment-card" data-method="card">
+          <div class="payment-card-icon" style="--pm-color:#1A1F71">
+            <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M5 6h14a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2z"></path>
+            </svg>
+          </div>
+          <h3 class="payment-card-title">Credit / Debit Card</h3>
+          <p class="payment-card-desc">Visa and Mastercard accepted. Split your payment into installments.</p>
+          <span class="payment-card-tag" style="--pm-color:#1A1F71">Installments available</span>
+        </div>
+
+        <!-- Bank -->
+        <div class="payment-card" data-method="bank">
+          <div class="payment-card-icon" style="--pm-color:#4F46E5">
+            <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 21h18M5 21V10m7 11V10m7 11V10M2 7l10-4 10 4v3H2V7z"></path>
+            </svg>
+          </div>
+          <h3 class="payment-card-title">Bank Transfer</h3>
+          <p class="payment-card-desc">Pay through online banking or a direct BPI/BDO transfer.</p>
+          <span class="payment-card-tag" style="--pm-color:#4F46E5">No fees, no queueing</span>
+        </div>
+
+        <!-- COD -->
+        <div class="payment-card" data-method="cod">
+          <div class="payment-card-icon" style="--pm-color:#16A34A">
+            <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6l4 2m5-2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+          </div>
+          <h3 class="payment-card-title">Cash on Delivery</h3>
+          <p class="payment-card-desc">Pay in cash when your order arrives at your door.</p>
+          <span class="payment-card-tag" style="--pm-color:#16A34A">Available nationwide</span>
+        </div>
+      </div>
+
+      <!-- Trust Row -->
+      <div class="payment-trust">
+        <div class="payment-trust-item">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+          <span>SSL Encrypted</span>
+        </div>
+        <div class="payment-trust-item">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+          <span>PCI Compliant</span>
+        </div>
+        <div class="payment-trust-item">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+          <span>Buyer Protection</span>
+        </div>
+        <div class="payment-trust-item">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+          <span>Easy Refunds</span>
+        </div>
       </div>
     </div>
   </section>
@@ -455,6 +808,7 @@
           <h4 class="font-bold text-lg mb-4 text-white">Support</h4>
           <ul class="space-y-2 text-gray-400">
             <li><a href="#" class="hover:text-red-500 transition-colors">FAQ</a></li>
+            <li><a href="#payment" class="hover:text-red-500 transition-colors">Payment Methods</a></li>
             <li><a href="#" class="hover:text-red-500 transition-colors">Shipping Info</a></li>
             <li><a href="#" class="hover:text-red-500 transition-colors">Returns</a></li>
             <li><a href="#" class="hover:text-red-500 transition-colors">Privacy Policy</a></li>
@@ -467,6 +821,222 @@
       </div>
     </div>
   </footer>
+
+  <!-- Cart Drawer -->
+  <div id="cart-overlay" class="fixed inset-0 bg-black/50 z-40 hidden"></div>
+  <aside id="cart-drawer" class="fixed top-0 right-0 h-full w-full max-w-md bg-white z-50 shadow-2xl transform translate-x-full transition-transform duration-300 flex flex-col">
+    <div class="flex items-center justify-between p-6 border-b border-gray-200">
+      <h2 class="text-2xl font-black text-gray-900">Your Cart</h2>
+      <button id="cart-close" class="text-gray-500 hover:text-red-600 transition-colors" aria-label="Close cart">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+        </svg>
+      </button>
+    </div>
+
+    <div id="cart-items" class="flex-1 overflow-y-auto p-6 space-y-4"></div>
+
+    <div id="cart-empty" class="flex-1 flex flex-col items-center justify-center p-8 text-center">
+      <svg class="w-20 h-20 text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.3 4.6A1 1 0 005.4 19H19"></path>
+      </svg>
+      <p class="text-gray-500 text-lg font-medium mb-2">Your cart is empty</p>
+      <p class="text-gray-400 text-sm">Add some premium motor oil to get started.</p>
+    </div>
+
+    <div id="cart-footer" class="border-t border-gray-200 p-6 hidden">
+      <div class="flex justify-between items-center mb-2">
+        <span class="text-gray-600">Subtotal</span>
+        <span id="cart-subtotal" class="text-lg font-bold text-gray-900">₱0.00</span>
+      </div>
+      <div class="flex justify-between items-center mb-4">
+        <span class="text-gray-600">Shipping</span>
+        <span id="cart-shipping" class="text-lg font-bold text-gray-900">₱0.00</span>
+      </div>
+      <p id="cart-shipping-hint" class="text-sm text-gray-500 mb-4"></p>
+      <div class="flex justify-between items-center mb-6 pt-4 border-t border-gray-200">
+        <span class="text-xl font-black text-gray-900">Total</span>
+        <span id="cart-total" class="text-2xl font-black text-red-600">₱0.00</span>
+      </div>
+      <button id="checkout-btn" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-4 rounded-lg shadow-lg transition-colors">
+        Checkout
+      </button>
+      <button id="clear-cart-btn" class="w-full mt-3 text-gray-500 hover:text-red-600 text-sm font-medium transition-colors">
+        Clear Cart
+      </button>
+    </div>
+  </aside>
+
+  <!-- Checkout Modal -->
+  <div id="checkout-overlay" class="fixed inset-0 bg-black/60 z-[60] hidden"></div>
+  <div id="checkout-modal" class="fixed inset-0 z-[70] hidden overflow-y-auto p-4">
+    <div class="min-h-full flex items-center justify-center">
+      <div class="checkout-panel relative w-full max-w-3xl bg-white rounded-2xl shadow-2xl my-8">
+        <!-- Header -->
+        <div class="flex items-center justify-between p-6 border-b border-gray-200">
+          <div>
+            <h2 class="text-2xl font-black text-gray-900">Secure Checkout</h2>
+            <p class="text-sm text-gray-500 mt-1">Choose how you'd like to pay</p>
+          </div>
+          <button id="checkout-close" class="text-gray-500 hover:text-red-600 transition-colors" aria-label="Close checkout">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+          </button>
+        </div>
+
+        <div class="grid md:grid-cols-2">
+          <!-- Left: Methods -->
+          <div class="p-6 border-b md:border-b-0 md:border-r border-gray-200">
+            <h3 class="text-xs font-bold text-gray-500 uppercase tracking-wide mb-4">Payment Method</h3>
+
+            <div id="payment-options" class="space-y-3">
+              <label class="payment-option" data-method="gcash">
+                <input type="radio" name="payment-method" value="gcash" class="payment-radio" checked />
+                <span class="payment-option-icon" style="--pm-color:#007DFE">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M7 2h10a2 2 0 012 2v16a2 2 0 01-2 2H7a2 2 0 01-2-2V4a2 2 0 012-2z"></path>
+                  </svg>
+                </span>
+                <span class="payment-option-text">
+                  <span class="payment-option-name">GCash</span>
+                  <span class="payment-option-desc">Mobile wallet</span>
+                </span>
+                <span class="payment-option-check">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
+                  </svg>
+                </span>
+              </label>
+
+              <label class="payment-option" data-method="maya">
+                <input type="radio" name="payment-method" value="maya" class="payment-radio" />
+                <span class="payment-option-icon" style="--pm-color:#00C271">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7a2 2 0 012-2h14a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2V7zm0 4h18M6 12h.01M10 12h.01"></path>
+                  </svg>
+                </span>
+                <span class="payment-option-text">
+                  <span class="payment-option-name">Maya</span>
+                  <span class="payment-option-desc">Wallet or debit card</span>
+                </span>
+                <span class="payment-option-check">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
+                  </svg>
+                </span>
+              </label>
+
+              <label class="payment-option" data-method="shopeepay">
+                <input type="radio" name="payment-method" value="shopeepay" class="payment-radio" />
+                <span class="payment-option-icon" style="--pm-color:#EE4D2D">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4H6zM3 6h18M16 10a4 4 0 01-8 0"></path>
+                  </svg>
+                </span>
+                <span class="payment-option-text">
+                  <span class="payment-option-name">ShopeePay</span>
+                  <span class="payment-option-desc">Shopee balance</span>
+                </span>
+                <span class="payment-option-check">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
+                  </svg>
+                </span>
+              </label>
+
+              <label class="payment-option" data-method="card">
+                <input type="radio" name="payment-method" value="card" class="payment-radio" />
+                <span class="payment-option-icon" style="--pm-color:#1A1F71">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M5 6h14a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2z"></path>
+                  </svg>
+                </span>
+                <span class="payment-option-text">
+                  <span class="payment-option-name">Credit / Debit Card</span>
+                  <span class="payment-option-desc">Visa, Mastercard</span>
+                </span>
+                <span class="payment-option-check">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
+                  </svg>
+                </span>
+              </label>
+
+              <label class="payment-option" data-method="bank">
+                <input type="radio" name="payment-method" value="bank" class="payment-radio" />
+                <span class="payment-option-icon" style="--pm-color:#4F46E5">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 21h18M5 21V10m7 11V10m7 11V10M2 7l10-4 10 4v3H2V7z"></path>
+                  </svg>
+                </span>
+                <span class="payment-option-text">
+                  <span class="payment-option-name">Bank Transfer</span>
+                  <span class="payment-option-desc">BPI, BDO, online banking</span>
+                </span>
+                <span class="payment-option-check">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
+                  </svg>
+                </span>
+              </label>
+
+              <label class="payment-option" data-method="cod">
+                <input type="radio" name="payment-method" value="cod" class="payment-radio" />
+                <span class="payment-option-icon" style="--pm-color:#16A34A">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6l4 2m5-2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                  </svg>
+                </span>
+                <span class="payment-option-text">
+                  <span class="payment-option-name">Cash on Delivery</span>
+                  <span class="payment-option-desc">Pay when it arrives</span>
+                </span>
+                <span class="payment-option-check">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
+                  </svg>
+                </span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Right: Details + Summary -->
+          <div class="p-6">
+            <h3 class="text-xs font-bold text-gray-500 uppercase tracking-wide mb-4">Payment Details</h3>
+            <div id="payment-details" class="payment-details"></div>
+
+            <h3 class="text-xs font-bold text-gray-500 uppercase tracking-wide mt-6 mb-4">Order Summary</h3>
+            <div class="space-y-2 text-sm">
+              <div class="flex justify-between">
+                <span class="text-gray-600">Subtotal</span>
+                <span id="checkout-subtotal" class="font-bold text-gray-900">₱0.00</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-600">Shipping</span>
+                <span id="checkout-shipping" class="font-bold text-gray-900">₱0.00</span>
+              </div>
+              <div class="flex justify-between pt-3 mt-2 border-t border-gray-200">
+                <span class="text-base font-black text-gray-900">Total</span>
+                <span id="checkout-total" class="text-xl font-black text-red-600">₱0.00</span>
+              </div>
+            </div>
+
+            <button id="place-order-btn" class="mt-6 w-full bg-red-600 hover:bg-red-700 text-white font-bold py-4 rounded-lg shadow-lg hover:shadow-red-500/30 transition-all duration-300">
+              Place Order
+            </button>
+
+            <p class="mt-3 text-center text-xs text-gray-400 flex items-center justify-center gap-1.5">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+              </svg>
+              Payments are encrypted and processed securely
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- Brand Modal -->
   <div id="brand-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
@@ -496,5 +1066,9 @@
   </div>
 
   <script src="script.js"></script>
+  <script src="cart.js"></script>
+  <script src="payment.js"></script>
+  <script src="search.js"></script>
+  <script src="banner.js"></script>
 </body>
 </html>

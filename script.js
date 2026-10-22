@@ -1,3 +1,13 @@
+// ===== Currency Config =====
+const CURRENCY_SYMBOL = '₱';
+
+function formatPrice(value) {
+  return `${CURRENCY_SYMBOL}${Number(value || 0).toLocaleString('en-PH', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  })}`;
+}
+
 // ===== Mobile Menu Toggle =====
 const mobileMenuBtn = document.getElementById('mobile-menu-btn');
 const mobileMenu = document.getElementById('mobile-menu');
@@ -62,19 +72,6 @@ document.querySelectorAll('.animate-fade-in, .product-card').forEach(element => 
   element.classList.add('animate-on-scroll');
   observer.observe(element);
 });
-
-// ===== Add to Cart Functionality =====
-const cart = [];
-
-function addToCart(productName) {
-  cart.push({
-    name: productName,
-    price: Math.random() * 20 + 20,
-    quantity: 1
-  });
-
-  showNotification(`Added ${productName} to cart!`);
-}
 
 // ===== Notification System =====
 function showNotification(message) {
@@ -151,18 +148,74 @@ function isValidEmail(email) {
 
 // ===== Product Card Hover Effects =====
 document.querySelectorAll('.product-card').forEach(card => {
+  const banner = card.querySelector('.product-image-banner');
+  const price = card.querySelector('.text-3xl');
+
   card.addEventListener('mouseenter', () => {
-    const price = card.querySelector('.text-3xl');
     if (price) {
-      price.style.transform = 'scale(1.1)';
+      price.style.transform = 'scale(1.08)';
     }
   });
 
   card.addEventListener('mouseleave', () => {
-    const price = card.querySelector('.text-3xl');
     if (price) {
       price.style.transform = 'scale(1)';
     }
+  });
+
+  // Cursor spotlight + 3D tilt following the pointer
+  if (banner) {
+    let frame = null;
+    let pending = null;
+
+    banner.addEventListener('mousemove', (e) => {
+      const rect = banner.getBoundingClientRect();
+      pending = {
+        x: ((e.clientX - rect.left) / rect.width) * 100,
+        y: ((e.clientY - rect.top) / rect.height) * 100
+      };
+
+      if (frame === null) {
+        frame = requestAnimationFrame(() => {
+          if (pending) {
+            banner.style.setProperty('--mouse-x', `${pending.x}%`);
+            banner.style.setProperty('--mouse-y', `${pending.y}%`);
+          }
+          frame = null;
+        });
+      }
+    });
+
+    banner.addEventListener('mouseleave', () => {
+      banner.style.setProperty('--mouse-x', '50%');
+      banner.style.setProperty('--mouse-y', '50%');
+    });
+  }
+
+  // 3D tilt of the whole card
+  let tiltFrame = null;
+  let tiltPending = null;
+
+  card.addEventListener('mousemove', (e) => {
+    const rect = card.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width - 0.5;
+    const y = (e.clientY - rect.top) / rect.height - 0.5;
+    tiltPending = { x: -y * 8, y: x * 10 };
+
+    if (tiltFrame === null) {
+      tiltFrame = requestAnimationFrame(() => {
+        if (tiltPending) {
+          card.style.setProperty('--tilt-x', `${tiltPending.x}deg`);
+          card.style.setProperty('--tilt-y', `${tiltPending.y}deg`);
+        }
+        tiltFrame = null;
+      });
+    }
+  });
+
+  card.addEventListener('mouseleave', () => {
+    card.style.setProperty('--tilt-x', '0deg');
+    card.style.setProperty('--tilt-y', '0deg');
   });
 });
 
@@ -173,6 +226,9 @@ document.querySelectorAll('.brand-card').forEach(card => {
 
 // ===== Brand Modal =====
 let selectedBrand = null;
+let selectedBrandPrice = 0;
+let selectedBrandImage = '';
+let selectedBrandViscosity = '';
 
 const brandDescriptions = {
   'Mobil 1': 'Mobil 1 is a synthetic motor oil brand owned by ExxonMobil. Provides triple action power for maximum engine protection, cleaner engines, and fuel efficiency. API SP certified.',
@@ -193,12 +249,15 @@ function openBrandModal(card) {
   const size = card.getAttribute('data-size');
 
   selectedBrand = brandName;
+  selectedBrandPrice = price;
+  selectedBrandImage = image;
+  selectedBrandViscosity = viscosity;
 
   const modal = document.getElementById('brand-modal');
   document.getElementById('modal-brand-name').textContent = brandName;
   document.getElementById('modal-image').src = image;
   document.getElementById('modal-image').alt = brandName;
-  document.getElementById('modal-price').textContent = price;
+  document.getElementById('modal-price').textContent = formatPrice(Number(price) || 0);
   document.getElementById('modal-viscosity').textContent = `Viscosity: ${viscosity} | Size: ${size}`;
   document.getElementById('modal-description').textContent = brandDescriptions[brandName] || '';
 
@@ -267,7 +326,12 @@ document.addEventListener('keydown', (e) => {
 
 function addToCartFromModal() {
   if (selectedBrand) {
-    addToCart(selectedBrand);
+    addToCart({
+      id: selectedBrand,
+      name: selectedBrand,
+      price: selectedBrandPrice,
+      image: selectedBrandImage
+    });
   }
 }
 
@@ -339,6 +403,19 @@ document.querySelectorAll('button, .btn-clickable').forEach(btn => {
     btn.style.transform = 'scale(1)';
   });
 });
+
+// ===== Voucher & Discount Campaign Banner =====
+const claimVoucherBtn = document.getElementById('claim-voucher-btn');
+
+if (claimVoucherBtn) {
+  claimVoucherBtn.addEventListener('click', () => {
+    showNotification('Voucher claimed! Use code TORQUE10 for 10% off + ₱100 off your order.');
+    const products = document.getElementById('products');
+    if (products) {
+      window.scrollTo({ top: products.offsetTop - 80, behavior: 'smooth' });
+    }
+  });
+}
 
 // ===== Initialize animations on DOMContentLoaded =====
 document.addEventListener('DOMContentLoaded', () => {
