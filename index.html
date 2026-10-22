@@ -41,6 +41,73 @@
             </div>
             <div id="search-results" class="search-results hidden absolute right-0 mt-2 w-96 max-h-[26rem] overflow-y-auto bg-white rounded-xl shadow-2xl border border-gray-200 z-50"></div>
           </div>
+          <!-- Account -->
+          <div class="relative">
+            <button id="account-btn" class="flex items-center gap-2 text-gray-700 hover:text-red-600 transition-colors" aria-label="Account" aria-haspopup="true" aria-expanded="false">
+              <span id="account-avatar" class="w-8 h-8 rounded-full bg-gray-100 border border-gray-200 flex items-center justify-center text-xs font-bold text-gray-600 shrink-0">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                </svg>
+              </span>
+              <span id="account-label" class="hidden lg:inline text-sm font-medium whitespace-nowrap">Sign In</span>
+            </button>
+
+            <!-- Account Dropdown -->
+            <div id="account-menu" class="hidden absolute right-0 mt-2 w-60 bg-white rounded-xl shadow-2xl border border-gray-200 z-50 overflow-hidden">
+              <!-- Logged out -->
+              <div id="account-menu-guest">
+                <div class="p-4 border-b border-gray-100">
+                  <p class="font-bold text-gray-900 text-sm">Welcome to TorqueLine</p>
+                  <p class="text-xs text-gray-500 mt-1">Sign in to track orders and save your details.</p>
+                </div>
+                <button id="menu-signin" class="w-full text-left px-4 py-3 text-sm font-semibold text-gray-700 hover:bg-red-50 hover:text-red-600 transition-colors flex items-center gap-2">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14"></path>
+                  </svg>
+                  Sign In
+                </button>
+                <button id="menu-signup" class="w-full text-left px-4 py-3 text-sm font-semibold text-gray-700 hover:bg-red-50 hover:text-red-600 transition-colors flex items-center gap-2 border-t border-gray-100">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v6m-6-6v6m-3-3h12M4 21h16a2 2 0 002-2V7a2 2 0 00-2-2H4a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                  </svg>
+                  Create Account
+                </button>
+                <div class="px-4 py-3 bg-gray-50 border-t border-gray-100">
+                  <p class="text-[11px] text-gray-500 leading-relaxed">
+                    Distributor or staff? Use the <span class="font-semibold text-gray-700">Admin</span> tab on the sign-in screen.
+                  </p>
+                </div>
+              </div>
+
+              <!-- Logged in -->
+              <div id="account-menu-user" class="hidden">
+                <div class="p-4 border-b border-gray-100 bg-gray-50">
+                  <p id="menu-user-name" class="font-bold text-gray-900 text-sm truncate">Customer</p>
+                  <p id="menu-user-email" class="text-xs text-gray-500 mt-0.5 truncate">customer@email.com</p>
+                  <span id="menu-user-role" class="inline-block mt-2 text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full"></span>
+                </div>
+                <button id="menu-orders" class="w-full text-left px-4 py-3 text-sm font-semibold text-gray-700 hover:bg-red-50 hover:text-red-600 transition-colors flex items-center gap-2">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.6L19 9.4V19a2 2 0 01-2 2z"></path>
+                  </svg>
+                  My Orders
+                </button>
+                <button id="menu-admin-panel" class="w-full text-left px-4 py-3 text-sm font-semibold text-gray-700 hover:bg-red-50 hover:text-red-600 transition-colors flex items-center gap-2 border-t border-gray-100 hidden">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                  </svg>
+                  Admin Dashboard
+                </button>
+                <button id="menu-logout" class="w-full text-left px-4 py-3 text-sm font-semibold text-gray-600 hover:bg-red-50 hover:text-red-600 transition-colors flex items-center gap-2 border-t border-gray-100">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+                  </svg>
+                  Log Out
+                </button>
+              </div>
+            </div>
+          </div>
+
           <div class="relative">
             <button id="cart-btn" class="text-gray-700 hover:text-red-600 transition-colors" aria-label="Open cart">
               <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -76,6 +143,8 @@
           <a href="#testimonials" class="nav-link-mobile text-gray-700 hover:text-red-600 font-medium">Testimonials</a>
           <a href="#payment" class="nav-link-mobile text-gray-700 hover:text-red-600 font-medium">Payment</a>
           <a href="#contact" class="nav-link-mobile text-gray-700 hover:text-red-600 font-medium">Contact</a>
+          <button id="mobile-signin" class="nav-link-mobile text-left text-gray-700 hover:text-red-600 font-medium">Sign In</button>
+          <button id="mobile-orders" class="nav-link-mobile text-left text-gray-700 hover:text-red-600 font-medium hidden">My Orders</button>
         </div>
       </div>
     </nav>
@@ -1038,6 +1107,238 @@
     </div>
   </div>
 
+  <!-- Auth Modal (Client + Admin Login) -->
+  <div id="auth-overlay" class="fixed inset-0 bg-black/60 z-[65] hidden"></div>
+  <div id="auth-modal" class="fixed inset-0 z-[75] hidden overflow-y-auto p-4">
+    <div class="min-h-full flex items-center justify-center">
+      <div class="auth-panel relative w-full max-w-md bg-white rounded-2xl shadow-2xl my-8 overflow-hidden">
+        <!-- Header -->
+        <div class="flex items-center justify-between p-6 pb-0">
+          <div>
+            <h2 class="text-2xl font-black text-gray-900">Welcome Back</h2>
+            <p id="auth-subtitle" class="text-sm text-gray-500 mt-1">Sign in to continue to TorqueLine</p>
+          </div>
+          <button id="auth-close" class="text-gray-500 hover:text-red-600 transition-colors" aria-label="Close sign in">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Tabs -->
+        <div class="px-6 pt-5">
+          <div class="auth-tabs relative flex bg-gray-100 rounded-xl p-1">
+            <span id="auth-tab-indicator" class="auth-tab-indicator absolute top-1 bottom-1 left-1 w-[calc(50%-0.25rem)] bg-white rounded-lg shadow-sm transition-transform duration-300"></span>
+            <button class="auth-tab relative flex-1 py-2.5 text-sm font-bold text-gray-500 transition-colors is-active" data-tab="client" type="button">Client</button>
+            <button class="auth-tab relative flex-1 py-2.5 text-sm font-bold text-gray-500 transition-colors" data-tab="admin" type="button">Admin</button>
+          </div>
+        </div>
+
+        <div class="p-6">
+          <!-- Client: Sign In -->
+          <form id="client-login-form" class="auth-form space-y-4" autocomplete="on">
+            <div>
+              <label for="client-email" class="block text-sm font-medium text-gray-700 mb-1.5">Email Address</label>
+              <input type="email" id="client-email" name="email" required autocomplete="email" placeholder="you@email.com" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-red-500 focus:ring-2 focus:ring-red-500/20 outline-none transition-colors">
+            </div>
+            <div>
+              <label for="client-password" class="block text-sm font-medium text-gray-700 mb-1.5">Password</label>
+              <div class="relative">
+                <input type="password" id="client-password" name="password" required autocomplete="current-password" placeholder="••••••••" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-red-500 focus:ring-2 focus:ring-red-500/20 outline-none transition-colors pr-11">
+                <button type="button" class="auth-toggle-pw absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-red-600 transition-colors" data-target="client-password" aria-label="Show password">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"></path>
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <div class="flex items-center justify-between">
+              <label class="flex items-center gap-2 text-sm text-gray-600 cursor-pointer select-none">
+                <input type="checkbox" id="client-remember" class="w-4 h-4 rounded border-gray-300 text-red-600 focus:ring-red-500" checked>
+                Keep me signed in
+              </label>
+              <button type="button" class="text-sm font-semibold text-red-600 hover:text-red-700 transition-colors">Forgot password?</button>
+            </div>
+            <p class="auth-error hidden text-sm font-medium text-red-600 bg-red-50 border border-red-100 rounded-lg px-3 py-2"></p>
+            <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3.5 rounded-lg shadow-lg hover:shadow-red-500/30 transition-all duration-300">
+              Sign In
+            </button>
+            <p class="text-center text-sm text-gray-500">
+              New to TorqueLine?
+              <button type="button" class="auth-switch-to-register font-semibold text-red-600 hover:text-red-700 transition-colors">Create an account</button>
+            </p>
+          </form>
+
+          <!-- Client: Register -->
+          <form id="client-register-form" class="auth-form space-y-4 hidden" autocomplete="on">
+            <div>
+              <label for="reg-name" class="block text-sm font-medium text-gray-700 mb-1.5">Full Name</label>
+              <input type="text" id="reg-name" name="name" required placeholder="Juan Dela Cruz" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-red-500 focus:ring-2 focus:ring-red-500/20 outline-none transition-colors">
+            </div>
+            <div>
+              <label for="reg-email" class="block text-sm font-medium text-gray-700 mb-1.5">Email Address</label>
+              <input type="email" id="reg-email" name="email" required autocomplete="email" placeholder="you@email.com" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-red-500 focus:ring-2 focus:ring-red-500/20 outline-none transition-colors">
+            </div>
+            <div>
+              <label for="reg-password" class="block text-sm font-medium text-gray-700 mb-1.5">Password</label>
+              <div class="relative">
+                <input type="password" id="reg-password" name="password" required minlength="6" autocomplete="new-password" placeholder="At least 6 characters" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-red-500 focus:ring-2 focus:ring-red-500/20 outline-none transition-colors pr-11">
+                <button type="button" class="auth-toggle-pw absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-red-600 transition-colors" data-target="reg-password" aria-label="Show password">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"></path>
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <div>
+              <label for="reg-confirm" class="block text-sm font-medium text-gray-700 mb-1.5">Confirm Password</label>
+              <input type="password" id="reg-confirm" name="confirm" required placeholder="Re-enter password" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-red-500 focus:ring-2 focus:ring-red-500/20 outline-none transition-colors">
+            </div>
+            <p class="auth-error hidden text-sm font-medium text-red-600 bg-red-50 border border-red-100 rounded-lg px-3 py-2"></p>
+            <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3.5 rounded-lg shadow-lg hover:shadow-red-500/30 transition-all duration-300">
+              Create Account
+            </button>
+            <p class="text-center text-sm text-gray-500">
+              Already have an account?
+              <button type="button" class="auth-switch-to-login font-semibold text-red-600 hover:text-red-700 transition-colors">Sign in</button>
+            </p>
+          </form>
+
+          <!-- Admin: Sign In -->
+          <form id="admin-login-form" class="auth-form space-y-4 hidden" autocomplete="off">
+            <div class="admin-notice">
+              <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M5.1 19h13.8a2 2 0 001.7-3L13.7 4a2 2 0 00-3.4 0L3.4 16a2 2 0 001.7 3z"></path>
+              </svg>
+              <span>Staff access only. Admin sessions unlock the distributor dashboard.</span>
+            </div>
+            <div>
+              <label for="admin-email" class="block text-sm font-medium text-gray-700 mb-1.5">Admin Email</label>
+              <input type="email" id="admin-email" name="email" required placeholder="admin@torqueline.ph" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-red-500 focus:ring-2 focus:ring-red-500/20 outline-none transition-colors">
+            </div>
+            <div>
+              <label for="admin-password" class="block text-sm font-medium text-gray-700 mb-1.5">Password</label>
+              <div class="relative">
+                <input type="password" id="admin-password" name="password" required placeholder="••••••••" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-red-500 focus:ring-2 focus:ring-red-500/20 outline-none transition-colors pr-11">
+                <button type="button" class="auth-toggle-pw absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-red-600 transition-colors" data-target="admin-password" aria-label="Show password">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"></path>
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <div>
+              <label for="admin-code" class="block text-sm font-medium text-gray-700 mb-1.5">Staff Access Code</label>
+              <input type="text" id="admin-code" name="code" required placeholder="TL-ADMIN" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-red-500 focus:ring-2 focus:ring-red-500/20 outline-none transition-colors uppercase">
+            </div>
+            <p class="auth-error hidden text-sm font-medium text-red-600 bg-red-50 border border-red-100 rounded-lg px-3 py-2"></p>
+            <button type="submit" class="w-full bg-gray-900 hover:bg-black text-white font-bold py-3.5 rounded-lg shadow-lg hover:shadow-black/30 transition-all duration-300">
+              Sign In as Admin
+            </button>
+            <p class="text-center text-xs text-gray-400">Demo credentials are shown in the panel footer.</p>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Admin Dashboard -->
+  <div id="admin-overlay" class="fixed inset-0 bg-black/60 z-[65] hidden"></div>
+  <div id="admin-panel" class="fixed inset-0 z-[75] hidden overflow-y-auto p-4">
+    <div class="min-h-full flex items-start justify-center">
+      <div class="admin-panel-card w-full max-w-6xl bg-white rounded-2xl shadow-2xl my-8 overflow-hidden">
+        <div class="flex items-center justify-between p-6 border-b border-gray-200 bg-gray-900 text-white">
+          <div class="flex items-center gap-3">
+            <span class="w-10 h-10 rounded-xl bg-red-600 flex items-center justify-center shrink-0">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+              </svg>
+            </span>
+            <div>
+              <h2 class="text-xl font-black">Admin Dashboard</h2>
+              <p class="text-xs text-gray-400 mt-0.5">TorqueLine Distributor Operations</p>
+            </div>
+          </div>
+          <button id="admin-close" class="text-gray-400 hover:text-white transition-colors" aria-label="Close admin dashboard">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+          </button>
+        </div>
+
+        <div class="p-6">
+          <!-- Stats -->
+          <div id="admin-stats" class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6"></div>
+
+          <div class="grid lg:grid-cols-3 gap-6">
+            <!-- Orders -->
+            <div class="lg:col-span-2">
+              <h3 class="text-xs font-bold text-gray-500 uppercase tracking-wide mb-3">Recent Orders</h3>
+              <div class="border border-gray-200 rounded-xl overflow-hidden">
+                <div class="overflow-x-auto">
+                  <table class="w-full text-sm">
+                    <thead class="bg-gray-50 text-gray-600">
+                      <tr>
+                        <th class="text-left font-bold px-4 py-3 whitespace-nowrap">Order</th>
+                        <th class="text-left font-bold px-4 py-3 whitespace-nowrap">Customer</th>
+                        <th class="text-left font-bold px-4 py-3 whitespace-nowrap">Payment</th>
+                        <th class="text-left font-bold px-4 py-3 whitespace-nowrap">Total</th>
+                        <th class="text-left font-bold px-4 py-3 whitespace-nowrap">Status</th>
+                      </tr>
+                    </thead>
+                    <tbody id="admin-orders-body" class="divide-y divide-gray-100"></tbody>
+                  </table>
+                </div>
+                <p id="admin-orders-empty" class="hidden p-8 text-center text-sm text-gray-400">No orders yet.</p>
+              </div>
+            </div>
+
+            <!-- Sidebar: customers + products -->
+            <div class="space-y-6">
+              <div>
+                <h3 class="text-xs font-bold text-gray-500 uppercase tracking-wide mb-3">Registered Clients</h3>
+                <div id="admin-users-list" class="space-y-2"></div>
+                <p id="admin-users-empty" class="hidden text-sm text-gray-400 py-2">No client accounts yet.</p>
+              </div>
+              <div>
+                <h3 class="text-xs font-bold text-gray-500 uppercase tracking-wide mb-3">Catalogue</h3>
+                <div id="admin-products-list" class="space-y-2"></div>
+              </div>
+            </div>
+          </div>
+
+          <p class="mt-6 pt-4 border-t border-gray-100 text-[11px] text-gray-400">
+            Demo build — credentials and data are stored locally in your browser. Demo admin: <span class="font-semibold">admin@torqueline.ph</span> / <span class="font-semibold">admin123</span> / code <span class="font-semibold">TL-ADMIN</span>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- My Orders -->
+  <div id="orders-overlay" class="fixed inset-0 bg-black/60 z-[65] hidden"></div>
+  <div id="orders-modal" class="fixed inset-0 z-[75] hidden overflow-y-auto p-4">
+    <div class="min-h-full flex items-center justify-center">
+      <div class="w-full max-w-2xl bg-white rounded-2xl shadow-2xl my-8 overflow-hidden">
+        <div class="flex items-center justify-between p-6 border-b border-gray-200">
+          <div>
+            <h2 class="text-2xl font-black text-gray-900">My Orders</h2>
+            <p id="orders-subtitle" class="text-sm text-gray-500 mt-1">Your purchase history</p>
+          </div>
+          <button id="orders-close" class="text-gray-500 hover:text-red-600 transition-colors" aria-label="Close orders">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+          </button>
+        </div>
+        <div id="orders-list" class="p-6 space-y-4 max-h-[60vh] overflow-y-auto"></div>
+      </div>
+    </div>
+  </div>
+
   <!-- Brand Modal -->
   <div id="brand-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
     <div class="bg-white rounded-2xl max-w-3xl w-full mx-auto fade-in-modal">
@@ -1068,6 +1369,8 @@
   <script src="script.js"></script>
   <script src="cart.js"></script>
   <script src="payment.js"></script>
+  <script src="auth.js"></script>
+  <script src="admin.js"></script>
   <script src="search.js"></script>
   <script src="banner.js"></script>
 </body>

@@ -149,7 +149,7 @@ document.querySelectorAll('.payment-option').forEach(option => {
 // ===== Place Order =====
 document.getElementById('place-order-btn')?.addEventListener('click', () => {
   const method = PAYMENT_METHODS[selectedPaymentMethod];
-  const { count, total } = getTotals();
+  const { count, subtotal, shipping, total } = getTotals();
 
   if (!method) return;
 
@@ -174,6 +174,28 @@ document.getElementById('place-order-btn')?.addEventListener('click', () => {
   }
 
   const orderRef = 'TL' + Date.now().toString().slice(-8);
+
+  // Snapshot the order before the cart is cleared
+  const order = {
+    id: orderRef,
+    userId: typeof currentUser !== 'undefined' && currentUser ? currentUser.id : null,
+    customer: typeof currentUser !== 'undefined' && currentUser ? currentUser.name : 'Guest',
+    email: typeof currentUser !== 'undefined' && currentUser ? currentUser.email : '',
+    payment: method.label,
+    items: cart.map(item => ({
+      id: item.id,
+      name: item.name,
+      price: item.price,
+      quantity: item.quantity
+    })),
+    subtotal: subtotal,
+    shipping: shipping,
+    total: total,
+    status: selectedPaymentMethod === 'cod' ? 'Awaiting Payment' : 'Processing',
+    date: new Date().toISOString()
+  };
+
+  if (typeof saveOrder === 'function') saveOrder(order);
 
   closeCheckout();
   closeCart();
