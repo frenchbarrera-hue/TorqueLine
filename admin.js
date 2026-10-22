@@ -150,12 +150,12 @@ function renderOrdersPanel() {
 
   if (subtitle) {
     subtitle.textContent = orders.length
-      ? `${orders.length} order${orders.length === 1 ? '' : 's'} placed by ${currentUser.email}`
+      ? orders.length + ' order' + (orders.length === 1 ? '' : 's') + ' placed by ' + currentUser.email
       : 'You have not placed any orders yet';
   }
 
   if (!orders.length) {
-    list.innerHTML = `
+    list.innerHTML = \`
       <div class="text-center py-10">
         <span class="inline-flex w-16 h-16 rounded-full bg-gray-100 items-center justify-center mb-4">
           <svg class="w-8 h-8 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -166,123 +166,71 @@ function renderOrdersPanel() {
         <p class="text-sm text-gray-500 mt-1">Your purchases will appear here once you check out.</p>
         <a href="#products" id="orders-shop-link" class="inline-block mt-5 bg-red-600 hover:bg-red-700 text-white text-sm font-bold px-5 py-2.5 rounded-lg transition-colors">Shop Products</a>
       </div>
-    `;
-    document.getElementById('orders-shop-link')?.addEventListener('click', closeOrdersPanel);
+    \`;
+    const sl = document.getElementById('orders-shop-link');
+    if (sl) sl.addEventListener('click', closeOrdersPanel);
     return;
   }
 
-function renderOrdersPanel() {
-  const list = document.getElementById('orders-list');
-  const subtitle = document.getElementById('orders-subtitle');
-  if (!list) return;
-
-  const allOrders = getOrders();
-  const orders = allOrders.filter(o => o.userId === currentUser.id);
-
-  if (subtitle) {
-    subtitle.textContent = orders.length
-      ? `${orders.length} order${orders.length === 1 ? '' : 's'} placed by ${currentUser.email}`
-      : 'You have not placed any orders yet';
-  }
-
-  if (!orders.length) {
-    list.innerHTML = `
-      <div class="text-center py-10">
-        <span class="inline-flex w-16 h-16 rounded-full bg-gray-100 items-center justify-center mb-4">
-          <svg class="w-8 h-8 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.6L19 9.4V19a2 2 0 01-2 2z"></path>
-          </svg>
-        </span>
-        <p class="font-bold text-gray-900">No orders yet</p>
-        <p class="text-sm text-gray-500 mt-1">Your purchases will appear here once you check out.</p>
-        <a href="#products" id="orders-shop-link" class="inline-block mt-5 bg-red-600 hover:bg-red-700 text-white text-sm font-bold px-5 py-2.5 rounded-lg transition-colors">Shop Products</a>
-      </div>
-    `;
-    document.getElementById('orders-shop-link')?.addEventListener('click', closeOrdersPanel);
-    return;
-  }
-
-  list.innerHTML = orders.map(o => {
-    const statusHistory = o.statusHistory || [{ status: o.status || 'Order Placed', timestamp: o.date }];
-    const statuses = ['Order Placed', 'Paid', 'Packed', 'Out for Delivery', 'Delivered'];
-    const currentIdx = statuses.indexOf(o.status) >= 0 ? statuses.indexOf(o.status) : 0;
-    const estDelivery = o.estimatedDeliveryDate ? new Date(o.estimatedDeliveryDate).toLocaleDateString('en-PH', { year: 'numeric', month: 'short', day: 'numeric' }) : 'TBD';
-    return `
+  list.innerHTML = orders.map(function(o) {
+    var statusHistory = o.statusHistory || [{ status: o.status || 'Order Placed', timestamp: o.date }];
+    var statuses = ['Order Placed', 'Paid', 'Packed', 'Out for Delivery', 'Delivered'];
+    var currentIdx = statuses.indexOf(o.status);
+    if (currentIdx < 0) currentIdx = 0;
+    var estDelivery = o.estimatedDeliveryDate ? new Date(o.estimatedDeliveryDate).toLocaleDateString('en-PH', { year: 'numeric', month: 'short', day: 'numeric' }) : 'TBD';
+    return \`
     <div class="order-card border-2 border-gray-100">
       <div class="flex items-start justify-between gap-3 mb-4">
         <div>
-          <p class="font-black text-gray-900 text-lg">${o.id}</p>
-          <p class="text-xs text-gray-500 mt-0.5">Placed: ${formatDate(o.date)}</p>
+          <p class="font-black text-gray-900 text-lg">\${o.id}</p>
+          <p class="text-xs text-gray-500 mt-0.5">Placed: \${formatDate(o.date)}</p>
         </div>
-        <span class="px-3 py-1 rounded-full text-xs font-bold ${o.status === 'Delivered' ? 'bg-green-100 text-green-700' : o.status === 'Out for Delivery' ? 'bg-blue-100 text-blue-700' : 'bg-yellow-100 text-yellow-700'}">${escapeHtml(o.status || 'Order Placed')}</span>
+        <span class="px-3 py-1 rounded-full text-xs font-bold \${o.status === 'Delivered' ? 'bg-green-100 text-green-700' : o.status === 'Out for Delivery' ? 'bg-blue-100 text-blue-700' : 'bg-yellow-100 text-yellow-700'}">\${escapeHtml(o.status || 'Order Placed')}</span>
       </div>
       <div class="mb-4 p-3 bg-blue-50 rounded-lg">
         <p class="text-xs font-semibold text-blue-900 mb-1">Estimated Delivery</p>
-        <p class="text-sm font-bold text-blue-700">${estDelivery}</p>
-        ${o.rider ? `<p class="text-xs text-blue-700 mt-1">Rider: ${escapeHtml(o.rider)} ${o.riderContact ? '(' + escapeHtml(o.riderContact) + ')' : ''}</p>` : ''}
+        <p class="text-sm font-bold text-blue-700">\${estDelivery}</p>
+        \${o.rider ? '<p class="text-xs text-blue-700 mt-1">Rider: ' + escapeHtml(o.rider) + (o.riderContact ? ' (' + escapeHtml(o.riderContact) + ')' : '') + '</p>' : ''}
       </div>
       <div class="mb-4">
         <p class="text-xs font-bold text-gray-700 mb-2">Tracking Status</p>
         <div class="space-y-2">
-          ${statuses.map((st, idx) => {
-            const hist = statusHistory.find(h => h.status === st);
-            const done = idx <= currentIdx;
-            return `
+          \${statuses.map(function(st, idx) {
+            var hist = statusHistory.find(function(h){ return h.status === st; });
+            var done = idx <= currentIdx;
+            return \`
               <div class="flex gap-2">
                 <div class="flex flex-col items-center">
-                  <div class="w-3 h-3 rounded-full ${done ? 'bg-green-500' : 'bg-gray-300'}"></div>
-                  ${idx < statuses.length - 1 ? `<div class="w-0.5 h-8 ${done && idx < currentIdx ? 'bg-green-500' : 'bg-gray-300'}"></div>` : ''}
+                  <div class="w-3 h-3 rounded-full \${done ? 'bg-green-500' : 'bg-gray-300'}"></div>
+                  \${idx < statuses.length - 1 ? '<div class="w-0.5 h-8 ' + (done && idx < currentIdx ? 'bg-green-500' : 'bg-gray-300') + '"></div>' : ''}
                 </div>
                 <div class="flex-1 pb-2">
-                  <p class="text-xs font-semibold ${done ? 'text-gray-900' : 'text-gray-400'}">${st}</p>
-                  ${hist ? `<p class="text-[10px] text-gray-500">${new Date(hist.timestamp).toLocaleString('en-PH')}</p>${hist.note ? `<p class="text-[10px] text-gray-600">${escapeHtml(hist.note)}</p>` : ''}` : ''}
+                  <p class="text-xs font-semibold \${done ? 'text-gray-900' : 'text-gray-400'}">\${st}</p>
+                  \${hist ? '<p class="text-[10px] text-gray-500">' + new Date(hist.timestamp).toLocaleString('en-PH') + '</p>' + (hist.note ? '<p class="text-[10px] text-gray-600">' + escapeHtml(hist.note) + '</p>' : '') : ''}
                 </div>
               </div>
-            `;
+            \`;
           }).join('')}
         </div>
       </div>
       <div class="order-card-items mb-3">
         <p class="text-xs font-bold text-gray-700 mb-2">Items Ordered</p>
-        ${(o.items || []).map(item => `
-          <div class="order-item flex justify-between text-xs py-1">
-            <span class="order-item-name flex-1">${escapeHtml(item.brand || '')} ${escapeHtml(item.type || item.name)}${item.quantity > 1 ? ' x' + item.quantity : ''}</span>
-            <span class="order-item-price font-semibold">${formatPrice(item.price * item.quantity)}</span>
-          </div>
-        `).join('')}
+        \${(o.items || []).map(function(item) {
+          return '<div class="order-item flex justify-between text-xs py-1"><span class="order-item-name flex-1">' + escapeHtml(item.brand || '') + ' ' + escapeHtml(item.type || item.name) + (item.quantity > 1 ? ' x' + item.quantity : '') + '</span><span class="order-item-price font-semibold">' + formatPrice(item.price * item.quantity) + '</span></div>';
+        }).join('')}
       </div>
       <div class="flex items-center justify-between pt-3 mt-3 border-t border-gray-100">
-        <span class="text-xs text-gray-500">Paid via ${escapeHtml(o.payment || '—')} ${o.deliveryFee ? '| Delivery: ' + formatPrice(o.deliveryFee) : ''}</span>
-        <span class="font-black text-red-600">${formatPrice(o.total || 0)}</span>
+        <span class="text-xs text-gray-500">Paid via \${escapeHtml(o.payment || '—')} \${o.deliveryFee ? '| Delivery: ' + formatPrice(o.deliveryFee) : ''}</span>
+        <span class="font-black text-red-600">\${formatPrice(o.total || 0)}</span>
       </div>
-      ${o.proofOfDelivery ? `<div class="mt-3"><p class="text-xs font-bold text-gray-700 mb-1">Proof of Delivery</p><img src="${escapeHtml(o.proofOfDelivery)}" alt="Proof" class="w-full max-w-xs rounded border"></div>` : ''}
-      ${o.adminNotes ? `<div class="mt-3 p-2 bg-gray-50 rounded"><p class="text-xs font-bold text-gray-700 mb-1">Notes</p><p class="text-xs text-gray-600">${escapeHtml(o.adminNotes)}</p></div>` : ''}
+      \${o.proofOfDelivery ? '<div class="mt-3"><p class="text-xs font-bold text-gray-700 mb-1">Proof of Delivery</p><img src="' + escapeHtml(o.proofOfDelivery) + '" alt="Proof" class="w-full max-w-xs rounded border"></div>' : ''}
+      \${o.adminNotes ? '<div class="mt-3 p-2 bg-gray-50 rounded"><p class="text-xs font-bold text-gray-700 mb-1">Notes</p><p class="text-xs text-gray-600">' + escapeHtml(o.adminNotes) + '</p></div>' : ''}
     </div>
-  `;
+  \`;
   }).join('');
 }
-}
 
-function formatDate(value) {
-  if (!value) return '';
-  const d = new Date(value);
-  if (isNaN(d.getTime())) return '';
-  return d.toLocaleDateString('en-PH', { year: 'numeric', month: 'short', day: 'numeric' });
-}
 
-// ===== Event Listeners =====
-document.getElementById('admin-close')?.addEventListener('click', closeAdminPanel);
-adminOverlay?.addEventListener('click', closeAdminPanel);
-document.getElementById('orders-close')?.addEventListener('click', closeOrdersPanel);
-ordersOverlay?.addEventListener('click', closeOrdersPanel);
-
-document.addEventListener('keydown', (e) => {
-  if (e.key !== 'Escape') return;
-  if (adminPanel && !adminPanel.classList.contains('hidden')) closeAdminPanel();
-  if (ordersModal && !ordersModal.classList.contains('hidden')) closeOrdersPanel();
-});
-
-// ===== Admin Order Management =====
 function manageOrder(orderId) {
   if (!isAdmin()) {
     showNotification('Admin access required');
