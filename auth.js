@@ -386,6 +386,18 @@ document.getElementById('admin-login-form')?.addEventListener('submit', (e) => {
   setTimeout(() => openAdminPanel(), 250);
 });
 
+document.getElementById('fill-demo-creds')?.addEventListener('click', () => {
+  const email = document.getElementById('admin-email');
+  const password = document.getElementById('admin-password');
+  const code = document.getElementById('admin-code');
+
+  if (email) email.value = ADMIN_EMAIL;
+  if (password) password.value = ADMIN_PASSWORD;
+  if (code) code.value = ADMIN_ACCESS_CODE;
+
+  showNotification('Demo credentials filled in. Press "Sign In as Admin".');
+});
+
 document.getElementById('auth-close')?.addEventListener('click', closeAuthModal);
 authOverlay?.addEventListener('click', closeAuthModal);
 

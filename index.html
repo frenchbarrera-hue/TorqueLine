@@ -1235,10 +1235,30 @@
               <input type="text" id="admin-code" name="code" required placeholder="TL-ADMIN" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-red-500 focus:ring-2 focus:ring-red-500/20 outline-none transition-colors uppercase">
             </div>
             <p class="auth-error hidden text-sm font-medium text-red-600 bg-red-50 border border-red-100 rounded-lg px-3 py-2"></p>
+            <div class="admin-demo-creds">
+              <div class="flex items-center justify-between gap-2 mb-2">
+                <p class="admin-demo-title">Demo admin credentials</p>
+                <button type="button" id="fill-demo-creds" class="admin-demo-fill">Fill in</button>
+              </div>
+              <dl class="admin-demo-list">
+                <div class="admin-demo-row">
+                  <dt>Email</dt>
+                  <dd>admin@torqueline.ph</dd>
+                </div>
+                <div class="admin-demo-row">
+                  <dt>Password</dt>
+                  <dd>admin123</dd>
+                </div>
+                <div class="admin-demo-row">
+                  <dt>Access code</dt>
+                  <dd>TL-ADMIN</dd>
+                </div>
+              </dl>
+            </div>
             <button type="submit" class="w-full bg-gray-900 hover:bg-black text-white font-bold py-3.5 rounded-lg shadow-lg hover:shadow-black/30 transition-all duration-300">
               Sign In as Admin
             </button>
-            <p class="text-center text-xs text-gray-400">Demo credentials are shown in the panel footer.</p>
+            <p class="text-center text-xs text-gray-400">Staff access only. Client accounts cannot sign in here.</p>
           </form>
         </div>
       </div>
