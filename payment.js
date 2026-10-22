@@ -181,17 +181,56 @@ document.getElementById('place-order-btn')?.addEventListener('click', () => {
     userId: typeof currentUser !== 'undefined' && currentUser ? currentUser.id : null,
     customer: typeof currentUser !== 'undefined' && currentUser ? currentUser.name : 'Guest',
     email: typeof currentUser !== 'undefined' && currentUser ? currentUser.email : '',
+    phone: (function(){
+      const contactPhone = document.getElementById('phone');
+      if (contactPhone && contactPhone.value) return contactPhone.value;
+      // try payment fields
+      const p = document.getElementById('pay-gcashNumber') || document.getElementById('pay-mayaNumber') || document.getElementById('pay-shopeeNumber');
+      return p && p.value ? p.value : '';
+    })(),
     payment: method.label,
-    items: cart.map(item => ({
-      id: item.id,
-      name: item.name,
-      price: item.price,
-      quantity: item.quantity
-    })),
+    paymentMethod: selectedPaymentMethod,
+    items: cart.map(item => {
+      let brand = 'TorqueLine';
+      const name = item.name;
+      if (/Mobil/i.test(name)) brand = 'Mobil 1';
+      else if (/Castrol/i.test(name)) brand = 'Castrol EDGE';
+      else if (/Shell/i.test(name)) brand = 'Shell Helix';
+      else if (/Total/i.test(name)) brand = 'Total Quartz';
+      else if (/BP/i.test(name)) brand = 'BP VEG';
+      else if (/ARKO/i.test(name)) brand = 'ARKO Tection';
+      else if (/Liqui/i.test(name)) brand = 'Liqui Moly';
+      else if (/TorqueLine/i.test(name)) brand = 'TorqueLine Premium';
+      // Try to extract viscosity like 10W-40
+      const visc = name.match(/\d+W-\d+/i)?.[0] || '';
+      return {
+        id: item.id,
+        name: item.name,
+        brand: brand,
+        viscosity: visc,
+        type: visc || item.name,
+        size: '4L',
+        price: item.price,
+        quantity: item.quantity
+      };
+    }),
     subtotal: subtotal,
     shipping: shipping,
+    deliveryFee: shipping,
     total: total,
-    status: selectedPaymentMethod === 'cod' ? 'Awaiting Payment' : 'Processing',
+    status: 'Order Placed',
+    statusHistory: [
+      { status: 'Order Placed', timestamp: new Date().toISOString(), note: 'Order received' }
+    ],
+    estimatedDeliveryDate: (() => {
+      const d = new Date();
+      d.setDate(d.getDate() + 3);
+      return d.toISOString();
+    })(),
+    rider: null,
+    riderContact: '',
+    proofOfDelivery: null,
+    adminNotes: '',
     date: new Date().toISOString()
   };
 
