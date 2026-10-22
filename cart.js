@@ -25,6 +25,14 @@ function saveCart() {
 
 // ===== Cart Operations =====
 function addToCart(product) {
+  if (typeof isLoggedIn === 'function' && !isLoggedIn()) {
+    showNotification('Please log in or create an account to add items to cart');
+    if (typeof openAuthModal === 'function') {
+      openAuthModal('client', 'login');
+    }
+    return;
+  }
+
   const item = {
     id: product.id || product.name,
     name: product.name,
@@ -200,6 +208,13 @@ document.getElementById('checkout-btn')?.addEventListener('click', () => {
   const { count } = getTotals();
   if (count === 0) {
     showNotification('Your cart is empty');
+    return;
+  }
+  if (typeof isLoggedIn === 'function' && !isLoggedIn()) {
+    showNotification('Please log in or create an account to checkout');
+    if (typeof openAuthModal === 'function') {
+      openAuthModal('client', 'login');
+    }
     return;
   }
   if (typeof openCheckout === 'function') {

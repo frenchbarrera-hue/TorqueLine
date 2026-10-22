@@ -242,6 +242,14 @@ const brandDescriptions = {
 };
 
 function openBrandModal(card) {
+  if (typeof isLoggedIn === 'function' && !isLoggedIn()) {
+    showNotification('Please log in or create an account to view/purchase products');
+    if (typeof openAuthModal === 'function') {
+      openAuthModal('client', 'login');
+    }
+    return;
+  }
+
   const brandName = card.getAttribute('data-brand');
   const image = card.getAttribute('data-image');
   const price = card.getAttribute('data-price');
@@ -325,6 +333,15 @@ document.addEventListener('keydown', (e) => {
 });
 
 function addToCartFromModal() {
+  if (typeof isLoggedIn === 'function' && !isLoggedIn()) {
+    closeProductModal?.();
+    showNotification('Please log in or create an account to add items to cart');
+    if (typeof openAuthModal === 'function') {
+      openAuthModal('client', 'login');
+    }
+    return;
+  }
+
   if (selectedBrand) {
     addToCart({
       id: selectedBrand,
