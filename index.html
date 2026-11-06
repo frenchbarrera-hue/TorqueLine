@@ -18,21 +18,22 @@
         <a href="#" class="flex items-center space-x-2">
           <span class="text-3xl font-black text-gray-900">Torque<span class="text-red-600">Line</span></span>
         </a>
-        <div class="hidden md:flex space-x-5 lg:space-x-8 items-center">
-          <a href="#products" class="nav-link text-gray-700 hover:text-red-600 font-medium">Products</a>
-          <a href="#brands" class="nav-link text-gray-700 hover:text-red-600 font-medium">Brands</a>
-          <a href="#benefits" class="nav-link text-gray-700 hover:text-red-600 font-medium">Benefits</a>
-          <a href="#testimonials" class="nav-link text-gray-700 hover:text-red-600 font-medium">Testimonials</a>
-          <a href="#payment" class="nav-link hidden lg:inline text-gray-700 hover:text-red-600 font-medium">Payment</a>
-          <a href="#contact" class="nav-link text-gray-700 hover:text-red-600 font-medium">Contact</a>
+        <div class="hidden md:flex space-x-3 lg:space-x-5 xl:space-x-7 items-center">
+          <a href="#products" class="nav-link text-gray-700 hover:text-red-600 font-medium text-sm lg:text-base whitespace-nowrap">Products</a>
+          <a href="#how-it-works" class="nav-link text-gray-700 hover:text-red-600 font-medium text-sm lg:text-base whitespace-nowrap">How It Works</a>
+          <a href="#brands" class="nav-link text-gray-700 hover:text-red-600 font-medium text-sm lg:text-base whitespace-nowrap">Brands</a>
+          <a href="#benefits" class="nav-link text-gray-700 hover:text-red-600 font-medium text-sm lg:text-base whitespace-nowrap">Benefits</a>
+          <a href="#testimonials" class="nav-link text-gray-700 hover:text-red-600 font-medium text-sm lg:text-base whitespace-nowrap">Testimonials</a>
+          <a href="#payment" class="nav-link hidden xl:inline text-gray-700 hover:text-red-600 font-medium text-sm lg:text-base whitespace-nowrap">Payment</a>
+          <a href="#contact" class="nav-link text-gray-700 hover:text-red-600 font-medium text-sm lg:text-base whitespace-nowrap">Contact</a>
         </div>
-        <div class="flex items-center gap-4">
+        <div class="flex items-center gap-2 lg:gap-3">
           <div class="relative hidden md:block">
             <div class="search-wrapper">
               <svg class="w-4 h-4 text-gray-400 pointer-events-none absolute left-3 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M17 11a6 6 0 11-12 0 6 6 0 0112 0z"></path>
               </svg>
-              <input type="text" id="search-input" class="search-input w-40 lg:w-56 pl-9 pr-8 py-2 text-sm rounded-full border border-gray-300 focus:border-red-500 focus:ring-2 focus:ring-red-500/20 outline-none transition-all" placeholder="Search oils &amp; brands" autocomplete="off" />
+              <input type="text" id="search-input" class="search-input w-32 lg:w-44 xl:w-56 pl-9 pr-8 py-2 text-sm rounded-full border border-gray-300 focus:border-red-500 focus:ring-2 focus:ring-red-500/20 outline-none transition-all" placeholder="Search oils &amp; brands" autocomplete="off" />
               <button id="search-clear" class="hidden absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-red-600 transition-colors" aria-label="Clear search">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
@@ -138,6 +139,7 @@
         </div>
         <div class="flex flex-col space-y-3 pt-4">
           <a href="#products" class="nav-link-mobile text-gray-700 hover:text-red-600 font-medium">Products</a>
+          <a href="#how-it-works" class="nav-link-mobile text-gray-700 hover:text-red-600 font-medium">How It Works</a>
           <a href="#brands" class="nav-link-mobile text-gray-700 hover:text-red-600 font-medium">Brands</a>
           <a href="#benefits" class="nav-link-mobile text-gray-700 hover:text-red-600 font-medium">Benefits</a>
           <a href="#testimonials" class="nav-link-mobile text-gray-700 hover:text-red-600 font-medium">Testimonials</a>
@@ -195,6 +197,48 @@
             </div>
           </div>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works Section -->
+  <section id="how-it-works" class="py-20 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-16">
+        <h2 class="text-4xl font-black text-gray-900 mb-4">How It Works</h2>
+        <p class="text-xl text-gray-600 max-w-2xl mx-auto">Get the right motor oil for your vehicle in four simple steps.</p>
+      </div>
+
+      <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div class="bg-white rounded-2xl p-8 shadow-lg border border-gray-100 text-center relative">
+          <div class="w-14 h-14 bg-red-600 text-white rounded-full flex items-center justify-center text-xl font-black mx-auto mb-6">1</div>
+          <h3 class="text-xl font-bold text-gray-900 mb-3">Browse &amp; Choose</h3>
+          <p class="text-gray-600">Explore our catalog of premium motor oils and lubricants. Filter by brand, viscosity, or vehicle type to find the perfect match.</p>
+        </div>
+
+        <div class="bg-white rounded-2xl p-8 shadow-lg border border-gray-100 text-center relative">
+          <div class="w-14 h-14 bg-red-600 text-white rounded-full flex items-center justify-center text-xl font-black mx-auto mb-6">2</div>
+          <h3 class="text-xl font-bold text-gray-900 mb-3">Add to Cart</h3>
+          <p class="text-gray-600">Select your products and quantities. Review your cart, apply any promo codes, and see your total with shipping calculated.</p>
+        </div>
+
+        <div class="bg-white rounded-2xl p-8 shadow-lg border border-gray-100 text-center relative">
+          <div class="w-14 h-14 bg-red-600 text-white rounded-full flex items-center justify-center text-xl font-black mx-auto mb-6">3</div>
+          <h3 class="text-xl font-bold text-gray-900 mb-3">Sign In &amp; Checkout</h3>
+          <p class="text-gray-600">Create an account or sign in to complete your purchase. Choose from secure payment options including GCash, Maya, card, or COD.</p>
+        </div>
+
+        <div class="bg-white rounded-2xl p-8 shadow-lg border border-gray-100 text-center relative">
+          <div class="w-14 h-14 bg-red-600 text-white rounded-full flex items-center justify-center text-xl font-black mx-auto mb-6">4</div>
+          <h3 class="text-xl font-bold text-gray-900 mb-3">Track &amp; Receive</h3>
+          <p class="text-gray-600">Track your order status from placement to delivery. Get updates, rider details, and proof of delivery right in your account.</p>
+        </div>
+      </div>
+
+      <div class="mt-12 text-center">
+        <a href="#products" class="inline-block bg-red-600 hover:bg-red-700 text-white font-bold px-8 py-4 rounded-lg shadow-lg hover:shadow-red-500/30 transition-all duration-300">
+          Start Shopping
+        </a>
       </div>
     </div>
   </section>
