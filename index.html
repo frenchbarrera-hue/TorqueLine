@@ -87,7 +87,13 @@
                   <p id="menu-user-email" class="text-xs text-gray-500 mt-0.5 truncate">customer@email.com</p>
                   <span id="menu-user-role" class="inline-block mt-2 text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full"></span>
                 </div>
-                <button id="menu-orders" class="w-full text-left px-4 py-3 text-sm font-semibold text-gray-700 hover:bg-red-50 hover:text-red-600 transition-colors flex items-center gap-2">
+                <button id="menu-dashboard" class="w-full text-left px-4 py-3 text-sm font-semibold text-gray-700 hover:bg-red-50 hover:text-red-600 transition-colors flex items-center gap-2">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                  </svg>
+                  My Dashboard
+                </button>
+                <button id="menu-orders" class="w-full text-left px-4 py-3 text-sm font-semibold text-gray-700 hover:bg-red-50 hover:text-red-600 transition-colors flex items-center gap-2 border-t border-gray-100">
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.6L19 9.4V19a2 2 0 01-2 2z"></path>
                   </svg>
@@ -146,6 +152,7 @@
           <a href="#payment" class="nav-link-mobile text-gray-700 hover:text-red-600 font-medium">Payment</a>
           <a href="#contact" class="nav-link-mobile text-gray-700 hover:text-red-600 font-medium">Contact</a>
           <button id="mobile-signin" class="nav-link-mobile text-left text-gray-700 hover:text-red-600 font-medium">Sign In</button>
+          <button id="mobile-dashboard" class="nav-link-mobile text-left text-gray-700 hover:text-red-600 font-medium hidden">My Dashboard</button>
           <button id="mobile-orders" class="nav-link-mobile text-left text-gray-700 hover:text-red-600 font-medium hidden">My Orders</button>
         </div>
       </div>
@@ -1359,10 +1366,10 @@
                   <table class="w-full text-sm">
                     <thead class="bg-gray-50 text-gray-600">
                       <tr>
-                        <th class="text-left font-bold px-4 py-3 whitespace-nowrap">Order</th>
-                        <th class="text-left font-bold px-4 py-3 whitespace-nowrap">Customer</th>
-                        <th class="text-left font-bold px-4 py-3 whitespace-nowrap">Payment</th>
+                        <th class="text-left font-bold px-4 py-3 whitespace-nowrap">Client</th>
+                        <th class="text-left font-bold px-4 py-3 whitespace-nowrap">Items</th>
                         <th class="text-left font-bold px-4 py-3 whitespace-nowrap">Total</th>
+                        <th class="text-left font-bold px-4 py-3 whitespace-nowrap">Date</th>
                         <th class="text-left font-bold px-4 py-3 whitespace-nowrap">Status</th>
                         <th class="text-left font-bold px-4 py-3 whitespace-nowrap">Action</th>
                       </tr>

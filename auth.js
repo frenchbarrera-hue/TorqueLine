@@ -147,6 +147,7 @@ function logoutUser() {
     // ignore
   }
   renderAuthUI();
+  window.location.href = 'index.html';
 }
 
 // ===== Orders =====
@@ -239,7 +240,9 @@ function renderAuthUI() {
   const emailEl = document.getElementById('menu-user-email');
   const roleEl = document.getElementById('menu-user-role');
   const adminBtn = document.getElementById('menu-admin-panel');
+  const menuDashboard = document.getElementById('menu-dashboard');
   const mobileSignin = document.getElementById('mobile-signin');
+  const mobileDashboard = document.getElementById('mobile-dashboard');
   const mobileOrders = document.getElementById('mobile-orders');
 
   if (isLoggedIn()) {
@@ -262,8 +265,10 @@ function renderAuthUI() {
         : 'inline-block mt-2 text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-red-100 text-red-700';
     }
     adminBtn?.classList.toggle('hidden', !isAdmin());
+    menuDashboard?.classList.toggle('hidden', isAdmin());
     if (mobileSignin) mobileSignin.textContent = 'Log Out';
     mobileOrders?.classList.remove('hidden');
+    mobileDashboard?.classList.toggle('hidden', isAdmin());
   } else {
     guestMenu?.classList.remove('hidden');
     userMenu?.classList.add('hidden');
@@ -274,8 +279,10 @@ function renderAuthUI() {
       avatar.className = 'w-8 h-8 rounded-full bg-gray-100 border border-gray-200 flex items-center justify-center text-xs font-bold text-gray-600 shrink-0';
     }
     adminBtn?.classList.add('hidden');
+    menuDashboard?.classList.add('hidden');
     if (mobileSignin) mobileSignin.textContent = 'Sign In';
     mobileOrders?.classList.add('hidden');
+    mobileDashboard?.classList.add('hidden');
   }
 }
 
@@ -345,7 +352,11 @@ document.getElementById('client-login-form')?.addEventListener('submit', (e) => 
   }
 
   closeAuthModal();
-  showNotification(`Welcome back, ${result.user.name.split(' ')[0]}! You are now signed in.`);
+  if (result.user && result.user.role === 'admin') {
+    window.location.href = 'admin-dashboard.html';
+  } else {
+    window.location.href = 'user-dashboard.html';
+  }
 });
 
 document.getElementById('client-register-form')?.addEventListener('submit', (e) => {
@@ -364,7 +375,11 @@ document.getElementById('client-register-form')?.addEventListener('submit', (e) 
   }
 
   closeAuthModal();
-  showNotification(`Account created! Welcome to TorqueLine, ${result.user.name.split(' ')[0]}.`);
+  if (result.user && result.user.role === 'admin') {
+    window.location.href = 'admin-dashboard.html';
+  } else {
+    window.location.href = 'user-dashboard.html';
+  }
 });
 
 document.getElementById('admin-login-form')?.addEventListener('submit', (e) => {
@@ -382,8 +397,11 @@ document.getElementById('admin-login-form')?.addEventListener('submit', (e) => {
   }
 
   closeAuthModal();
-  showNotification('Admin session started. Opening the dashboard.');
-  setTimeout(() => openAdminPanel(), 250);
+  if (result.user && result.user.role === 'admin') {
+    window.location.href = 'admin-dashboard.html';
+  } else {
+    window.location.href = 'user-dashboard.html';
+  }
 });
 
 document.getElementById('fill-demo-creds')?.addEventListener('click', () => {
@@ -411,6 +429,15 @@ document.getElementById('menu-signup')?.addEventListener('click', () => {
   openAuthModal('client', 'register');
 });
 
+document.getElementById('menu-dashboard')?.addEventListener('click', () => {
+  toggleAccountMenu(false);
+  if (typeof isAdmin === 'function' && isAdmin()) {
+    window.location.href = 'admin-dashboard.html';
+  } else {
+    window.location.href = 'user-dashboard.html';
+  }
+});
+
 document.getElementById('menu-orders')?.addEventListener('click', () => {
   toggleAccountMenu(false);
   openOrdersPanel();
@@ -418,7 +445,7 @@ document.getElementById('menu-orders')?.addEventListener('click', () => {
 
 document.getElementById('menu-admin-panel')?.addEventListener('click', () => {
   toggleAccountMenu(false);
-  openAdminPanel();
+  window.location.href = 'admin-dashboard.html';
 });
 
 document.getElementById('menu-logout')?.addEventListener('click', () => {
@@ -434,6 +461,15 @@ document.getElementById('mobile-signin')?.addEventListener('click', () => {
     showNotification('You have been signed out.');
   } else {
     openAuthModal('client', 'login');
+  }
+});
+
+document.getElementById('mobile-dashboard')?.addEventListener('click', () => {
+  document.getElementById('mobile-menu')?.classList.add('hidden');
+  if (typeof isAdmin === 'function' && isAdmin()) {
+    window.location.href = 'admin-dashboard.html';
+  } else {
+    window.location.href = 'user-dashboard.html';
   }
 });
 

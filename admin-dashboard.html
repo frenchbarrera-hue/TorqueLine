@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Dashboard - TorqueLine</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+  <script src="dashboard-guard.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    .confirm-sparkle-btn {
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.2s ease, box-shadow 0.25s ease, background-color 0.25s ease;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+    }
+    .confirm-sparkle-btn::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -120%;
+      width: 45%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.22), transparent);
+      transform: skewX(-18deg);
+      transition: left 0.55s ease;
+      pointer-events: none;
+    }
+    .confirm-sparkle-btn:hover {
+      transform: translateY(-1px);
+      background-color: #dc2626;
+      box-shadow: 0 10px 20px -8px rgba(220, 38, 38, 0.45), 0 4px 8px -4px rgba(0, 0, 0, 0.15);
+    }
+    .confirm-sparkle-btn:hover::after {
+      left: 140%;
+    }
+    .confirm-sparkle-btn:active {
+      transform: translateY(0);
+      box-shadow: 0 2px 6px -2px rgba(0, 0, 0, 0.2);
+    }
+  </style>
+</head>
+<body class="bg-gray-50 min-h-screen" style="font-family: Inter, sans-serif;">
+  <header class="bg-white shadow-sm sticky top-0 z-50 border-b border-gray-100">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
+      <a href="admin-dashboard.html" class="flex items-center space-x-2">
+        <span class="text-2xl sm:text-3xl font-black text-gray-900">Torque<span class="text-red-600">Line</span></span>
+        <span class="text-xs font-bold uppercase tracking-wider bg-gray-900 text-white px-2 py-1 rounded">Admin</span>
+      </a>
+      <div class="flex items-center gap-3 sm:gap-4">
+        <a href="index.html#products" class="text-sm font-semibold text-gray-700 hover:text-red-600 transition-colors">View Store</a>
+        <span id="admin-name-short" class="text-sm font-semibold text-gray-700 hidden sm:inline"></span>
+        <button id="logout-btn" class="bg-red-600 hover:bg-red-700 text-white text-sm font-bold px-4 py-2 rounded-lg transition-colors">Log Out</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <div class="mb-8 bg-gradient-to-br from-gray-900 via-gray-800 to-red-900 rounded-2xl p-8 text-white shadow-xl">
+      <p class="text-red-200 text-sm font-semibold uppercase tracking-wide mb-1">Admin Dashboard</p>
+      <h1 class="text-3xl sm:text-4xl font-black">Welcome, <span id="welcome-name" class="text-red-400">Admin</span></h1>
+      <p class="text-gray-300 mt-2">Manage users, monitor orders, and oversee store operations.</p>
+    </div>
+
+    <div id="admin-stats" class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8"></div>
+
+    <div class="grid lg:grid-cols-3 gap-6">
+      <div class="lg:col-span-2 space-y-6">
+        <section class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="text-lg font-bold text-gray-900">Best Selling Brands</h2>
+            <span class="text-xs text-gray-500">By units sold</span>
+          </div>
+          <div class="h-72">
+            <canvas id="sales-chart"></canvas>
+          </div>
+          <p id="sales-chart-empty" class="hidden text-sm text-gray-500 py-6 text-center">No sales data yet. Chart will appear once orders are placed.</p>
+        </section>
+
+        <section class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="text-lg font-bold text-gray-900">User Management</h2>
+            <span class="text-xs text-gray-500">View and manage registered users</span>
+          </div>
+        <div class="overflow-x-auto border border-gray-200 rounded-xl">
+          <table class="w-full text-sm">
+            <thead class="bg-gray-50 text-gray-600">
+              <tr>
+                <th class="text-left font-bold px-4 py-3">Name</th>
+                <th class="text-left font-bold px-4 py-3">Email</th>
+                <th class="text-left font-bold px-4 py-3">Role</th>
+                <th class="text-left font-bold px-4 py-3">Orders</th>
+                <th class="text-left font-bold px-4 py-3">Joined</th>
+              </tr>
+            </thead>
+            <tbody id="users-body" class="divide-y divide-gray-100"></tbody>
+          </table>
+        </div>
+        <p id="users-empty" class="hidden text-sm text-gray-500 py-6 text-center">No users found.</p>
+        </section>
+      </div>
+
+      <section class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+        <h2 class="text-lg font-bold text-gray-900 mb-4">Management Options</h2>
+        <div class="space-y-3">
+          <a href="#users" id="scroll-users" class="block w-full text-left px-4 py-3 rounded-lg border border-gray-200 hover:border-red-300 hover:bg-red-50 transition-colors">
+            <p class="font-semibold text-gray-900 text-sm">View Users</p>
+            <p class="text-xs text-gray-500 mt-0.5">Review all registered customer accounts</p>
+          </a>
+          <button id="refresh-data" class="block w-full text-left px-4 py-3 rounded-lg border border-gray-200 hover:border-red-300 hover:bg-red-50 transition-colors">
+            <p class="font-semibold text-gray-900 text-sm">Refresh Data</p>
+            <p class="text-xs text-gray-500 mt-0.5">Reload latest users and order statistics</p>
+          </button>
+          <div class="block w-full text-left px-4 py-3 rounded-lg border border-gray-200 bg-gray-50">
+            <p class="font-semibold text-gray-900 text-sm">Recent Orders</p>
+            <p id="recent-orders-summary" class="text-xs text-gray-500 mt-0.5">—</p>
+          </div>
+        </div>
+
+        <h3 class="text-sm font-bold text-gray-700 mt-6 mb-3">Recent Orders</h3>
+        <div id="recent-orders" class="space-y-2 max-h-80 overflow-y-auto"></div>
+        <p id="recent-orders-empty" class="hidden text-sm text-gray-500 py-4 text-center">No orders yet.</p>
+      </section>
+    </div>
+  </main>
+
+  <script src="admin-dashboard.js"></script>
+</body>
+</html>

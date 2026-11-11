@@ -426,6 +426,13 @@ const claimVoucherBtn = document.getElementById('claim-voucher-btn');
 
 if (claimVoucherBtn) {
   claimVoucherBtn.addEventListener('click', () => {
+    if (typeof isLoggedIn === 'function' && !isLoggedIn()) {
+      showNotification('Please log in or create an account to claim your voucher.');
+      if (typeof openAuthModal === 'function') {
+        openAuthModal('client', 'login');
+      }
+      return;
+    }
     showNotification('Voucher claimed! Use code TORQUE10 for 10% off + ₱100 off your order.');
     const products = document.getElementById('products');
     if (products) {
