@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: torqueline
+    runtime: python
+    buildCommand: ""
+    startCommand: python server.py
+    envVars:
+      - key: PORT
+        value: 8080
+      - key: PYTHON_VERSION
+        value: 3.11
+    disk:
+      name: data
+      mountPath: /home/user/.torqueline
+      sizeGB: 1
