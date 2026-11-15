@@ -37,7 +37,7 @@
     return d.toLocaleString('en-PH', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
   }
 
-  // Auto-detect API base: same origin as this page
+// Auto-detect API base: same origin as this page
   var API_BASE_URL = '';
 
   function apiUrl(path) {
