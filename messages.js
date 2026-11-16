@@ -249,6 +249,23 @@
           picker.classList.remove('show');
         }
       });
+
+      // Emoji click - toggle reaction (added ONCE, not every render)
+      picker.querySelectorAll('.tl-fp-b').forEach(function(btn) {
+        btn.addEventListener('click', function(e) {
+          e.preventDefault(); e.stopPropagation();
+          var emoji = this.getAttribute('data-emoji');
+          var msgId = picker.getAttribute('data-msg');
+          picker.classList.remove('show');
+          if (msgId) {
+            window.SUPABASE_CHAT.toggleReaction(msgId, emoji).then(function() {
+              if (window.__TL_REFRESH__) window.__TL_REFRESH__();
+            }).catch(function(err) {
+              console.error('Reaction failed:', err);
+            });
+          }
+        });
+      });
     }
 
     // Smiley click - show floating picker
@@ -267,23 +284,6 @@
         picker.style.left = left + 'px';
         picker.style.top = (rect.top - 48) + 'px';
         picker.classList.add('show');
-      });
-    });
-
-    // Emoji click - toggle reaction
-    picker.querySelectorAll('.tl-fp-b').forEach(function(btn) {
-      btn.addEventListener('click', function(e) {
-        e.preventDefault(); e.stopPropagation();
-        var emoji = this.getAttribute('data-emoji');
-        var msgId = picker.getAttribute('data-msg');
-        picker.classList.remove('show');
-        if (msgId) {
-          window.SUPABASE_CHAT.toggleReaction(msgId, emoji).then(function() {
-            if (window.__TL_REFRESH__) window.__TL_REFRESH__();
-          }).catch(function(err) {
-            console.error('Reaction failed:', err);
-          });
-        }
       });
     });
 
