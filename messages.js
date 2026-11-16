@@ -118,51 +118,51 @@
       '.tl-msg-badge{position:absolute;top:-.35rem;right:-.35rem;min-width:1.1rem;height:1.1rem;padding:0 .25rem;border-radius:9999px;background:#dc2626;color:#fff;font-size:.7rem;font-weight:700;display:inline-flex;align-items:center;justify-content:center;border:2px solid #fff}' +
       '.tl-thread{width:100%;text-align:left;padding:.75rem;border:1px solid #e5e7eb;border-radius:.75rem;background:#fff}' +
       '.tl-thread:hover{border-color:#fca5a5;background:#fff7f7}' +
-      /* Messenger-style message rows */
-      '.tl-msg-row{position:relative;margin-bottom:.25rem;display:flex;flex-direction:column;max-width:85%}' +
-      '.tl-msg-row.me{margin-left:auto;align-items:flex-end}' +
-      '.tl-msg-row.them{margin-right:auto;align-items:flex-start}' +
-      '.tl-msg-bubble{padding:.5rem .75rem;border-radius:1rem;font-size:.875rem;line-height:1.35;word-wrap:break-word;white-space:pre-wrap;position:relative}' +
-      '.tl-msg-row.me .tl-msg-bubble{background:#dc2626;color:#fff;border-bottom-right-radius:.25rem}' +
-      '.tl-msg-row.them .tl-msg-bubble{background:#fff;color:#111827;border:1px solid #e5e7eb;border-bottom-left-radius:.25rem}' +
-      '.tl-msg-bubble.deleted{background:#f3f4f6;color:#9ca3af;font-style:italic;border-radius:1rem;font-size:.8rem}' +
-      '.tl-msg-img{max-width:100%;border-radius:.5rem;margin-bottom:.25rem;cursor:pointer;display:block}' +
-      '.tl-msg-time{display:block;font-size:.65rem;opacity:.6;margin-top:.15rem}' +
-      '.tl-edited-label{font-size:.6rem;opacity:.5;font-style:italic}' +
-      '.tl-reactions{display:flex;gap:.15rem;margin-top:.2rem;flex-wrap:wrap}' +
-      '.tl-reaction-badge{font-size:.85rem;background:rgba(0,0,0,.08);padding:0 .3rem;border-radius:.75rem;cursor:pointer;line-height:1.4}' +
-      '.tl-msg-row.me .tl-reaction-badge{background:rgba(255,255,255,.2)}' +
-      /* Hover action icons */
-      '.tl-msg-hover-actions{position:absolute;top:-.75rem;right:0;display:flex;gap:.25rem;opacity:0;transition:opacity .15s;z-index:5}' +
-      '.tl-msg-row.them .tl-msg-hover-actions{left:0;right:auto}' +
-      '.tl-msg-row:hover .tl-msg-hover-actions{opacity:1}' +
-      '.tl-msg-hover-actions button{background:#fff;border:1px solid #e5e7eb;border-radius:50%;width:1.6rem;height:1.6rem;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:.85rem;box-shadow:0 1px 3px rgba(0,0,0,.1)}' +
-      '.tl-msg-hover-actions button:hover{background:#f3f4f6}' +
-      /* Emoji picker */
-      '.tl-emoji-picker{display:none !important;position:absolute;top:1.5rem;right:0;background:#fff;border:1px solid #e5e7eb;border-radius:.75rem;padding:.4rem;gap:.15rem;z-index:10;box-shadow:0 4px 12px rgba(0,0,0,.12);flex-wrap:wrap;max-width:14rem}' +
-      '.tl-msg-row.them .tl-emoji-picker{left:0;right:auto}' +
-      '.tl-emoji-picker.open{display:flex !important}' +
-      '.tl-emoji-opt{background:none;border:none;font-size:1.1rem;cursor:pointer;padding:.15rem;border-radius:.25rem}' +
-      '.tl-emoji-opt:hover{background:#f3f4f6}' +
+      /* Message rows */
+      '.tl-row{position:relative;margin-bottom:4px;display:flex;flex-direction:column;max-width:75%}' +
+      '.tl-row.me{margin-left:auto;align-items:flex-end}' +
+      '.tl-row.them{margin-right:auto;align-items:flex-start}' +
+      '.tl-bubble{padding:.45rem .7rem;border-radius:1rem;font-size:.875rem;line-height:1.3;word-wrap:break-word;white-space:pre-wrap;position:relative}' +
+      '.tl-row.me .tl-bubble{background:#dc2626;color:#fff;border-bottom-right-radius:.3rem}' +
+      '.tl-row.them .tl-bubble{background:#f3f4f6;color:#111827;border-bottom-left-radius:.3rem}' +
+      '.tl-bubble.tl-gone{background:#f3f4f6;color:#9ca3af;font-style:italic;font-size:.8rem;border-radius:1rem}' +
+      '.tl-img{max-width:100%;border-radius:.5rem;margin-bottom:.2rem;cursor:pointer;display:block}' +
+      '.tl-t{display:none;font-size:.6rem;opacity:.5;margin-top:.1rem}' +
+      '.tl-row:hover .tl-t{display:block}' +
+      '.tl-ed{font-size:.6rem;opacity:.5;font-style:italic;margin-left:.2rem}' +
+      '.tl-rx{display:flex;gap:.1rem;margin-top:.15rem;flex-wrap:wrap}' +
+      '.tl-rx-b{font-size:.8rem;background:rgba(0,0,0,.06);padding:0 .25rem;border-radius:.6rem;line-height:1.3;cursor:pointer}' +
+      '.tl-row.me .tl-rx-b{background:rgba(255,255,255,.2)}' +
+      /* Hover action buttons */
+      '.tl-hover{position:absolute;top:-.6rem;right:0;display:flex;gap:.2rem;opacity:0;transition:opacity .12s;z-index:5}' +
+      '.tl-row.them .tl-hover{left:0;right:auto}' +
+      '.tl-row:hover .tl-hover{opacity:1}' +
+      '.tl-hover button{background:#fff;border:1px solid #e5e7eb;border-radius:50%;width:1.5rem;height:1.5rem;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:.8rem;box-shadow:0 1px 3px rgba(0,0,0,.1);padding:0}' +
+      '.tl-hover button:hover{background:#f3f4f6}' +
+      /* Floating emoji picker (single, on body) */
+      '.tl-fp{display:none;position:fixed;background:#fff;border:1px solid #e5e7eb;border-radius:2rem;padding:.35rem .5rem;gap:.1rem;z-index:9999;box-shadow:0 4px 16px rgba(0,0,0,.15)}' +
+      '.tl-fp.show{display:flex}' +
+      '.tl-fp-b{background:none;border:none;font-size:1.15rem;cursor:pointer;padding:.15rem;border-radius:.3rem;line-height:1}' +
+      '.tl-fp-b:hover{background:#f3f4f6}' +
       /* Three dots menu */
-      '.tl-more-menu{display:none !important;position:absolute;top:1.5rem;right:0;background:#fff;border:1px solid #e5e7eb;border-radius:.5rem;padding:.25rem;z-index:10;box-shadow:0 4px 12px rgba(0,0,0,.12);min-width:7rem}' +
-      '.tl-msg-row.them .tl-more-menu{left:0;right:auto}' +
-      '.tl-more-menu.open{display:block !important}' +
-      '.tl-more-menu button{display:block;width:100%;text-align:left;padding:.4rem .6rem;border:none;background:none;border-radius:.25rem;font-size:.8rem;cursor:pointer;color:#374151}' +
-      '.tl-more-menu button:hover{background:#f3f4f6}' +
-      '.tl-more-menu .tl-menu-delete{color:#dc2626}' +
-      '.tl-more-menu .tl-menu-delete:hover{background:#fef2f2}' +
-      /* Inline edit form */
-      '.tl-edit-form{display:none !important;gap:.25rem;align-items:center;width:100%}' +
-      '.tl-edit-form.open{display:flex !important}' +
-      '.tl-edit-input{flex:1;border:1px solid #d1d5db;border-radius:.5rem;padding:.35rem .5rem;font-size:.85rem;outline:none}' +
-      '.tl-edit-input:focus{border-color:#dc2626;box-shadow:0 0 0 2px rgba(220,38,38,.15)}' +
-      '.tl-edit-save,.tl-edit-cancel{padding:.3rem .6rem;border-radius:.4rem;font-size:.75rem;font-weight:600;cursor:pointer;border:none}' +
-      '.tl-edit-save{background:#dc2626;color:#fff}' +
-      '.tl-edit-save:hover{background:#b91c1c}' +
-      '.tl-edit-cancel{background:#f3f4f6;color:#374151}' +
-      '.tl-edit-cancel:hover{background:#e5e7eb}' +
-      '@media (hover:none){.tl-msg-hover-actions{opacity:1}}' +
+      '.tl-menu{display:none;position:absolute;top:1.2rem;right:0;background:#fff;border:1px solid #e5e7eb;border-radius:.5rem;padding:.2rem;z-index:10;box-shadow:0 4px 12px rgba(0,0,0,.12);min-width:6.5rem}' +
+      '.tl-row.them .tl-menu{left:0;right:auto}' +
+      '.tl-menu.show{display:block}' +
+      '.tl-menu button{display:block;width:100%;text-align:left;padding:.35rem .55rem;border:none;background:none;border-radius:.25rem;font-size:.8rem;cursor:pointer;color:#374151}' +
+      '.tl-menu button:hover{background:#f3f4f6}' +
+      '.tl-menu .tl-m-del{color:#dc2626}' +
+      '.tl-menu .tl-m-del:hover{background:#fef2f2}' +
+      /* Inline edit */
+      '.tl-edit{display:none;gap:.25rem;align-items:center;width:100%}' +
+      '.tl-edit.show{display:flex}' +
+      '.tl-edit-in{flex:1;border:1px solid #d1d5db;border-radius:.5rem;padding:.3rem .5rem;font-size:.85rem;outline:none;min-width:0}' +
+      '.tl-edit-in:focus{border-color:#dc2626;box-shadow:0 0 0 2px rgba(220,38,38,.15)}' +
+      '.tl-edit-ok,.tl-edit-no{padding:.25rem .5rem;border-radius:.4rem;font-size:.75rem;font-weight:600;cursor:pointer;border:none}' +
+      '.tl-edit-ok{background:#dc2626;color:#fff}' +
+      '.tl-edit-ok:hover{background:#b91c1c}' +
+      '.tl-edit-no{background:#f3f4f6;color:#374151}' +
+      '.tl-edit-no:hover{background:#e5e7eb}' +
+      '@media (hover:none){.tl-hover{opacity:1}}' +
       '@media (max-width:640px){.tl-chat-panel{left:.5rem;right:.5rem;bottom:.5rem;width:auto;height:65vh}}';
     document.head.appendChild(style);
   }
@@ -172,7 +172,6 @@
       container.innerHTML = '<p class="text-sm text-gray-500 text-center py-8">No messages yet. Start the conversation.</p>';
       return;
     }
-    var EMOJIS = ['👍', '❤️', '😂', '😮', '😢', '🔥', '🙏', '👏'];
     var html = '';
     for (var i = 0; i < messages.length; i++) {
       var m = messages[i];
@@ -182,152 +181,160 @@
       var hasImage = m.image_url ? true : false;
       var reactions = m.reactions || [];
 
-      // Deleted message placeholder
       if (deleted && !hasImage) {
-        html += '<div class="tl-msg-row ' + (mine ? 'me' : 'them') + '">' +
-          '<div class="tl-msg-bubble deleted">This message was removed</div>' +
-          '</div>';
+        html += '<div class="tl-row ' + (mine ? 'me' : 'them') + '"><div class="tl-bubble tl-gone">This message was removed</div></div>';
         continue;
       }
 
-      html += '<div class="tl-msg-row ' + (mine ? 'me' : 'them') + '" data-id="' + m.id + '">' +
-        '<div class="tl-msg-bubble">' +
-          (hasImage ? '<img src="' + esc(m.image_url) + '" class="tl-msg-img" onclick="window.open(this.src)" />' : '') +
-          '<span class="tl-msg-text">' + esc(m.message || '') + '</span>' +
-          (edited ? ' <span class="tl-edited-label">(edited)</span>' : '') +
-          '<span class="tl-msg-time">' + esc(fmtTime(m.created_at)) + '</span>' +
-          (reactions.length ? '<div class="tl-reactions">' +
-            reactions.map(function(r){ return '<span class="tl-reaction-badge">' + r.emoji + '</span>'; }).join('') +
+      html += '<div class="tl-row ' + (mine ? 'me' : 'them') + '" data-id="' + m.id + '">' +
+        '<div class="tl-bubble">' +
+          (hasImage ? '<img src="' + esc(m.image_url) + '" class="tl-img" onclick="window.open(this.src)" />' : '') +
+          '<span>' + esc(m.message || '') + '</span>' +
+          (edited ? '<span class="tl-ed">(edited)</span>' : '') +
+          '<span class="tl-t">' + esc(fmtTime(m.created_at)) + '</span>' +
+          (reactions.length ? '<div class="tl-rx">' +
+            reactions.map(function(r){ return '<span class="tl-rx-b">' + r.emoji + '</span>'; }).join('') +
             '</div>' : '') +
         '</div>' +
-        // Hover action icons (smiley + 3 dots)
-        '<div class="tl-msg-hover-actions">' +
-          '<button class="tl-react-btn" data-id="' + m.id + '" title="React">😊</button>' +
-          (mine && !deleted ? '<button class="tl-more-btn" data-id="' + m.id + '" title="More">⋯</button>' : '') +
+        '<div class="tl-hover">' +
+          '<button class="tl-react" data-id="' + m.id + '">😊</button>' +
+          (mine && !deleted ? '<button class="tl-more" data-id="' + m.id + '">⋯</button>' : '') +
         '</div>' +
-        // Emoji picker (hidden)
-        '<div class="tl-emoji-picker" data-id="' + m.id + '">' +
-          EMOJIS.map(function(e){ return '<button class="tl-emoji-opt" data-emoji="' + e + '">' + e + '</button>'; }).join('') +
-        '</div>' +
-        // Three dots menu (hidden)
         (mine && !deleted ?
-          '<div class="tl-more-menu" data-id="' + m.id + '">' +
-            '<button class="tl-menu-edit" data-id="' + m.id + '">Edit</button>' +
-            '<button class="tl-menu-delete" data-id="' + m.id + '">Unsend</button>' +
-          '</div>' : '') +
-        // Inline edit form (hidden)
-        (mine && !deleted ?
-          '<div class="tl-edit-form" data-id="' + m.id + '">' +
-            '<input type="text" class="tl-edit-input" value="' + esc(m.message || '').replace(/"/g, '&quot;') + '" />' +
-            '<button class="tl-edit-save" data-id="' + m.id + '">Save</button>' +
-            '<button class="tl-edit-cancel" data-id="' + m.id + '">Cancel</button>' +
+          '<div class="tl-menu" data-id="' + m.id + '">' +
+            '<button class="tl-m-edit" data-id="' + m.id + '">Edit</button>' +
+            '<button class="tl-m-del" data-id="' + m.id + '">Unsend</button>' +
+          '</div>' +
+          '<div class="tl-edit" data-id="' + m.id + '">' +
+            '<input type="text" class="tl-edit-in" value="' + esc(m.message || '').replace(/"/g, '&quot;') + '" />' +
+            '<button class="tl-edit-ok" data-id="' + m.id + '">Save</button>' +
+            '<button class="tl-edit-no" data-id="' + m.id + '">Cancel</button>' +
           '</div>' : '') +
         '</div>';
     }
     container.innerHTML = html;
     container.scrollTop = container.scrollHeight;
 
-    // React button - toggle emoji picker
-    container.querySelectorAll('.tl-react-btn').forEach(function(btn) {
+    // Ensure single floating emoji picker exists
+    var picker = document.getElementById('tl-float-picker');
+    if (!picker) {
+      picker = document.createElement('div');
+      picker.id = 'tl-float-picker';
+      picker.className = 'tl-fp';
+      picker.innerHTML = ['👍','❤️','😂','😮','😢','🔥','🙏','👏'].map(function(e){
+        return '<button class="tl-fp-b" data-emoji="' + e + '">' + e + '</button>';
+      }).join('');
+      document.body.appendChild(picker);
+    }
+
+    var currentMsgId = null;
+
+    // Smiley click - show floating picker near this message
+    container.querySelectorAll('.tl-react').forEach(function(btn) {
       btn.addEventListener('click', function(e) {
         e.preventDefault(); e.stopPropagation();
         var id = this.getAttribute('data-id');
-        var row = container.querySelector('.tl-msg-row[data-id="' + id + '"]');
-        var picker = row.querySelector('.tl-emoji-picker');
-        var wasOpen = picker.classList.contains('open');
-        // Close all other pickers
-        container.querySelectorAll('.tl-emoji-picker.open').forEach(function(p){ p.classList.remove('open'); });
-        if (!wasOpen) picker.classList.add('open');
+        if (currentMsgId === id && picker.classList.contains('show')) {
+          picker.classList.remove('show');
+          currentMsgId = null;
+          return;
+        }
+        currentMsgId = id;
+        var rect = this.getBoundingClientRect();
+        picker.style.left = (rect.left - 80) + 'px';
+        picker.style.top = (rect.top - 50) + 'px';
+        picker.classList.add('show');
       });
     });
 
-    // More button (3 dots) - toggle menu
-    container.querySelectorAll('.tl-more-btn').forEach(function(btn) {
-      btn.addEventListener('click', function(e) {
-        e.preventDefault(); e.stopPropagation();
-        var id = this.getAttribute('data-id');
-        var row = container.querySelector('.tl-msg-row[data-id="' + id + '"]');
-        var menu = row.querySelector('.tl-more-menu');
-        var wasOpen = menu.classList.contains('open');
-        container.querySelectorAll('.tl-more-menu.open').forEach(function(m){ m.classList.remove('open'); });
-        if (!wasOpen) menu.classList.add('open');
-      });
-    });
-
-    // Emoji click - add/remove reaction
-    container.querySelectorAll('.tl-emoji-opt').forEach(function(btn) {
-      btn.addEventListener('click', function(e) {
+    // Emoji click
+    picker.querySelectorAll('.tl-fp-b').forEach(function(btn) {
+      btn.onclick = function(e) {
         e.preventDefault(); e.stopPropagation();
         var emoji = this.getAttribute('data-emoji');
-        var picker = this.closest('.tl-emoji-picker');
-        var id = picker.getAttribute('data-id');
-        picker.classList.remove('open');
-        window.SUPABASE_CHAT.toggleReaction(id, emoji).then(function() {
-          if (window.__TL_REFRESH__) window.__TL_REFRESH__();
-        });
-      });
+        picker.classList.remove('show');
+        if (currentMsgId) {
+          window.SUPABASE_CHAT.toggleReaction(currentMsgId, emoji).then(function() {
+            if (window.__TL_REFRESH__) window.__TL_REFRESH__();
+          });
+        }
+        currentMsgId = null;
+      };
     });
 
-    // Edit from menu - show inline form
-    container.querySelectorAll('.tl-menu-edit').forEach(function(btn) {
+    // More button (3 dots)
+    container.querySelectorAll('.tl-more').forEach(function(btn) {
       btn.addEventListener('click', function(e) {
         e.preventDefault(); e.stopPropagation();
         var id = this.getAttribute('data-id');
-        var row = container.querySelector('.tl-msg-row[data-id="' + id + '"]');
-        row.querySelector('.tl-more-menu').classList.remove('open');
-        var form = row.querySelector('.tl-edit-form');
-        var bubble = row.querySelector('.tl-msg-bubble');
+        var row = container.querySelector('.tl-row[data-id="' + id + '"]');
+        var menu = row.querySelector('.tl-menu');
+        var wasOpen = menu.classList.contains('show');
+        container.querySelectorAll('.tl-menu.show').forEach(function(m){ m.classList.remove('show'); });
+        if (!wasOpen) menu.classList.add('show');
+      });
+    });
+
+    // Edit from menu
+    container.querySelectorAll('.tl-m-edit').forEach(function(btn) {
+      btn.addEventListener('click', function(e) {
+        e.preventDefault(); e.stopPropagation();
+        var id = this.getAttribute('data-id');
+        var row = container.querySelector('.tl-row[data-id="' + id + '"]');
+        row.querySelector('.tl-menu').classList.remove('show');
+        var bubble = row.querySelector('.tl-bubble');
+        var form = row.querySelector('.tl-edit');
         bubble.style.display = 'none';
-        form.classList.add('open');
-        var input = form.querySelector('.tl-edit-input');
+        form.classList.add('show');
+        var input = form.querySelector('.tl-edit-in');
         input.focus();
         input.select();
       });
     });
 
     // Save edit
-    container.querySelectorAll('.tl-edit-save').forEach(function(btn) {
+    container.querySelectorAll('.tl-edit-ok').forEach(function(btn) {
       btn.addEventListener('click', function(e) {
         e.preventDefault(); e.stopPropagation();
         var id = this.getAttribute('data-id');
-        var form = this.closest('.tl-edit-form');
-        var newText = form.querySelector('.tl-edit-input').value.trim();
-        if (!newText) return;
-        window.SUPABASE_CHAT.editMessage(id, newText).then(function() {
+        var form = this.closest('.tl-edit');
+        var text = form.querySelector('.tl-edit-in').value.trim();
+        if (!text) return;
+        window.SUPABASE_CHAT.editMessage(id, text).then(function() {
           if (window.__TL_REFRESH__) window.__TL_REFRESH__();
         });
       });
     });
 
     // Cancel edit
-    container.querySelectorAll('.tl-edit-cancel').forEach(function(btn) {
+    container.querySelectorAll('.tl-edit-no').forEach(function(btn) {
       btn.addEventListener('click', function(e) {
         e.preventDefault(); e.stopPropagation();
-        var row = this.closest('.tl-msg-row');
-        row.querySelector('.tl-edit-form').classList.remove('open');
-        row.querySelector('.tl-msg-bubble').style.display = '';
+        var row = this.closest('.tl-row');
+        row.querySelector('.tl-edit').classList.remove('show');
+        row.querySelector('.tl-bubble').style.display = '';
       });
     });
 
-    // Delete from menu
-    container.querySelectorAll('.tl-menu-delete').forEach(function(btn) {
+    // Delete
+    container.querySelectorAll('.tl-m-del').forEach(function(btn) {
       btn.addEventListener('click', function(e) {
         e.preventDefault(); e.stopPropagation();
-        if (!confirm('Are you sure you want to unsend this message?')) return;
+        if (!confirm('Are you sure?')) return;
         var id = this.getAttribute('data-id');
-        var row = container.querySelector('.tl-msg-row[data-id="' + id + '"]');
-        row.querySelector('.tl-more-menu').classList.remove('open');
+        var row = container.querySelector('.tl-row[data-id="' + id + '"]');
+        row.querySelector('.tl-menu').classList.remove('show');
         window.SUPABASE_CHAT.deleteMessage(id).then(function() {
           if (window.__TL_REFRESH__) window.__TL_REFRESH__();
         });
       });
     });
 
-    // Close menus when clicking outside
-    container.addEventListener('click', function(e) {
-      if (!e.target.closest('.tl-msg-hover-actions') && !e.target.closest('.tl-emoji-picker') && !e.target.closest('.tl-more-menu') && !e.target.closest('.tl-edit-form')) {
-        container.querySelectorAll('.tl-emoji-picker.open, .tl-more-menu.open, .tl-edit-form.open').forEach(function(el){ el.classList.remove('open'); });
-        container.querySelectorAll('.tl-msg-bubble').forEach(function(b){ b.style.display = ''; });
+    // Close floating picker when clicking outside
+    document.addEventListener('click', function(e) {
+      if (!e.target.closest('.tl-fp') && !e.target.closest('.tl-react')) {
+        picker.classList.remove('show');
+        currentMsgId = null;
       }
     });
   }
