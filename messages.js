@@ -189,10 +189,10 @@
 
       if ((deleted && !hasImage) || (hiddenForMe && !hasImage)) {
         var goneLabel = hiddenForMe && !deleted ? 'Message deleted for you' : 'This message was removed';
-        html += '<div class="tl-row ' + (mine ? 'me' : 'them') + '" data-id="' + m.id + '">' +
-          '<div style="display:flex;align-items:center;gap:.3rem;max-width:100%">' +
-            '<div class="tl-bubble tl-gone">' + goneLabel + '</div>' +
-            (hiddenForMe ? '' : '<button type="button" class="tl-more-inline" data-id="' + m.id + '" style="background:#fff;border:1px solid #d1d5db;border-radius:50%;width:1.8rem;height:1.8rem;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;font-size:.9rem;box-shadow:0 1px 3px rgba(0,0,0,.1);padding:0;flex-shrink:0;font-weight:bold;color:#374151">⋯</button>') +
+        html += '<div class="tl-row ' + (mine ? 'me' : 'them') + '" data-id="' + m.id + '" style="max-width:100%">' +
+          '<div style="position:relative;display:flex;align-items:center;gap:.4rem">' +
+            '<div style="background:#f3f4f6;color:#9ca3af;font-style:italic;font-size:.8rem;padding:.45rem .7rem;border-radius:1rem">' + goneLabel + '</div>' +
+            (hiddenForMe ? '' : '<button type="button" class="tl-more" data-id="' + m.id + '" style="background:#fff;border:2px solid #d1d5db;border-radius:50%;width:2rem;height:2rem;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;font-size:1rem;box-shadow:0 1px 4px rgba(0,0,0,.15);padding:0;font-weight:bold;color:#374151;flex-shrink:0;opacity:1">⋯</button>') +
           '</div>' +
           (hiddenForMe ? '' : '<div class="tl-menu" data-id="' + m.id + '">' +
             '<button class="tl-m-delme" data-id="' + m.id + '">Delete for me</button>' +
