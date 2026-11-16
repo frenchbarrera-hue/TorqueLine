@@ -1,12 +1,16 @@
 // TorqueLine Frontend Configuration
 const CONFIG = {
-  // API base URL - empty string means same origin as frontend
-  API_BASE_URL: 'https://xolcoywvyonoueqbfxea.supabase.co',
+  // Supabase project URL (from Supabase dashboard → Settings → API)
+  SUPABASE_URL: 'https://xolcoywvyonoueqbfxea.supabase.co',
+
+  // Supabase anon/public key (from Supabase dashboard → Settings → API → anon public)
+  // Paste your key here:
+  SUPABASE_ANON_KEY: 'YOUR_SUPABASE_ANON_KEY_HERE',
 
   // Polling interval for messages (ms)
   POLL_MS: 3000,
 
-  // Admin user ID (matches server.py ADMIN_ID)
+  // Admin user ID (matches server.py ADMIN_ID and Supabase messages.sender_id)
   ADMIN_ID: 'usr_admin',
 
   // App settings

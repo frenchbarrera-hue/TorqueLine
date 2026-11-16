@@ -1,6 +1,6 @@
 (function() {
-  var POLL_MS = 3000;
-  var ADMIN_ID = 'usr_admin';
+  var POLL_MS = (window.TORQUELINE_CONFIG && window.TORQUELINE_CONFIG.POLL_MS) || 3000;
+  var ADMIN_ID = (window.TORQUELINE_CONFIG && window.TORQUELINE_CONFIG.ADMIN_ID) || 'usr_admin';
 
   function getSession() {
     if (window.__DASHBOARD_SESSION__) return window.__DASHBOARD_SESSION__;
@@ -236,8 +236,8 @@
         return;
       }
       // ignore stale responses if the open order changed
-      var path = '/api/messages?order_id=' + encodeURIComponent(oid);
-      api(path).then(function(data){
+      var sb = window.SUPABASE_CHAT;
+      sb.getMessages(oid).then(function(data){
         if (String(currentOrderId || '') !== oid || panel.classList.contains('tl-hidden')) return;
         var msgs = data.messages || [];
         var sig = oid + ':' + msgs.length + ':' + (msgs.length ? msgs[msgs.length - 1].id : 0);
@@ -247,7 +247,7 @@
         }
         var isOpen = panel && !panel.classList.contains('tl-hidden');
         if (markRead || isOpen) {
-          api('/api/messages/read', { method: 'POST', body: { order_id: oid } }).catch(function(){});
+          sb.markRead(oid).catch(function(){});
         }
       }).catch(function(err){
         if (String(currentOrderId || '') !== oid) return;
@@ -265,7 +265,7 @@
       var submitBtn = document.getElementById('tl-client-chat-send');
       if (submitBtn) submitBtn.disabled = true;
       var payload = { message: text, order_id: oid };
-      api('/api/messages', { method: 'POST', body: payload }).then(function(res){
+      window.SUPABASE_CHAT.sendMessage(payload).then(function(res){
         if (String(currentOrderId || '') !== oid) return;
         inputEl.value = '';
         setStatus('');
@@ -338,9 +338,9 @@
     }
 
     function loadNotifications() {
-      api('/api/notifications').then(function(d){
+      window.SUPABASE_CHAT.getNotifications().then(function(d){
         notifCache = d.notifications || [];
-        updateBell(d.unread_count || 0);
+        updateBell(d.notifications ? d.notifications.length : 0);
         if (dropdown && !dropdown.classList.contains('hidden')) renderNotifications(notifCache);
       }).catch(function(){});
     }
@@ -350,9 +350,9 @@
       dropdown.classList.remove('hidden');
       renderNotifications(notifCache);
       // refresh on open
-      api('/api/notifications').then(function(d){
+      window.SUPABASE_CHAT.getNotifications().then(function(d){
         notifCache = d.notifications || [];
-        updateBell(d.unread_count || 0);
+        updateBell(d.notifications ? d.notifications.length : 0);
         renderNotifications(notifCache);
       }).catch(function(){});
     }
@@ -368,7 +368,7 @@
     if (markAllBtn) markAllBtn.addEventListener('click', function(e){
       e.preventDefault();
       e.stopPropagation();
-      api('/api/notifications/read', { method: 'POST', body: { all: true } }).then(function(){
+      window.SUPABASE_CHAT.markAllRead().then(function(){
         loadNotifications();
       }).catch(function(){});
     });
@@ -380,7 +380,7 @@
       e.stopPropagation();
       var id = item.getAttribute('data-id');
       var orderId = item.getAttribute('data-order-id') || '';
-      api('/api/notifications/read', { method: 'POST', body: { id: id } }).then(function(){
+      window.SUPABASE_CHAT.markOneRead(id).then(function(){
         closeDropdown();
         openChat(orderId);
         loadNotifications();
@@ -511,7 +511,7 @@
 
     function loadThreads() {
       loadUsersCache();
-      api('/api/messages/threads').then(function(data){
+      window.SUPABASE_CHAT.getThreads().then(function(data){
         var threads = data.threads || [];
         if (!threads.length) {
           threadsEl.innerHTML = '<p class="text-sm text-gray-500 text-center py-8">No client messages yet.</p>';
@@ -542,14 +542,14 @@
       if (!currentClient || !currentClient.order_id) return;
       var oid = currentClient.order_id;
       var cid = currentClient.id;
-      api('/api/messages?client_id=' + encodeURIComponent(cid) + '&order_id=' + encodeURIComponent(oid)).then(function(data){
+      window.SUPABASE_CHAT.getMessages(oid, cid).then(function(data){
         // ignore stale response if admin switched to a different order/client
         if (!currentClient || currentClient.id !== cid || currentClient.order_id !== oid) return;
         var msgs = data.messages || [];
         var sig = cid + ':' + oid + ':' + msgs.length + ':' + (msgs.length ? msgs[msgs.length - 1].id : 0);
         if (sig !== lastMsgSig) { lastMsgSig = sig; renderMessages(bodyEl, msgs, ADMIN_ID); }
         if (markRead) {
-          api('/api/messages/read', { method: 'POST', body: { client_id: cid, order_id: oid } }).catch(function(){});
+          window.SUPABASE_CHAT.markRead(oid, cid).catch(function(){});
         }
       }).catch(function(err){
         if (!currentClient || currentClient.id !== cid || currentClient.order_id !== oid) return;
@@ -558,8 +558,8 @@
     }
 
     function updateUnreadBadge() {
-      api('/api/messages/unread').then(function(d){
-        var n = Number(d.unread || 0);
+      window.SUPABASE_CHAT.getAdminUnread().then(function(d){
+        var n = Number(d.total || 0);
         if (!badge) return;
         if (n > 0) { badge.textContent = n > 99 ? '99+' : String(n); badge.classList.remove('hidden'); badge.style.display = 'inline-flex'; }
         else { badge.classList.add('hidden'); badge.style.display = ''; }
@@ -614,7 +614,7 @@
       if (submitBtn) submitBtn.disabled = true;
       var cid = currentClient.id;
       var oid = currentClient.order_id;
-      api('/api/messages', { method: 'POST', body: { client_id: cid, order_id: oid, message: text } }).then(function(res){
+      window.SUPABASE_CHAT.sendMessage({ client_id: cid, order_id: oid, message: text }).then(function(res){
         if (!currentClient || currentClient.id !== cid || currentClient.order_id !== oid) return;
         inputEl.value = '';
         setStatus('');

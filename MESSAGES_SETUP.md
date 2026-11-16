@@ -1,42 +1,72 @@
-# Client–Admin Messages (Setup & Test)
+# TorqueLine Messaging Setup (Supabase)
 
-## Files added/changed
-- **Added:** `server.py` – Python stdlib server (serves static files + `/api/messages*`) with SQLite persistence, prepared statements, and server-side access checks.
-- **Added:** `messages.js` – shared client/admin chat UI and polling logic.
-- **Added:** `db/messages.sql` – database schema/migration for `messages`.
-- **Added:** `db/.gitignore` – ignores local `messages.db`.
-- **Edited:** `user-dashboard.html` – loads `messages.js`.
-- **Edited:** `user-dashboard.js` – adds **Message Admin** button next to Cancel/Delete action on each order row.
-- **Edited:** `admin-dashboard.html` – adds **Messages** button with unread badge in header; loads `messages.js`.
-- **Edited:** `serve.sh` – runs `server.py` (keeps port behavior).
+Your messaging system now uses **Supabase** (hosted PostgreSQL + REST API) instead of a local Python server. This works on **GitHub Pages** and any static host.
 
-No existing features or flows (cart, checkout, profile, order status, charts) were removed.
+## 1. Create Supabase Project
 
-## Database
-- SQLite file: `db/messages.db` (auto-created on first server start).
-- Schema: `db/messages.sql` (`id, sender_id, receiver_id, sender_role, message, is_read, created_at`).
+1. Go to https://supabase.com → Start your project
+2. Create a new project (name: `torqueline`)
+3. Wait for provisioning (~2 min)
 
-Manual (re)create if needed:
-```bash
-cd /Users/van/Downloads/TorqueLine-main
-sqlite3 db/messages.db < db/messages.sql
+## 2. Run the Schema
+
+1. Open **SQL Editor** in Supabase dashboard
+2. Copy the contents of `supabase_setup.sql`
+3. Paste and click **Run**
+
+This creates:
+- `messages` table (with indexes + RLS policies)
+- `orders` table (for order-linked chat)
+- Realtime publication
+
+## 3. Get Your Keys
+
+1. Go to **Settings** → **API**
+2. Copy the **Project URL** (e.g., `https://xolcoywvyonoueqbfxea.supabase.co`)
+3. Copy the **anon public key**
+
+## 4. Update config.js
+
+Open `config.js` and set:
+
+```js
+SUPABASE_URL: 'https://xolcoywvyonoueqbfxea.supabase.co',
+SUPABASE_ANON_KEY: 'eyJhbGciOiJIUzI1NiIs...',  // your anon key
 ```
 
-## Run
-```bash
-cd /Users/van/Downloads/TorqueLine-main
-./serve.sh
-# or: PORT=8080 python3 server.py
+## 5. Set Admin Role
+
+Make your admin user an admin in Supabase Auth:
+
+```sql
+-- In SQL Editor
+UPDATE auth.users
+SET raw_app_meta_data = jsonb_set(
+  COALESCE(raw_app_meta_data, '{}'::jsonb),
+  '{role}', '"admin"'
+)
+WHERE email = 'admin@torqueline.ph';
 ```
-Open `http://localhost:8080/index.html`.
 
-## Test steps
-1. **Client login:** sign in/register as a client, place or view an order on `user-dashboard.html`.
-2. **Send message:** click **Message Admin** on an order row → chat panel opens → type and Send (Enter works). Message appears on the right with time.
-3. **Admin view:** sign in as admin (`admin@torqueline.ph` / `admin123`, code `TL-ADMIN`) → click **Messages** in header (badge shows unread count). Select client thread → see message on left, reply.
-4. **Real-time-ish:** replies/new messages appear within ~3 seconds without refresh (polling).
-5. **Read state:** opening a conversation marks relevant messages as read and clears counts/badges on next poll.
-6. **Security checks:** empty messages are blocked client+server; text is escaped on render (XSS-safe display); DB writes use parameterized/prepared statements. Clients can only access their own conversation; only admin can list/read all threads (enforced in `server.py`).
+## 6. Test
 
-## Notes
-- This project was previously static/localStorage-only with no backend. Messaging uses a minimal local Python server + SQLite to satisfy database persistence and server-side access control requirements. Existing app data (users/orders/cart/session) still uses the original localStorage behavior.
+1. Open `user-dashboard.html` → log in as client → open an order → send a message
+2. Open `admin-dashboard.html` → log in as admin → click Messages → see conversation
+3. Messages persist in Supabase (works on GitHub Pages too!)
+
+## Files Changed
+
+- `config.js` — Supabase URL + anon key
+- `supabase.js` — Data layer (REST API calls)
+- `messages.js` — Now uses Supabase instead of local server
+- `supabase_setup.sql` — Database schema + RLS policies
+- `user-dashboard.html` — Loads config.js + supabase.js
+- `admin-dashboard.html` — Loads config.js + supabase.js
+
+## Security (RLS)
+
+Row Level Security is enabled. Messages are only accessible by:
+- The sender and receiver of that conversation
+- Admins (users with `role: admin` in JWT)
+
+The anon key is safe to embed in client-side code (it's meant to be public). RLS enforces access control at the database level.
