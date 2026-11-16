@@ -40,28 +40,17 @@
   // GET messages for a conversation (client or admin)
   function getMessages(orderId, clientId) {
     var s = session();
-    var path = '/messages?order_id=eq.' + encodeURIComponent(orderId);
-    if (clientId && s && s.role === 'admin') {
-      // Admin conversation: messages between this client and admin (either direction)
-      path += '&sender_id=eq.' + encodeURIComponent(clientId);
-      // Need both directions: client→admin and admin→client
-      // PostgREST doesn't support OR in query params, so fetch by receiver_id=admin
-      // and merge with sender_id=client results
-    }
-    path += '&order=created_at.asc&limit=200';
+    // Fetch ALL messages for this order, filter client-side
+    // (RLS is disabled, so anon can read everything)
+    var path = '/messages?order_id=eq.' + encodeURIComponent(orderId) +
+      '&order=created_at.asc&limit=200';
     return req('GET', path).then(function(rows) {
       var msgs = rows || [];
-      // For admin: also fetch messages sent BY admin TO this client
+      // For admin: only show messages between this client and admin
       if (clientId && s && s.role === 'admin') {
-        var adminPath = '/messages?order_id=eq.' + encodeURIComponent(orderId) +
-          '&sender_id=eq.' + encodeURIComponent(ADMIN_ID) +
-          '&receiver_id=eq.' + encodeURIComponent(clientId) +
-          '&order=created_at.asc&limit=200';
-        return req('GET', adminPath).then(function(adminRows) {
-          // Merge and sort by created_at
-          var merged = msgs.concat(adminRows || []);
-          merged.sort(function(a, b) { return new Date(a.created_at) - new Date(b.created_at); });
-          return { messages: merged };
+        msgs = msgs.filter(function(m) {
+          return (m.sender_id === String(clientId) && m.receiver_id === ADMIN_ID) ||
+                 (m.sender_id === ADMIN_ID && m.receiver_id === String(clientId));
         });
       }
       return { messages: msgs };
