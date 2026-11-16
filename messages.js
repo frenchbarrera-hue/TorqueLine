@@ -259,6 +259,8 @@
           picker.classList.remove('show');
           if (msgId) {
             window.SUPABASE_CHAT.toggleReaction(msgId, emoji).then(function() {
+              // Reset signature so the next refresh re-renders (reactions aren't in the signature)
+              if (window.__TL_RESET_SIG__) window.__TL_RESET_SIG__();
               if (window.__TL_REFRESH__) window.__TL_REFRESH__();
             }).catch(function(err) {
               console.error('Reaction failed:', err);
@@ -328,6 +330,7 @@
         var text = form.querySelector('.tl-edit-in').value.trim();
         if (!text) return;
         window.SUPABASE_CHAT.editMessage(id, text).then(function() {
+          if (window.__TL_RESET_SIG__) window.__TL_RESET_SIG__();
           if (window.__TL_REFRESH__) window.__TL_REFRESH__();
         }).catch(function(err) {
           console.error('Edit failed:', err);
@@ -362,6 +365,7 @@
         bubble.style.transform = 'scale(.95)';
         setTimeout(function() {
           window.SUPABASE_CHAT.deleteMessage(id).then(function() {
+            if (window.__TL_RESET_SIG__) window.__TL_RESET_SIG__();
             if (window.__TL_REFRESH__) window.__TL_REFRESH__();
           }).catch(function(err) {
             console.error('Delete failed:', err);
@@ -426,6 +430,7 @@
     var pollTimer = null;
     var currentOrderId = null;
     var lastSig = '';
+    window.__TL_RESET_SIG__ = function() { lastSig = ''; };
     window.__TL_REFRESH__ = function() {
       if (currentOrderId) loadMessages(currentOrderId, false);
     };
@@ -880,6 +885,7 @@
     }
 
     // Refresh hook for edit/delete/reaction
+    window.__TL_RESET_SIG__ = function() { lastMsgSig = ''; };
     window.__TL_REFRESH__ = function() {
       if (currentClient && currentClient.order_id) loadConversation(false);
     };

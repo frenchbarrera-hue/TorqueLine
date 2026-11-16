@@ -99,17 +99,21 @@
     });
   }
 
-  // REACT to a message (toggle emoji)
+  // REACT to a message (toggle emoji) - one reaction per person
   function toggleReaction(messageId, emoji) {
     var s = session();
     var userId = String(s.id);
     var path = '/messages?id=eq.' + encodeURIComponent(messageId);
     return req('GET', path).then(function(rows) {
       var current = (rows && rows[0] && Array.isArray(rows[0].reactions)) ? rows[0].reactions : [];
-      var existing = current.find(function(r) { return r.emoji === emoji && r.user_id === userId; });
-      if (existing) {
-        current = current.filter(function(r) { return !(r.emoji === emoji && r.user_id === userId); });
+      // Find this user's current reaction (any emoji)
+      var myReaction = current.find(function(r) { return r.user_id === userId; });
+      if (myReaction && myReaction.emoji === emoji) {
+        // Same emoji clicked again -> remove my reaction
+        current = current.filter(function(r) { return r.user_id !== userId; });
       } else {
+        // Different emoji (or no reaction) -> remove my old reaction, add new one
+        current = current.filter(function(r) { return r.user_id !== userId; });
         current.push({ emoji: emoji, user_id: userId });
       }
       return req('PATCH', path, { reactions: current }, 'return=representation').then(function(rows) {
