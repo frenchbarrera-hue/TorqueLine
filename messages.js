@@ -188,7 +188,16 @@
       var hiddenForMe = deletedFor.indexOf(myId) !== -1;
 
       if ((deleted && !hasImage) || (hiddenForMe && !hasImage)) {
-        html += '<div class="tl-row ' + (mine ? 'me' : 'them') + '"><div class="tl-bubble tl-gone">' + (hiddenForMe && !deleted ? 'Message deleted for you' : 'This message was removed') + '</div></div>';
+        var goneLabel = hiddenForMe && !deleted ? 'Message deleted for you' : 'This message was removed';
+        html += '<div class="tl-row ' + (mine ? 'me' : 'them') + '" data-id="' + m.id + '">' +
+          '<div class="tl-bubble tl-gone">' + goneLabel + '</div>' +
+          (hiddenForMe ? '' : '<div class="tl-hover">' +
+            '<button class="tl-more" data-id="' + m.id + '">⋯</button>' +
+          '</div>' +
+          '<div class="tl-menu" data-id="' + m.id + '">' +
+            '<button class="tl-m-delme" data-id="' + m.id + '">Delete for me</button>' +
+          '</div>') +
+          '</div>';
         continue;
       }
 
