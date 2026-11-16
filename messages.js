@@ -247,7 +247,9 @@
         }
         var isOpen = panel && !panel.classList.contains('tl-hidden');
         if (markRead || isOpen) {
-          sb.markRead(oid).catch(function(){});
+          sb.markRead(oid).then(function(){
+            loadNotifications();
+          }).catch(function(){});
         }
       }).catch(function(err){
         if (String(currentOrderId || '') !== oid) return;
@@ -549,7 +551,9 @@
         var sig = cid + ':' + oid + ':' + msgs.length + ':' + (msgs.length ? msgs[msgs.length - 1].id : 0);
         if (sig !== lastMsgSig) { lastMsgSig = sig; renderMessages(bodyEl, msgs, ADMIN_ID); }
         if (markRead) {
-          window.SUPABASE_CHAT.markRead(oid, cid).catch(function(){});
+          window.SUPABASE_CHAT.markRead(oid, cid).then(function(){
+            updateUnreadBadge();
+          }).catch(function(){});
         }
       }).catch(function(err){
         if (!currentClient || currentClient.id !== cid || currentClient.order_id !== oid) return;
