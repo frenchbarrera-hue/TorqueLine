@@ -191,7 +191,7 @@
         var goneLabel = hiddenForMe && !deleted ? 'Message deleted for you' : 'This message was removed';
         html += '<div class="tl-row ' + (mine ? 'me' : 'them') + '" data-id="' + m.id + '">' +
           '<div class="tl-bubble tl-gone">' + goneLabel + '</div>' +
-          (hiddenForMe ? '' : '<div class="tl-hover">' +
+          (hiddenForMe ? '' : '<div class="tl-hover" style="opacity:1">' +
             '<button class="tl-more" data-id="' + m.id + '">⋯</button>' +
           '</div>' +
           '<div class="tl-menu" data-id="' + m.id + '">' +
