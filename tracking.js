@@ -53,20 +53,42 @@
   }
 
   // Default customer location (Metro Manila) - overridden by profile location if set
-  function customerLocation() {
+  function customerLocation(order) {
     var s = session();
-    var loc = s && s.location ? String(s.location) : '';
-    // Try geocoding via Nominatim (free, no key)
-    return fetch('https://nominatim.openstreetmap.org/search?q=' + encodeURIComponent(loc || 'Manila, Philippines') + '&format=json&limit=1')
+    var loc = '';
+
+    // 1. Check order's delivery address (if set)
+    if (order && order.shippingAddress) {
+      var addr = order.shippingAddress;
+      if (typeof addr === 'string') loc = addr;
+      else if (addr.city || addr.province) loc = [addr.city, addr.province, addr.country].filter(Boolean).join(', ');
+    }
+
+    // 2. Check profile location from user-dashboard profiles
+    if (!loc) {
+      try {
+        var profiles = JSON.parse(localStorage.getItem('torqueline_user_profiles') || '{}');
+        var p = profiles[s && s.id];
+        if (p && p.location) loc = p.location;
+      } catch(e) {}
+    }
+
+    // 3. Fallback to session location
+    if (!loc && s && s.location) loc = s.location;
+
+    // 4. Default: Manila
+    if (!loc) loc = 'Manila, Philippines';
+
+    return fetch('https://nominatim.openstreetmap.org/search?q=' + encodeURIComponent(loc) + '&format=json&limit=1')
       .then(function(r) { return r.json(); })
       .then(function(data) {
         if (data && data[0]) {
-          return { lat: parseFloat(data[0].lat), lng: parseFloat(data[0].lon), label: loc || 'Delivery Address' };
+          return { lat: parseFloat(data[0].lat), lng: parseFloat(data[0].lon), label: loc };
         }
-        return { lat: 14.5995, lng: 120.9842, label: 'Manila (default)' };
+        return { lat: 14.5995, lng: 120.9842, label: loc + ' (default)' };
       })
       .catch(function() {
-        return { lat: 14.6, lng: 121.0, label: 'Metro Manila' };
+        return { lat: 14.6, lng: 121.0, label: loc };
       });
   }
 
@@ -131,7 +153,7 @@
   function trackOrder(order) {
     if (!order) return;
     renderTrackingInfo(order);
-    customerLocation().then(function(cust) {
+    customerLocation(order).then(function(cust) {
       setRoute(WAREHOUSE, cust, order.status);
     });
   }
