@@ -170,6 +170,10 @@
     }
   }
 
+  if (window.TL_TRACKING) {
+    try { window.TL_TRACKING.setOrders(orders); } catch(e) {}
+  }
+
   // ===== Profile (saved in a new localStorage key so existing data is safe) =====
   var PROFILE_KEY = 'torqueline_user_profiles';
   var BIO_MAX = 150;
