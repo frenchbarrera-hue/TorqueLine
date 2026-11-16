@@ -131,7 +131,7 @@
       '.tl-row:hover .tl-t{display:block}' +
       '.tl-ed{font-size:.6rem;opacity:.5;font-style:italic;margin-left:.2rem}' +
       '.tl-rx{display:flex;gap:.1rem;margin-top:.15rem;flex-wrap:wrap}' +
-      '.tl-rx-b{font-size:.8rem;background:rgba(0,0,0,.06);padding:0 .25rem;border-radius:.6rem;line-height:1.3;cursor:pointer}' +
+      '.tl-rx-b{font-size:.8rem;background:rgba(0,0,0,.06);padding:0 .25rem;border-radius:.6rem;line-height:1.3;cursor:pointer;animation:tl-bounce .3s ease}' +
       '.tl-row.me .tl-rx-b{background:rgba(255,255,255,.2)}' +
       /* Hover action buttons */
       '.tl-hover{position:absolute;top:-.6rem;right:0;display:flex;gap:.2rem;opacity:0;transition:opacity .12s;z-index:5}' +
@@ -140,20 +140,23 @@
       '.tl-hover button{background:#fff;border:1px solid #e5e7eb;border-radius:50%;width:1.5rem;height:1.5rem;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:.8rem;box-shadow:0 1px 3px rgba(0,0,0,.1);padding:0}' +
       '.tl-hover button:hover{background:#f3f4f6}' +
       /* Floating emoji picker (single, on body) */
-      '.tl-fp{display:none;position:fixed;background:#fff;border:1px solid #e5e7eb;border-radius:2rem;padding:.35rem .5rem;gap:.1rem;z-index:9999;box-shadow:0 4px 16px rgba(0,0,0,.15)}' +
+      '.tl-fp{display:none;position:fixed;background:#fff;border:1px solid #e5e7eb;border-radius:2rem;padding:.35rem .5rem;gap:.1rem;z-index:9999;box-shadow:0 4px 16px rgba(0,0,0,.15);animation:tl-pop .18s ease}' +
       '.tl-fp.show{display:flex}' +
+      '@keyframes tl-pop{0%{transform:scale(.85);opacity:0}100%{transform:scale(1);opacity:1}}' +
       '.tl-fp-b{background:none;border:none;font-size:1.15rem;cursor:pointer;padding:.15rem;border-radius:.3rem;line-height:1}' +
       '.tl-fp-b:hover{background:#f3f4f6}' +
       /* Three dots menu */
-      '.tl-menu{display:none;position:absolute;top:1.2rem;right:0;background:#fff;border:1px solid #e5e7eb;border-radius:.5rem;padding:.2rem;z-index:10;box-shadow:0 4px 12px rgba(0,0,0,.12);min-width:6.5rem}' +
+      '.tl-menu{display:none;position:absolute;top:1.2rem;right:0;background:#fff;border:1px solid #e5e7eb;border-radius:.5rem;padding:.2rem;z-index:10;box-shadow:0 4px 12px rgba(0,0,0,.12);min-width:6.5rem;animation:tl-fade .15s ease}' +
       '.tl-row.them .tl-menu{left:0;right:auto}' +
       '.tl-menu.show{display:block}' +
+      '@keyframes tl-fade{0%{opacity:0;transform:translateY(-4px)}100%{opacity:1;transform:translateY(0)}}' +
+      '@keyframes tl-bounce{0%{transform:scale(.7)}50%{transform:scale(1.15)}100%{transform:scale(1)}}' +
       '.tl-menu button{display:block;width:100%;text-align:left;padding:.35rem .55rem;border:none;background:none;border-radius:.25rem;font-size:.8rem;cursor:pointer;color:#374151}' +
       '.tl-menu button:hover{background:#f3f4f6}' +
       '.tl-menu .tl-m-del{color:#dc2626}' +
       '.tl-menu .tl-m-del:hover{background:#fef2f2}' +
       /* Inline edit */
-      '.tl-edit{display:none;gap:.25rem;align-items:center;width:100%}' +
+      '.tl-edit{display:none;gap:.25rem;align-items:center;width:100%;animation:tl-fade .15s ease}' +
       '.tl-edit.show{display:flex}' +
       '.tl-edit-in{flex:1;border:1px solid #d1d5db;border-radius:.5rem;padding:.3rem .5rem;font-size:.85rem;outline:none;min-width:0}' +
       '.tl-edit-in:focus{border-color:#dc2626;box-shadow:0 0 0 2px rgba(220,38,38,.15)}' +
@@ -179,7 +182,7 @@
       var deleted = m.deleted_at ? true : false;
       var edited = m.edited_at ? true : false;
       var hasImage = m.image_url ? true : false;
-      var reactions = m.reactions || [];
+      var reactions = Array.isArray(m.reactions) ? m.reactions : [];
 
       if (deleted && !hasImage) {
         html += '<div class="tl-row ' + (mine ? 'me' : 'them') + '"><div class="tl-bubble tl-gone">This message was removed</div></div>';
@@ -213,9 +216,23 @@
         '</div>';
     }
     container.innerHTML = html;
+
+    // Animate new messages sliding up
+    var rows = container.querySelectorAll('.tl-row');
+    rows.forEach(function(row, idx) {
+      if (idx >= rows.length - 3) {
+        row.style.opacity = '0';
+        row.style.transform = 'translateY(8px)';
+        setTimeout(function() {
+          row.style.transition = 'opacity .2s ease, transform .2s ease';
+          row.style.opacity = '1';
+          row.style.transform = 'translateY(0)';
+        }, 10);
+      }
+    });
     container.scrollTop = container.scrollHeight;
 
-    // Ensure single floating emoji picker exists
+    // Single floating emoji picker (created once, reused)
     var picker = document.getElementById('tl-float-picker');
     if (!picker) {
       picker = document.createElement('div');
@@ -225,41 +242,49 @@
         return '<button class="tl-fp-b" data-emoji="' + e + '">' + e + '</button>';
       }).join('');
       document.body.appendChild(picker);
+
+      // Close picker on outside click (added ONCE, not every render)
+      document.addEventListener('click', function(e) {
+        if (!e.target.closest('.tl-fp') && !e.target.closest('.tl-react')) {
+          picker.classList.remove('show');
+        }
+      });
     }
 
-    var currentMsgId = null;
-
-    // Smiley click - show floating picker near this message
+    // Smiley click - show floating picker
     container.querySelectorAll('.tl-react').forEach(function(btn) {
       btn.addEventListener('click', function(e) {
         e.preventDefault(); e.stopPropagation();
         var id = this.getAttribute('data-id');
-        if (currentMsgId === id && picker.classList.contains('show')) {
-          picker.classList.remove('show');
-          currentMsgId = null;
-          return;
-        }
-        currentMsgId = id;
+        var wasOpen = picker.classList.contains('show') && picker.getAttribute('data-msg') === id;
+        if (wasOpen) { picker.classList.remove('show'); return; }
+        picker.setAttribute('data-msg', id);
         var rect = this.getBoundingClientRect();
-        picker.style.left = (rect.left - 80) + 'px';
-        picker.style.top = (rect.top - 50) + 'px';
+        var pickerWidth = 240;
+        var left = rect.left - (pickerWidth / 2) + 12;
+        if (left < 8) left = 8;
+        if (left + pickerWidth > window.innerWidth) left = window.innerWidth - pickerWidth - 8;
+        picker.style.left = left + 'px';
+        picker.style.top = (rect.top - 48) + 'px';
         picker.classList.add('show');
       });
     });
 
-    // Emoji click
+    // Emoji click - toggle reaction
     picker.querySelectorAll('.tl-fp-b').forEach(function(btn) {
-      btn.onclick = function(e) {
+      btn.addEventListener('click', function(e) {
         e.preventDefault(); e.stopPropagation();
         var emoji = this.getAttribute('data-emoji');
+        var msgId = picker.getAttribute('data-msg');
         picker.classList.remove('show');
-        if (currentMsgId) {
-          window.SUPABASE_CHAT.toggleReaction(currentMsgId, emoji).then(function() {
+        if (msgId) {
+          window.SUPABASE_CHAT.toggleReaction(msgId, emoji).then(function() {
             if (window.__TL_REFRESH__) window.__TL_REFRESH__();
+          }).catch(function(err) {
+            console.error('Reaction failed:', err);
           });
         }
-        currentMsgId = null;
-      };
+      });
     });
 
     // More button (3 dots)
@@ -268,6 +293,7 @@
         e.preventDefault(); e.stopPropagation();
         var id = this.getAttribute('data-id');
         var row = container.querySelector('.tl-row[data-id="' + id + '"]');
+        if (!row) return;
         var menu = row.querySelector('.tl-menu');
         var wasOpen = menu.classList.contains('show');
         container.querySelectorAll('.tl-menu.show').forEach(function(m){ m.classList.remove('show'); });
@@ -281,6 +307,7 @@
         e.preventDefault(); e.stopPropagation();
         var id = this.getAttribute('data-id');
         var row = container.querySelector('.tl-row[data-id="' + id + '"]');
+        if (!row) return;
         row.querySelector('.tl-menu').classList.remove('show');
         var bubble = row.querySelector('.tl-bubble');
         var form = row.querySelector('.tl-edit');
@@ -302,6 +329,9 @@
         if (!text) return;
         window.SUPABASE_CHAT.editMessage(id, text).then(function() {
           if (window.__TL_REFRESH__) window.__TL_REFRESH__();
+        }).catch(function(err) {
+          console.error('Edit failed:', err);
+          alert('Failed to edit message. Make sure you ran supabase_setup.sql in Supabase.');
         });
       });
     });
@@ -323,19 +353,24 @@
         if (!confirm('Are you sure?')) return;
         var id = this.getAttribute('data-id');
         var row = container.querySelector('.tl-row[data-id="' + id + '"]');
+        if (!row) return;
         row.querySelector('.tl-menu').classList.remove('show');
-        window.SUPABASE_CHAT.deleteMessage(id).then(function() {
-          if (window.__TL_REFRESH__) window.__TL_REFRESH__();
-        });
+        // Fade out animation before deleting
+        var bubble = row.querySelector('.tl-bubble');
+        bubble.style.transition = 'opacity .3s ease, transform .3s ease';
+        bubble.style.opacity = '0';
+        bubble.style.transform = 'scale(.95)';
+        setTimeout(function() {
+          window.SUPABASE_CHAT.deleteMessage(id).then(function() {
+            if (window.__TL_REFRESH__) window.__TL_REFRESH__();
+          }).catch(function(err) {
+            console.error('Delete failed:', err);
+            alert('Failed to delete message. Make sure you ran supabase_setup.sql in Supabase.');
+            bubble.style.opacity = '1';
+            bubble.style.transform = 'scale(1)';
+          });
+        }, 300);
       });
-    });
-
-    // Close floating picker when clicking outside
-    document.addEventListener('click', function(e) {
-      if (!e.target.closest('.tl-fp') && !e.target.closest('.tl-react')) {
-        picker.classList.remove('show');
-        currentMsgId = null;
-      }
     });
   }
 

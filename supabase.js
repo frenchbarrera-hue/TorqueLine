@@ -40,13 +40,11 @@
   // GET messages for a conversation (client or admin)
   function getMessages(orderId, clientId) {
     var s = session();
-    // Fetch ALL messages for this order, filter client-side
-    // (RLS is disabled, so anon can read everything)
     var path = '/messages?order_id=eq.' + encodeURIComponent(orderId) +
+      '&select=id,order_id,sender_id,receiver_id,sender_role,message,is_read,image_url,edited_at,deleted_at,reactions,created_at' +
       '&order=created_at.asc&limit=200';
     return req('GET', path).then(function(rows) {
       var msgs = rows || [];
-      // For admin: only show messages between this client and admin
       if (clientId && s && s.role === 'admin') {
         msgs = msgs.filter(function(m) {
           return (m.sender_id === String(clientId) && m.receiver_id === ADMIN_ID) ||
@@ -106,15 +104,12 @@
     var s = session();
     var userId = String(s.id);
     var path = '/messages?id=eq.' + encodeURIComponent(messageId);
-    // Fetch current reactions
     return req('GET', path).then(function(rows) {
-      var current = (rows && rows[0] && rows[0].reactions) || [];
+      var current = (rows && rows[0] && Array.isArray(rows[0].reactions)) ? rows[0].reactions : [];
       var existing = current.find(function(r) { return r.emoji === emoji && r.user_id === userId; });
       if (existing) {
-        // Remove reaction
         current = current.filter(function(r) { return !(r.emoji === emoji && r.user_id === userId); });
       } else {
-        // Add reaction
         current.push({ emoji: emoji, user_id: userId });
       }
       return req('PATCH', path, { reactions: current }, 'return=representation').then(function(rows) {
