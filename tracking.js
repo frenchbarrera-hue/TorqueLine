@@ -139,16 +139,8 @@
   function init() {
     var s = session();
     if (!s) return;
+    initMap();
     var orders = window.__USER_ORDERS__ || [];
-    if (!orders.length) {
-      // Try to read from user-dashboard
-      var list = document.getElementById('orders-list');
-      if (!list || !list.children.length) {
-        var sel = document.getElementById('tracking-order-select');
-        if (sel) sel.innerHTML = '<p class="text-sm text-gray-500">No orders to track yet.</p>';
-        return;
-      }
-    }
     populateOrderSelect(orders);
   }
 
