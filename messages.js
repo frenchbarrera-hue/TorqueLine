@@ -190,13 +190,10 @@
       if ((deleted && !hasImage) || (hiddenForMe && !hasImage)) {
         var goneLabel = hiddenForMe && !deleted ? 'Message deleted for you' : 'This message was removed';
         html += '<div class="tl-row ' + (mine ? 'me' : 'them') + '" data-id="' + m.id + '" style="max-width:100%">' +
-          '<div style="position:relative;display:flex;align-items:center;gap:.4rem">' +
-            '<div style="background:#f3f4f6;color:#9ca3af;font-style:italic;font-size:.8rem;padding:.45rem .7rem;border-radius:1rem">' + goneLabel + '</div>' +
-            (hiddenForMe ? '' : '<button type="button" class="tl-more" data-id="' + m.id + '" style="background:#fff;border:2px solid #d1d5db;border-radius:50%;width:2rem;height:2rem;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;font-size:1rem;box-shadow:0 1px 4px rgba(0,0,0,.15);padding:0;font-weight:bold;color:#374151;flex-shrink:0;opacity:1">⋯</button>') +
+          '<div style="display:flex;align-items:center;gap:.3rem">' +
+            '<span style="background:#f3f4f6;color:#9ca3af;font-style:italic;font-size:.8rem;padding:.45rem .7rem;border-radius:1rem">' + goneLabel + '</span>' +
+            (hiddenForMe ? '' : '<button type="button" class="tl-delme-x" data-id="' + m.id + '" title="Delete for me" style="background:#fee2e2;color:#dc2626;border:none;border-radius:50%;width:1.5rem;height:1.5rem;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;font-size:1rem;font-weight:bold;padding:0;flex-shrink:0">×</button>') +
           '</div>' +
-          (hiddenForMe ? '' : '<div class="tl-menu" data-id="' + m.id + '">' +
-            '<button class="tl-m-delme" data-id="' + m.id + '">Delete for me</button>' +
-          '</div>') +
           '</div>';
         continue;
       }
@@ -391,7 +388,7 @@
     });
 
     // Delete for me (hide for this user only)
-    container.querySelectorAll('.tl-m-delme').forEach(function(btn) {
+    container.querySelectorAll('.tl-m-delme, .tl-delme-x').forEach(function(btn) {
       btn.addEventListener('click', function(e) {
         e.preventDefault(); e.stopPropagation();
         var id = this.getAttribute('data-id');
