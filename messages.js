@@ -118,6 +118,11 @@
       '.tl-msg-badge{position:absolute;top:-.35rem;right:-.35rem;min-width:1.1rem;height:1.1rem;padding:0 .25rem;border-radius:9999px;background:#dc2626;color:#fff;font-size:.7rem;font-weight:700;display:inline-flex;align-items:center;justify-content:center;border:2px solid #fff}' +
       '.tl-thread{width:100%;text-align:left;padding:.75rem;border:1px solid #e5e7eb;border-radius:.75rem;background:#fff}' +
       '.tl-thread:hover{border-color:#fca5a5;background:#fff7f7}' +
+      '.tl-chat-msg-wrap.me{margin-left:auto}' +
+      '.tl-chat-msg-wrap.them{margin-right:auto}' +
+      '.tl-chat-msg-wrap .tl-chat-msg{margin-bottom:0}' +
+      '.tl-chat-actions button:hover{text-decoration:underline;cursor:pointer}' +
+      '@media (hover:none){.tl-chat-actions{opacity:1 !important}}' +
       '@media (max-width:640px){.tl-chat-panel{left:.5rem;right:.5rem;bottom:.5rem;width:auto;height:65vh}}';
     document.head.appendChild(style);
   }
@@ -127,16 +132,105 @@
       container.innerHTML = '<p class="text-sm text-gray-500 text-center py-8">No messages yet. Start the conversation.</p>';
       return;
     }
+    var EMOJIS = ['👍', '❤️', '😂', '😮', '😢', '🔥', '🙏', '👏'];
     var html = '';
     for (var i = 0; i < messages.length; i++) {
       var m = messages[i];
       var mine = String(m.sender_id) === String(myId);
-      html += '<div class="tl-chat-msg ' + (mine ? 'me' : 'them') + '">' +
-        esc(m.message) +
-        '<span class="tl-chat-time">' + esc(fmtTime(m.created_at)) + '</span></div>';
+      var deleted = m.deleted_at ? true : false;
+      var edited = m.edited_at ? true : false;
+      var hasImage = m.image_url ? true : false;
+      var reactions = m.reactions || [];
+      // Skip rendering if deleted and no image
+      if (deleted && !hasImage) {
+        html += '<div class="tl-chat-msg ' + (mine ? 'me' : 'them') + ' opacity-50"><em style="font-size:.8rem">This message was deleted</em></div>';
+        continue;
+      }
+      html += '<div class="tl-chat-msg-wrap ' + (mine ? 'me' : 'them') + '" style="position:relative">' +
+        '<div class="tl-chat-msg ' + (mine ? 'me' : 'them') + '">' +
+        (hasImage ? '<img src="' + esc(m.image_url) + '" style="max-width:100%;border-radius:.5rem;margin-bottom:.25rem;cursor:pointer" onclick="window.open(this.src)" />' : '') +
+        esc(m.message || '') +
+        (edited ? ' <span style="font-size:.65rem;opacity:.6;font-style:italic">(edited)</span>' : '') +
+        '<span class="tl-chat-time">' + esc(fmtTime(m.created_at)) + '</span>' +
+        (reactions.length ? '<div style="display:flex;gap:.15rem;margin-top:.25rem;flex-wrap:wrap">' +
+          reactions.map(function(r){ return '<span style="font-size:.9rem;background:rgba(255,255,255,.2);padding:0 .25rem;border-radius:.5rem">' + r.emoji + '</span>'; }).join('') +
+          '</div>' : '') +
+        '</div>' +
+        // Action buttons (visible on hover, always on mobile)
+        '<div class="tl-chat-actions" style="display:flex;gap:.25rem;margin-top:.15rem;opacity:0;transition:opacity .2s;font-size:.65rem">' +
+          (mine && !deleted ? '<button class="tl-edit-msg" data-id="' + m.id + '" style="color:#6b7280">edit</button>' : '') +
+          (mine && !deleted ? '<button class="tl-del-msg" data-id="' + m.id + '" style="color:#dc2626">delete</button>' : '') +
+          '<button class="tl-react-btn" data-id="' + m.id + '" style="color:#6b7280">😊 react</button>' +
+        '</div>' +
+        // Emoji picker (hidden by default)
+        '<div class="tl-emoji-picker tl-hidden" data-id="' + m.id + '" style="display:flex;gap:.25rem;padding:.25rem;background:#fff;border:1px solid #e5e7eb;border-radius:.5rem;margin-top:.25rem;flex-wrap:wrap">' +
+          EMOJIS.map(function(e){ return '<button class="tl-emoji-opt" data-emoji="' + e + '" style="font-size:1.1rem;background:none;border:none;cursor:pointer">' + e + '</button>'; }).join('') +
+        '</div>' +
+        '</div>';
     }
     container.innerHTML = html;
     container.scrollTop = container.scrollHeight;
+
+    // Show actions on hover (desktop) or always (mobile)
+    var wraps = container.querySelectorAll('.tl-chat-msg-wrap');
+    wraps.forEach(function(w) {
+      w.addEventListener('mouseenter', function() { var a = w.querySelector('.tl-chat-actions'); if (a) a.style.opacity = '1'; });
+      w.addEventListener('mouseleave', function() { var a = w.querySelector('.tl-chat-actions'); if (a) a.style.opacity = '0'; });
+    });
+
+    // Edit button
+    container.querySelectorAll('.tl-edit-msg').forEach(function(btn) {
+      btn.addEventListener('click', function(e) {
+        e.preventDefault(); e.stopPropagation();
+        var id = this.getAttribute('data-id');
+        var msgEl = this.closest('.tl-chat-msg');
+        var currentText = msgEl.childNodes[msgEl.childNodes.length - 2];
+        var newText = prompt('Edit message:', currentText ? currentText.textContent.trim() : '');
+        if (newText && newText.trim()) {
+          window.SUPABASE_CHAT.editMessage(id, newText.trim()).then(function() {
+            var fns = window.__TL_REFRESH__;
+            if (fns) fns();
+          });
+        }
+      });
+    });
+
+    // Delete button
+    container.querySelectorAll('.tl-del-msg').forEach(function(btn) {
+      btn.addEventListener('click', function(e) {
+        e.preventDefault(); e.stopPropagation();
+        if (!confirm('Delete this message?')) return;
+        var id = this.getAttribute('data-id');
+        window.SUPABASE_CHAT.deleteMessage(id).then(function() {
+          var fns = window.__TL_REFRESH__;
+          if (fns) fns();
+        });
+      });
+    });
+
+    // React button - toggle emoji picker
+    container.querySelectorAll('.tl-react-btn').forEach(function(btn) {
+      btn.addEventListener('click', function(e) {
+        e.preventDefault(); e.stopPropagation();
+        var id = this.getAttribute('data-id');
+        var picker = container.querySelector('.tl-emoji-picker[data-id="' + id + '"]');
+        if (picker) picker.classList.toggle('tl-hidden');
+      });
+    });
+
+    // Emoji click
+    container.querySelectorAll('.tl-emoji-opt').forEach(function(btn) {
+      btn.addEventListener('click', function(e) {
+        e.preventDefault(); e.stopPropagation();
+        var emoji = this.getAttribute('data-emoji');
+        var picker = this.closest('.tl-emoji-picker');
+        var id = picker.getAttribute('data-id');
+        window.SUPABASE_CHAT.toggleReaction(id, emoji).then(function() {
+          var fns = window.__TL_REFRESH__;
+          if (fns) fns();
+        });
+      });
+    });
   }
 
   function timeAgo(v) {
@@ -176,6 +270,7 @@
         '<div id="tl-client-chat-body" class="tl-chat-body"></div>' +
         '<div id="tl-client-chat-status" class="hidden px-3 py-2 text-xs text-red-700 bg-red-50 border-t border-red-100"></div>' +
         '<div id="tl-client-chat-form" class="tl-chat-footer">' +
+          '<label for="tl-client-chat-img" style="cursor:pointer;font-size:1.2rem" title="Attach image">📎</label><input id="tl-client-chat-img" type="file" accept="image/*" style="display:none" />' +
           '<input id="tl-client-chat-input" class="tl-chat-input" type="text" placeholder="Type a message..." autocomplete="off" />' +
           '<button type="button" id="tl-client-chat-send" class="bg-red-600 hover:bg-red-700 text-white font-semibold px-3 py-2 rounded-lg text-sm">Send</button>' +
         '</div>';
@@ -190,6 +285,9 @@
     var pollTimer = null;
     var currentOrderId = null;
     var lastSig = '';
+    window.__TL_REFRESH__ = function() {
+      if (currentOrderId) loadMessages(currentOrderId, false);
+    };
 
     function setStatus(msg) {
       if (!statusEl) return;
@@ -258,18 +356,38 @@
     }
 
     document.getElementById('tl-client-chat-close').addEventListener('click', function(e){ if(e){e.preventDefault();e.stopPropagation();} closeChat(); });
+
+    var pendingImage = null;
+    var imgInput = document.getElementById('tl-client-chat-img');
+    if (imgInput) {
+      imgInput.addEventListener('change', function() {
+        var file = this.files[0];
+        if (!file) { pendingImage = null; return; }
+        if (file.size > 5 * 1024 * 1024) { setStatus('Image too large (max 5MB)'); return; }
+        pendingImage = file;
+        inputEl.placeholder = 'Image attached - type caption or tap Send';
+        inputEl.focus();
+      });
+    }
+
     function sendClientMessage() {
       setStatus('');
       var text = (inputEl.value || '').trim();
       var oid = String(currentOrderId || '').trim();
       if (!oid) { setStatus('Order ID is missing. Please open chat from an order.'); return; }
-      if (!text) { setStatus('Message cannot be empty.'); return; }
+      if (!text && !pendingImage) { setStatus('Message cannot be empty.'); return; }
       var submitBtn = document.getElementById('tl-client-chat-send');
       if (submitBtn) submitBtn.disabled = true;
       var payload = { message: text, order_id: oid };
-      window.SUPABASE_CHAT.sendMessage(payload).then(function(res){
+      var send = pendingImage
+        ? window.SUPABASE_CHAT.uploadImage(pendingImage).then(function(r) { payload.image_url = r.url; return window.SUPABASE_CHAT.sendMessage(payload); })
+        : window.SUPABASE_CHAT.sendMessage(payload);
+      send.then(function(res){
         if (String(currentOrderId || '') !== oid) return;
         inputEl.value = '';
+        pendingImage = null;
+        if (imgInput) imgInput.value = '';
+        inputEl.placeholder = 'Type a message...';
         setStatus('');
         var saved = res && res.message;
         if (saved) {
@@ -448,6 +566,7 @@
           '<div id="tl-admin-chat-body" class="tl-chat-body flex-1"></div>' +
           '<div id="tl-admin-chat-status" class="hidden px-3 py-2 text-xs text-red-700 bg-red-50 border-t border-red-100"></div>' +
           '<div id="tl-admin-chat-form" class="tl-chat-footer">' +
+            '<label for="tl-admin-chat-img" style="cursor:pointer;font-size:1.2rem" title="Attach image">📎</label><input id="tl-admin-chat-img" type="file" accept="image/*" style="display:none" />' +
             '<input id="tl-admin-chat-input" class="tl-chat-input" type="text" placeholder="Type a reply..." autocomplete="off" />' +
             '<button type="button" id="tl-admin-chat-send" class="bg-red-600 hover:bg-red-700 text-white font-semibold px-3 py-2 rounded-lg text-sm">Send</button>' +
           '</div>' +
@@ -606,6 +725,24 @@
       });
     });
 
+    var pendingImage = null;
+    var imgInput = document.getElementById('tl-admin-chat-img');
+    if (imgInput) {
+      imgInput.addEventListener('change', function() {
+        var file = this.files[0];
+        if (!file) { pendingImage = null; return; }
+        if (file.size > 5 * 1024 * 1024) { setStatus('Image too large (max 5MB)'); return; }
+        pendingImage = file;
+        inputEl.placeholder = 'Image attached - type caption or tap Send';
+        inputEl.focus();
+      });
+    }
+
+    // Refresh hook for edit/delete/reaction
+    window.__TL_REFRESH__ = function() {
+      if (currentClient && currentClient.order_id) loadConversation(false);
+    };
+
     function sendAdminReply() {
       setStatus('');
       if (!currentClient || !currentClient.id || !currentClient.order_id) {
@@ -613,14 +750,21 @@
         return;
       }
       var text = (inputEl.value || '').trim();
-      if (!text) { setStatus('Reply cannot be empty.'); return; }
+      if (!text && !pendingImage) { setStatus('Reply cannot be empty.'); return; }
       var submitBtn = document.getElementById('tl-admin-chat-send');
       if (submitBtn) submitBtn.disabled = true;
       var cid = currentClient.id;
       var oid = currentClient.order_id;
-      window.SUPABASE_CHAT.sendMessage({ client_id: cid, order_id: oid, message: text }).then(function(res){
+      var payload = { client_id: cid, order_id: oid, message: text };
+      var send = pendingImage
+        ? window.SUPABASE_CHAT.uploadImage(pendingImage).then(function(r) { payload.image_url = r.url; return window.SUPABASE_CHAT.sendMessage(payload); })
+        : window.SUPABASE_CHAT.sendMessage(payload);
+      send.then(function(res){
         if (!currentClient || currentClient.id !== cid || currentClient.order_id !== oid) return;
         inputEl.value = '';
+        pendingImage = null;
+        if (imgInput) imgInput.value = '';
+        inputEl.placeholder = 'Type a reply...';
         setStatus('');
         var saved = res && res.message;
         if (saved) {

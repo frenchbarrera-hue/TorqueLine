@@ -57,7 +57,7 @@
     });
   }
 
-  // POST a message
+  // POST a message (with optional image)
   function sendMessage(payload) {
     var s = session();
     var body;
@@ -67,7 +67,8 @@
         sender_id: ADMIN_ID,
         receiver_id: payload.client_id,
         sender_role: 'admin',
-        message: payload.message
+        message: payload.message || '',
+        image_url: payload.image_url || null
       };
     } else {
       body = {
@@ -75,11 +76,70 @@
         sender_id: String(s.id),
         receiver_id: ADMIN_ID,
         sender_role: 'client',
-        message: payload.message
+        message: payload.message || '',
+        image_url: payload.image_url || null
       };
     }
     return req('POST', '/messages', body, 'return=representation').then(function(rows) {
       return { message: rows && rows[0] };
+    });
+  }
+
+  // EDIT a message
+  function editMessage(messageId, newText) {
+    var path = '/messages?id=eq.' + encodeURIComponent(messageId);
+    return req('PATCH', path, { message: newText, edited_at: new Date().toISOString() }, 'return=representation').then(function(rows) {
+      return { message: rows && rows[0] };
+    });
+  }
+
+  // DELETE (soft delete) a message
+  function deleteMessage(messageId) {
+    var path = '/messages?id=eq.' + encodeURIComponent(messageId);
+    return req('PATCH', path, { deleted_at: new Date().toISOString() }, 'return=representation').then(function(rows) {
+      return { message: rows && rows[0] };
+    });
+  }
+
+  // REACT to a message (toggle emoji)
+  function toggleReaction(messageId, emoji) {
+    var s = session();
+    var userId = String(s.id);
+    var path = '/messages?id=eq.' + encodeURIComponent(messageId);
+    // Fetch current reactions
+    return req('GET', path).then(function(rows) {
+      var current = (rows && rows[0] && rows[0].reactions) || [];
+      var existing = current.find(function(r) { return r.emoji === emoji && r.user_id === userId; });
+      if (existing) {
+        // Remove reaction
+        current = current.filter(function(r) { return !(r.emoji === emoji && r.user_id === userId); });
+      } else {
+        // Add reaction
+        current.push({ emoji: emoji, user_id: userId });
+      }
+      return req('PATCH', path, { reactions: current }, 'return=representation').then(function(rows) {
+        return { message: rows && rows[0] };
+      });
+    });
+  }
+
+  // UPLOAD image to Supabase Storage
+  function uploadImage(file) {
+    return new Promise(function(resolve, reject) {
+      var fileName = Date.now() + '_' + Math.random().toString(36).slice(2, 10) + '.' + file.name.split('.').pop();
+      var formData = new FormData();
+      formData.append('file', file, fileName);
+      fetch(SB_URL + '/storage/v1/object/chat-images/' + fileName, {
+        method: 'POST',
+        headers: { 'Authorization': 'Bearer ' + SB_KEY, 'apikey': SB_KEY },
+        body: formData
+      }).then(function(res) {
+        if (!res.ok) return res.text().then(function(t) { throw new Error('Upload failed: ' + t); });
+        return res.json();
+      }).then(function() {
+        var url = SB_URL + '/storage/v1/object/public/chat-images/' + fileName;
+        resolve({ url: url });
+      }).catch(reject);
     });
   }
 
@@ -176,6 +236,10 @@
   window.SUPABASE_CHAT = {
     getMessages: getMessages,
     sendMessage: sendMessage,
+    editMessage: editMessage,
+    deleteMessage: deleteMessage,
+    toggleReaction: toggleReaction,
+    uploadImage: uploadImage,
     markRead: markRead,
     getUnread: getUnread,
     getNotifications: getNotifications,
