@@ -5,7 +5,7 @@ const CONFIG = {
 
   // Supabase anon/public key (from Supabase dashboard → Settings → API → anon public)
   // Paste your key here:
-  SUPABASE_ANON_KEY: 'YOUR_SUPABASE_ANON_KEY_HERE',
+  SUPABASE_ANON_KEY: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhvbGNveXd2eW9ub3VlcWJmeGVhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTQ4MzAwODQsImV4cCI6MjExMDQwNjA4NH0.k_0Ba6BjvX4WYtzIInGsmB8EHZxGNRAcluD4pWV4qNw',
 
   // Polling interval for messages (ms)
   POLL_MS: 3000,
