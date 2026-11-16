@@ -189,11 +189,12 @@
 
       if ((deleted && !hasImage) || (hiddenForMe && !hasImage)) {
         var goneLabel = hiddenForMe && !deleted ? 'Message deleted for you' : 'This message was removed';
-        html += '<div class="tl-row ' + (mine ? 'me' : 'them') + '" data-id="' + m.id + '" style="max-width:100%">' +
-          '<div style="display:flex;align-items:center;gap:.3rem">' +
-            '<span style="background:#f3f4f6;color:#9ca3af;font-style:italic;font-size:.8rem;padding:.45rem .7rem;border-radius:1rem">' + goneLabel + '</span>' +
-            (hiddenForMe ? '' : '<button type="button" class="tl-delme-x" data-id="' + m.id + '" title="Delete for me" style="background:#fee2e2;color:#dc2626;border:none;border-radius:50%;width:1.5rem;height:1.5rem;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;font-size:1rem;font-weight:bold;padding:0;flex-shrink:0">×</button>') +
-          '</div>' +
+        html += '<div style="display:flex;align-items:center;gap:.3rem;margin-bottom:4px;max-width:100%;' + (mine ? 'justify-content:flex-end' : 'justify-content:flex-start') + '">' +
+          '<span style="background:#f3f4f6;color:#9ca3af;font-style:italic;font-size:.8rem;padding:.45rem .7rem;border-radius:1rem">' + goneLabel + '</span>' +
+          (hiddenForMe ? '' : '<button type="button" class="tl-delme-btn" data-id="' + m.id + '" style="background:#fff;border:1px solid #d1d5db;border-radius:4px;padding:2px 6px;cursor:pointer;font-size:1rem;font-weight:bold;color:#374151;line-height:1;box-shadow:0 1px 2px rgba(0,0,0,.1)">⋯</button>' +
+          '<div class="tl-delme-menu" data-id="' + m.id + '" style="display:none;position:absolute;background:#fff;border:1px solid #e5e7eb;border-radius:.5rem;padding:.25rem;box-shadow:0 4px 12px rgba(0,0,0,.12);z-index:10;min-width:7rem">' +
+            '<button type="button" class="tl-delme-confirm" data-id="' + m.id + '" style="display:block;width:100%;text-align:left;padding:.4rem .6rem;border:none;background:none;border-radius:.25rem;font-size:.8rem;cursor:pointer;color:#dc2626">Delete for me</button>' +
+          '</div>') +
           '</div>';
         continue;
       }
@@ -388,13 +389,41 @@
     });
 
     // Delete for me (hide for this user only)
-    container.querySelectorAll('.tl-m-delme, .tl-delme-x').forEach(function(btn) {
+    container.querySelectorAll('.tl-m-delme, .tl-delme-x, .tl-delme-btn').forEach(function(btn) {
       btn.addEventListener('click', function(e) {
         e.preventDefault(); e.stopPropagation();
         var id = this.getAttribute('data-id');
         var row = container.querySelector('.tl-row[data-id="' + id + '"]');
         if (!row) return;
         row.querySelector('.tl-menu').classList.remove('show');
+        window.SUPABASE_CHAT.deleteForMe(id).then(function() {
+          if (window.__TL_RESET_SIG__) window.__TL_RESET_SIG__();
+          if (window.__TL_REFRESH__) window.__TL_REFRESH__();
+        }).catch(function(err) {
+          console.error('Delete for me failed:', err);
+          alert('Failed to delete. Make sure you ran supabase_setup.sql in Supabase.');
+        });
+      });
+    });
+
+    // Toggle menu on removed message 3-dots
+    container.querySelectorAll('.tl-delme-btn').forEach(function(btn) {
+      btn.addEventListener('click', function(e) {
+        e.preventDefault(); e.stopPropagation();
+        var id = this.getAttribute('data-id');
+        var menu = container.querySelector('.tl-delme-menu[data-id="' + id + '"]');
+        if (!menu) return;
+        var wasOpen = menu.style.display === 'block';
+        container.querySelectorAll('.tl-delme-menu').forEach(function(m){ m.style.display = 'none'; });
+        menu.style.display = wasOpen ? 'none' : 'block';
+      });
+    });
+
+    // Confirm delete for me on removed message
+    container.querySelectorAll('.tl-delme-confirm').forEach(function(btn) {
+      btn.addEventListener('click', function(e) {
+        e.preventDefault(); e.stopPropagation();
+        var id = this.getAttribute('data-id');
         window.SUPABASE_CHAT.deleteForMe(id).then(function() {
           if (window.__TL_RESET_SIG__) window.__TL_RESET_SIG__();
           if (window.__TL_REFRESH__) window.__TL_REFRESH__();
