@@ -52,7 +52,88 @@
     map.fitBounds(routeLine.getBounds(), { padding: [40, 40] });
   }
 
-  // Default customer location (Metro Manila) - overridden by profile location if set
+  // Philippine city/province coordinates lookup (no external API needed, no CORS issues)
+  var PH_CITIES = {
+    'manila': { lat: 14.5995, lng: 120.9842 },
+    'quezon city': { lat: 14.6760, lng: 120.9847 },
+    'caloocan': { lat: 14.6507, lng: 120.9740 },
+    'las pinas': { lat: 14.4425, lng: 120.9933 },
+    'makati': { lat: 14.5547, lng: 121.0244 },
+    'malabon': { lat: 14.6734, lng: 120.9568 },
+    'mandaluyong': { lat: 14.5794, lng: 121.0359 },
+    'marikina': { lat: 14.6507, lng: 121.1029 },
+    'muntinlupa': { lat: 14.3833, lng: 121.0333 },
+    'navotas': { lat: 14.6667, lng: 120.9333 },
+    'paranaque': { lat: 14.4793, lng: 120.9794 },
+    'pasay': { lat: 14.5378, lng: 120.9894 },
+    'pasig': { lat: 14.5764, lng: 121.0851 },
+    'san juan': { lat: 14.6060, lng: 121.0000 },
+    'taguig': { lat: 14.5176, lng: 121.0509 },
+    'valenzuela': { lat: 14.6956, lng: 120.9770 },
+    'davao city': { lat: 7.0648, lng: 125.6080 },
+    'davao': { lat: 7.0648, lng: 125.6080 },
+    'cebu city': { lat: 10.3157, lng: 123.8854 },
+    'cebu': { lat: 10.3157, lng: 123.8854 },
+    'baguio': { lat: 16.4023, lng: 120.5960 },
+    'cagayan de oro': { lat: 8.4806, lng: 124.6508 },
+    'cdO': { lat: 8.4806, lng: 124.6508 },
+    'general santos': { lat: 6.1164, lng: 125.1753 },
+    'gen san santos': { lat: 6.1164, lng: 125.1753 },
+    'iloilo city': { lat: 10.7202, lng: 122.5621 },
+    'iloilo': { lat: 10.7202, lng: 122.5621 },
+    'zamboanga city': { lat: 6.9214, lng: 122.0790 },
+    'zamboanga': { lat: 6.9214, lng: 122.0790 },
+    'bacolod': { lat: 10.6765, lng: 122.9510 },
+    'cagayan': { lat: 18.0000, lng: 121.8333 },
+    'bulacan': { lat: 14.8794, lng: 120.8792 },
+    'cavite': { lat: 14.4167, lng: 120.9000 },
+    'laguna': { lat: 14.2000, lng: 121.3333 },
+    'rizal': { lat: 14.6333, lng: 121.2000 },
+    'batangas': { lat: 13.7565, lng: 121.0581 },
+    'pampanga': { lat: 15.0667, lng: 120.6667 },
+    'pampanga': { lat: 15.0667, lng: 120.6667 },
+    'tarlac': { lat: 15.4667, lng: 120.6000 },
+    'pangasinan': { lat: 16.0000, lng: 120.3333 },
+    'la union': { lat: 16.5000, lng: 120.3333 },
+    'benguet': { lat: 16.5000, lng: 120.6667 },
+    'tagaytay': { lat: 14.1167, lng: 120.9667 },
+    'lucena': { lat: 13.1167, lng: 121.6167 },
+    'naga': { lat: 13.6167, lng: 123.1833 },
+    'legazpi': { lat: 13.1167, lng: 123.7333 },
+    'tacloban': { lat: 11.2333, lng: 125.0000 },
+    'ormoc': { lat: 11.0000, lng: 124.6000 },
+    'roxas': { lat: 11.5833, lng: 122.7500 },
+    'cotabato': { lat: 7.2167, lng: 124.2500 },
+    'koronadal': { lat: 6.5833, lng: 124.1500 },
+    'kidapawan': { lat: 7.0000, lng: 125.0000 },
+    'digos': { lat: 6.7500, lng: 125.3500 },
+    'midsayap': { lat: 7.1167, lng: 124.6000 },
+    'tagum': { lat: 7.4167, lng: 125.6167 },
+    'panabo': { lat: 7.2500, lng: 125.6167 },
+    'santa cruz': { lat: 14.2833, lng: 121.4167 },
+    'san pablo': { lat: 14.0667, lng: 121.3167 },
+    'lipa': { lat: 13.9333, lng: 121.1667 },
+    'tanauan': { lat: 14.1167, lng: 121.1500 },
+    'malolos': { lat: 14.8500, lng: 120.8167 },
+    'meycauayan': { lat: 14.7333, lng: 120.9667 },
+    'san jose del monte': { lat: 14.8167, lng: 121.0333 },
+    'antipolo': { lat: 14.5869, lng: 121.1244 },
+    'cubao': { lat: 14.6167, lng: 121.0500 },
+    'ortigas': { lat: 14.5833, lng: 121.0667 },
+    'bGC': { lat: 14.5500, lng: 121.0500 },
+    'makati': { lat: 14.5547, lng: 121.0244 },
+  };
+
+  function geocode(loc) {
+    var lower = loc.toLowerCase();
+    for (var key in PH_CITIES) {
+      if (lower.indexOf(key) !== -1) return PH_CITIES[key];
+    }
+    // Default to Manila if city not found
+    return { lat: 14.5995, lng: 120.9842 };
+  }
+
+  // Default customer location - from order's saved address
   function customerLocation(order) {
     var loc = '';
 
@@ -77,17 +158,8 @@
     // 3. Default: Manila
     if (!loc) loc = 'Manila, Philippines';
 
-    return fetch('https://nominatim.openstreetmap.org/search?q=' + encodeURIComponent(loc) + '&format=json&limit=1')
-      .then(function(r) { return r.json(); })
-      .then(function(data) {
-        if (data && data[0]) {
-          return { lat: parseFloat(data[0].lat), lng: parseFloat(data[0].lon), label: loc };
-        }
-        return { lat: 14.5995, lng: 120.9842, label: loc + ' (default)' };
-      })
-      .catch(function() {
-        return { lat: 14.6, lng: 121.0, label: loc };
-      });
+    var coords = geocode(loc);
+    return Promise.resolve({ lat: coords.lat, lng: coords.lng, label: loc });
   }
 
   function renderTrackingInfo(order) {
