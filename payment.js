@@ -173,6 +173,19 @@ document.getElementById('place-order-btn')?.addEventListener('click', () => {
     return;
   }
 
+  var addressField = document.getElementById('checkout-address');
+  var cityField = document.getElementById('checkout-city');
+  var provinceField = document.getElementById('checkout-province');
+  var addressError = document.getElementById('checkout-address-error');
+  if (addressField && cityField && provinceField) {
+    if (!addressField.value.trim() || !cityField.value.trim() || !provinceField.value.trim()) {
+      if (addressError) { addressError.textContent = 'Please enter your complete delivery address.'; addressError.classList.remove('hidden'); }
+      (!addressField.value.trim() ? addressField : !cityField.value.trim() ? cityField : provinceField).focus();
+      return;
+    }
+    if (addressError) addressError.classList.add('hidden');
+  }
+
   const orderRef = 'TL' + Date.now().toString().slice(-8);
 
   // Snapshot the order before the cart is cleared
@@ -218,6 +231,12 @@ document.getElementById('place-order-btn')?.addEventListener('click', () => {
     shipping: shipping,
     deliveryFee: shipping,
     total: total,
+    shippingAddress: (function(){
+      var street = (document.getElementById('checkout-address') || {}).value || '';
+      var city = (document.getElementById('checkout-city') || {}).value || '';
+      var province = (document.getElementById('checkout-province') || {}).value || '';
+      return { street: street, city: city, province: province, full: [street, city, province].filter(Boolean).join(', ') };
+    })(),
     status: 'Order Placed',
     statusHistory: [
       { status: 'Order Placed', timestamp: new Date().toISOString(), note: 'Order received' }

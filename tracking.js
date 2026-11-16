@@ -54,29 +54,27 @@
 
   // Default customer location (Metro Manila) - overridden by profile location if set
   function customerLocation(order) {
-    var s = session();
     var loc = '';
 
-    // 1. Check order's delivery address (if set)
+    // 1. Check order's saved delivery address (from checkout)
     if (order && order.shippingAddress) {
       var addr = order.shippingAddress;
       if (typeof addr === 'string') loc = addr;
-      else if (addr.city || addr.province) loc = [addr.city, addr.province, addr.country].filter(Boolean).join(', ');
+      else if (addr.full) loc = addr.full;
+      else if (addr.city || addr.province) loc = [addr.city, addr.province, 'Philippines'].filter(Boolean).join(', ');
     }
 
-    // 2. Check profile location from user-dashboard profiles
+    // 2. Fallback: profile location
     if (!loc) {
       try {
+        var s = session();
         var profiles = JSON.parse(localStorage.getItem('torqueline_user_profiles') || '{}');
         var p = profiles[s && s.id];
         if (p && p.location) loc = p.location;
       } catch(e) {}
     }
 
-    // 3. Fallback to session location
-    if (!loc && s && s.location) loc = s.location;
-
-    // 4. Default: Manila
+    // 3. Default: Manila
     if (!loc) loc = 'Manila, Philippines';
 
     return fetch('https://nominatim.openstreetmap.org/search?q=' + encodeURIComponent(loc) + '&format=json&limit=1')
@@ -99,13 +97,15 @@
     label.textContent = order.status || 'Unknown';
     label.className = 'text-xs font-semibold ' +
       (order.status === 'Delivered' ? 'text-green-600' :
+       order.status === 'Out for Delivery' ? 'text-blue-600' :
        order.status === 'Shipped' ? 'text-blue-600' :
        order.status === 'Cancelled' ? 'text-gray-500' : 'text-red-600');
 
     var steps = [
-      { key: 'Order Placed', label: 'Placed', done: true },
-      { key: 'Paid', label: 'Paid', done: ['Paid','Processing','Shipped','Delivered'].indexOf(order.status) >= 0 },
-      { key: 'Shipped', label: 'Shipped', done: ['Shipped','Delivered'].indexOf(order.status) >= 0 },
+      { key: 'Order Placed', label: 'Order Placed', done: true },
+      { key: 'Packed', label: 'Packed', done: ['Packed','Shipped','Out for Delivery','Delivered'].indexOf(order.status) >= 0 },
+      { key: 'Shipped', label: 'Shipped', done: ['Shipped','Out for Delivery','Delivered'].indexOf(order.status) >= 0 },
+      { key: 'Out for Delivery', label: 'Out for Delivery', done: ['Out for Delivery','Delivered'].indexOf(order.status) >= 0 },
       { key: 'Delivered', label: 'Delivered', done: order.status === 'Delivered' }
     ];
 
