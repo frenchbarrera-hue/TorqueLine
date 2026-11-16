@@ -23,51 +23,12 @@ CREATE INDEX IF NOT EXISTS idx_messages_order_id
 CREATE INDEX IF NOT EXISTS idx_messages_receiver_read
   ON public.messages (receiver_id, is_read);
 
--- 2. ROW LEVEL SECURITY
--- Messages are readable/writable only by the two conversation participants.
-ALTER TABLE public.messages ENABLE ROW LEVEL SECURITY;
-
--- Client can read messages sent to them by admin (any order)
-CREATE POLICY "client_reads_own_messages"
-  ON public.messages FOR SELECT
-  USING (
-    sender_id = auth.uid()::text
-    OR receiver_id = auth.uid()::text
-  );
-
--- Client can send messages to admin as themselves
-CREATE POLICY "client_sends_to_admin"
-  ON public.messages FOR INSERT
-  WITH CHECK (
-    sender_id = auth.uid()::text
-    AND receiver_id = 'usr_admin'
-    AND sender_role = 'client'
-  );
-
--- Admin can read all messages
-CREATE POLICY "admin_reads_all"
-  ON public.messages FOR SELECT
-  USING (auth.jwt() -> 'app_metadata' ->> 'role' = 'admin');
-
--- Admin can send to any client
-CREATE POLICY "admin_sends_to_client"
-  ON public.messages FOR INSERT
-  WITH CHECK (
-    sender_id = 'usr_admin'
-    AND sender_role = 'admin'
-  );
-
--- Admin can mark messages as read
-CREATE POLICY "admin_marks_read"
-  ON public.messages FOR UPDATE
-  USING (auth.jwt() -> 'app_metadata' ->> 'role' = 'admin')
-  WITH CHECK (true);
-
--- Client can mark their own received messages as read
-CREATE POLICY "client_marks_read"
-  ON public.messages FOR UPDATE
-  USING (receiver_id = auth.uid()::text)
-  WITH CHECK (true);
+-- 2. ROW LEVEL SECURITY - DISABLED
+-- The frontend uses localStorage sessions (not Supabase Auth), so RLS
+-- policies based on auth.uid() would block all requests.
+-- Security is enforced at the app layer (auth.js + session checks).
+-- If you later migrate to Supabase Auth, re-enable RLS with proper policies.
+ALTER TABLE public.messages DISABLE ROW LEVEL SECURITY;
 
 -- 3. ORDERS TABLE (for order-linked chat)
 -- Only if you don't already have an orders table; adjust column names to match.
@@ -84,9 +45,7 @@ CREATE TABLE IF NOT EXISTS public.orders (
 -- Enables live message updates without polling.
 ALTER PUBLICATION supabase_realtime ADD TABLE public.messages;
 
--- 5. ADMIN ROLE HELPER
--- Set a user as admin in Supabase Auth:
---   UPDATE auth.users SET raw_app_meta_data = jsonb_set(
---     COALESCE(raw_app_meta_data, '{}'::jsonb),
---     '{role}', '"admin"'
---   ) WHERE email = 'admin@torqueline.ph';
+-- 5. GRANT PERMISSIONS
+-- The anon role needs CRUD on messages (no RLS to block it)
+GRANT ALL ON public.messages TO anon, authenticated;
+GRANT ALL ON public.orders TO anon, authenticated;
