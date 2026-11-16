@@ -41,7 +41,7 @@
   function getMessages(orderId, clientId) {
     var s = session();
     var path = '/messages?order_id=eq.' + encodeURIComponent(orderId) +
-      '&select=id,order_id,sender_id,receiver_id,sender_role,message,is_read,image_url,edited_at,deleted_at,reactions,created_at' +
+      '&select=id,order_id,sender_id,receiver_id,sender_role,message,is_read,image_url,edited_at,deleted_at,deleted_for,reactions,created_at' +
       '&order=created_at.asc&limit=200';
     return req('GET', path).then(function(rows) {
       var msgs = rows || [];
@@ -91,11 +91,25 @@
     });
   }
 
-  // DELETE (soft delete) a message
+  // DELETE (soft delete) a message - for everyone
   function deleteMessage(messageId) {
     var path = '/messages?id=eq.' + encodeURIComponent(messageId);
     return req('PATCH', path, { deleted_at: new Date().toISOString() }, 'return=representation').then(function(rows) {
       return { message: rows && rows[0] };
+    });
+  }
+
+  // DELETE FOR ME - hide message for this user only
+  function deleteForMe(messageId) {
+    var s = session();
+    var userId = String(s.id);
+    var path = '/messages?id=eq.' + encodeURIComponent(messageId);
+    return req('GET', path).then(function(rows) {
+      var current = (rows && rows[0] && Array.isArray(rows[0].deleted_for)) ? rows[0].deleted_for : [];
+      if (current.indexOf(userId) === -1) current.push(userId);
+      return req('PATCH', path, { deleted_for: current }, 'return=representation').then(function(rows) {
+        return { message: rows && rows[0] };
+      });
     });
   }
 
@@ -237,6 +251,7 @@
     sendMessage: sendMessage,
     editMessage: editMessage,
     deleteMessage: deleteMessage,
+    deleteForMe: deleteForMe,
     toggleReaction: toggleReaction,
     uploadImage: uploadImage,
     markRead: markRead,

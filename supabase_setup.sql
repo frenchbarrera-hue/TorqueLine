@@ -65,3 +65,6 @@ ON CONFLICT (id) DO NOTHING;
 CREATE POLICY "chat_images_select" ON storage.objects FOR SELECT USING (bucket_id = 'chat-images');
 CREATE POLICY "chat_images_insert" ON storage.objects FOR INSERT WITH CHECK (bucket_id = 'chat-images');
 CREATE POLICY "chat_images_delete" ON storage.objects FOR DELETE USING (bucket_id = 'chat-images');
+
+-- 7. DELETE FOR ME (hides message for one user, others still see it)
+ALTER TABLE public.messages ADD COLUMN IF NOT EXISTS deleted_for JSONB NOT NULL DEFAULT '[]'::jsonb;

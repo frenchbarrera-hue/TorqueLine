@@ -183,9 +183,12 @@
       var edited = m.edited_at ? true : false;
       var hasImage = m.image_url ? true : false;
       var reactions = Array.isArray(m.reactions) ? m.reactions : [];
+      var deletedFor = Array.isArray(m.deleted_for) ? m.deleted_for : [];
+      var myId = String(myId);
+      var hiddenForMe = deletedFor.indexOf(myId) !== -1;
 
-      if (deleted && !hasImage) {
-        html += '<div class="tl-row ' + (mine ? 'me' : 'them') + '"><div class="tl-bubble tl-gone">This message was removed</div></div>';
+      if ((deleted && !hasImage) || (hiddenForMe && !hasImage)) {
+        html += '<div class="tl-row ' + (mine ? 'me' : 'them') + '"><div class="tl-bubble tl-gone">' + (hiddenForMe && !deleted ? 'Message deleted for you' : 'This message was removed') + '</div></div>';
         continue;
       }
 
@@ -207,6 +210,7 @@
           '<div class="tl-menu" data-id="' + m.id + '">' +
             '<button class="tl-m-edit" data-id="' + m.id + '">Edit</button>' +
             '<button class="tl-m-del" data-id="' + m.id + '">Unsend</button>' +
+            '<button class="tl-m-delme" data-id="' + m.id + '">Delete for me</button>' +
           '</div>' +
           '<div class="tl-edit" data-id="' + m.id + '">' +
             '<input type="text" class="tl-edit-in" value="' + esc(m.message || '').replace(/"/g, '&quot;') + '" />' +
@@ -374,6 +378,24 @@
             bubble.style.transform = 'scale(1)';
           });
         }, 300);
+      });
+    });
+
+    // Delete for me (hide for this user only)
+    container.querySelectorAll('.tl-m-delme').forEach(function(btn) {
+      btn.addEventListener('click', function(e) {
+        e.preventDefault(); e.stopPropagation();
+        var id = this.getAttribute('data-id');
+        var row = container.querySelector('.tl-row[data-id="' + id + '"]');
+        if (!row) return;
+        row.querySelector('.tl-menu').classList.remove('show');
+        window.SUPABASE_CHAT.deleteForMe(id).then(function() {
+          if (window.__TL_RESET_SIG__) window.__TL_RESET_SIG__();
+          if (window.__TL_REFRESH__) window.__TL_REFRESH__();
+        }).catch(function(err) {
+          console.error('Delete for me failed:', err);
+          alert('Failed to delete. Make sure you ran supabase_setup.sql in Supabase.');
+        });
       });
     });
   }
