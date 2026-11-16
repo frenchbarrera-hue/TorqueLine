@@ -1,7 +1,7 @@
 // TorqueLine Frontend Configuration
 const CONFIG = {
   // API base URL - empty string means same origin as frontend
-  API_BASE_URL: '',
+  API_BASE_URL: 'https://xolcoywvyonoueqbfxea.supabase.co',
 
   // Polling interval for messages (ms)
   POLL_MS: 3000,
