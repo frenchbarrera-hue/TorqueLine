@@ -118,11 +118,51 @@
       '.tl-msg-badge{position:absolute;top:-.35rem;right:-.35rem;min-width:1.1rem;height:1.1rem;padding:0 .25rem;border-radius:9999px;background:#dc2626;color:#fff;font-size:.7rem;font-weight:700;display:inline-flex;align-items:center;justify-content:center;border:2px solid #fff}' +
       '.tl-thread{width:100%;text-align:left;padding:.75rem;border:1px solid #e5e7eb;border-radius:.75rem;background:#fff}' +
       '.tl-thread:hover{border-color:#fca5a5;background:#fff7f7}' +
-      '.tl-chat-msg-wrap.me{margin-left:auto}' +
-      '.tl-chat-msg-wrap.them{margin-right:auto}' +
-      '.tl-chat-msg-wrap .tl-chat-msg{margin-bottom:0}' +
-      '.tl-chat-actions button:hover{text-decoration:underline;cursor:pointer}' +
-      '@media (hover:none){.tl-chat-actions{opacity:1 !important}}' +
+      /* Messenger-style message rows */
+      '.tl-msg-row{position:relative;margin-bottom:.25rem;display:flex;flex-direction:column;max-width:85%}' +
+      '.tl-msg-row.me{margin-left:auto;align-items:flex-end}' +
+      '.tl-msg-row.them{margin-right:auto;align-items:flex-start}' +
+      '.tl-msg-bubble{padding:.5rem .75rem;border-radius:1rem;font-size:.875rem;line-height:1.35;word-wrap:break-word;white-space:pre-wrap;position:relative}' +
+      '.tl-msg-row.me .tl-msg-bubble{background:#dc2626;color:#fff;border-bottom-right-radius:.25rem}' +
+      '.tl-msg-row.them .tl-msg-bubble{background:#fff;color:#111827;border:1px solid #e5e7eb;border-bottom-left-radius:.25rem}' +
+      '.tl-msg-bubble.deleted{background:#f3f4f6;color:#9ca3af;font-style:italic;border-radius:1rem;font-size:.8rem}' +
+      '.tl-msg-img{max-width:100%;border-radius:.5rem;margin-bottom:.25rem;cursor:pointer;display:block}' +
+      '.tl-msg-time{display:block;font-size:.65rem;opacity:.6;margin-top:.15rem}' +
+      '.tl-edited-label{font-size:.6rem;opacity:.5;font-style:italic}' +
+      '.tl-reactions{display:flex;gap:.15rem;margin-top:.2rem;flex-wrap:wrap}' +
+      '.tl-reaction-badge{font-size:.85rem;background:rgba(0,0,0,.08);padding:0 .3rem;border-radius:.75rem;cursor:pointer;line-height:1.4}' +
+      '.tl-msg-row.me .tl-reaction-badge{background:rgba(255,255,255,.2)}' +
+      /* Hover action icons */
+      '.tl-msg-hover-actions{position:absolute;top:-.75rem;right:0;display:flex;gap:.25rem;opacity:0;transition:opacity .15s;z-index:5}' +
+      '.tl-msg-row.them .tl-msg-hover-actions{left:0;right:auto}' +
+      '.tl-msg-row:hover .tl-msg-hover-actions{opacity:1}' +
+      '.tl-msg-hover-actions button{background:#fff;border:1px solid #e5e7eb;border-radius:50%;width:1.6rem;height:1.6rem;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:.85rem;box-shadow:0 1px 3px rgba(0,0,0,.1)}' +
+      '.tl-msg-hover-actions button:hover{background:#f3f4f6}' +
+      /* Emoji picker */
+      '.tl-emoji-picker{display:none;position:absolute;top:1.5rem;right:0;background:#fff;border:1px solid #e5e7eb;border-radius:.75rem;padding:.4rem;gap:.15rem;z-index:10;box-shadow:0 4px 12px rgba(0,0,0,.12);flex-wrap:wrap;max-width:14rem}' +
+      '.tl-msg-row.them .tl-emoji-picker{left:0;right:auto}' +
+      '.tl-emoji-picker.open{display:flex}' +
+      '.tl-emoji-opt{background:none;border:none;font-size:1.1rem;cursor:pointer;padding:.15rem;border-radius:.25rem}' +
+      '.tl-emoji-opt:hover{background:#f3f4f6}' +
+      /* Three dots menu */
+      '.tl-more-menu{display:none;position:absolute;top:1.5rem;right:0;background:#fff;border:1px solid #e5e7eb;border-radius:.5rem;padding:.25rem;z-index:10;box-shadow:0 4px 12px rgba(0,0,0,.12);min-width:7rem}' +
+      '.tl-msg-row.them .tl-more-menu{left:0;right:auto}' +
+      '.tl-more-menu.open{display:block}' +
+      '.tl-more-menu button{display:block;width:100%;text-align:left;padding:.4rem .6rem;border:none;background:none;border-radius:.25rem;font-size:.8rem;cursor:pointer;color:#374151}' +
+      '.tl-more-menu button:hover{background:#f3f4f6}' +
+      '.tl-more-menu .tl-menu-delete{color:#dc2626}' +
+      '.tl-more-menu .tl-menu-delete:hover{background:#fef2f2}' +
+      /* Inline edit form */
+      '.tl-edit-form{display:none;gap:.25rem;align-items:center;width:100%}' +
+      '.tl-edit-form.open{display:flex}' +
+      '.tl-edit-input{flex:1;border:1px solid #d1d5db;border-radius:.5rem;padding:.35rem .5rem;font-size:.85rem;outline:none}' +
+      '.tl-edit-input:focus{border-color:#dc2626;box-shadow:0 0 0 2px rgba(220,38,38,.15)}' +
+      '.tl-edit-save,.tl-edit-cancel{padding:.3rem .6rem;border-radius:.4rem;font-size:.75rem;font-weight:600;cursor:pointer;border:none}' +
+      '.tl-edit-save{background:#dc2626;color:#fff}' +
+      '.tl-edit-save:hover{background:#b91c1c}' +
+      '.tl-edit-cancel{background:#f3f4f6;color:#374151}' +
+      '.tl-edit-cancel:hover{background:#e5e7eb}' +
+      '@media (hover:none){.tl-msg-hover-actions{opacity:1}}' +
       '@media (max-width:640px){.tl-chat-panel{left:.5rem;right:.5rem;bottom:.5rem;width:auto;height:65vh}}';
     document.head.appendChild(style);
   }
@@ -141,95 +181,154 @@
       var edited = m.edited_at ? true : false;
       var hasImage = m.image_url ? true : false;
       var reactions = m.reactions || [];
-      // Skip rendering if deleted and no image
+
+      // Deleted message placeholder
       if (deleted && !hasImage) {
-        html += '<div class="tl-chat-msg ' + (mine ? 'me' : 'them') + ' opacity-50"><em style="font-size:.8rem">This message was deleted</em></div>';
+        html += '<div class="tl-msg-row ' + (mine ? 'me' : 'them') + '">' +
+          '<div class="tl-msg-bubble deleted">This message was removed</div>' +
+          '</div>';
         continue;
       }
-      html += '<div class="tl-chat-msg-wrap ' + (mine ? 'me' : 'them') + '" style="position:relative">' +
-        '<div class="tl-chat-msg ' + (mine ? 'me' : 'them') + '">' +
-        (hasImage ? '<img src="' + esc(m.image_url) + '" style="max-width:100%;border-radius:.5rem;margin-bottom:.25rem;cursor:pointer" onclick="window.open(this.src)" />' : '') +
-        esc(m.message || '') +
-        (edited ? ' <span style="font-size:.65rem;opacity:.6;font-style:italic">(edited)</span>' : '') +
-        '<span class="tl-chat-time">' + esc(fmtTime(m.created_at)) + '</span>' +
-        (reactions.length ? '<div style="display:flex;gap:.15rem;margin-top:.25rem;flex-wrap:wrap">' +
-          reactions.map(function(r){ return '<span style="font-size:.9rem;background:rgba(255,255,255,.2);padding:0 .25rem;border-radius:.5rem">' + r.emoji + '</span>'; }).join('') +
+
+      html += '<div class="tl-msg-row ' + (mine ? 'me' : 'them') + '" data-id="' + m.id + '">' +
+        '<div class="tl-msg-bubble">' +
+          (hasImage ? '<img src="' + esc(m.image_url) + '" class="tl-msg-img" onclick="window.open(this.src)" />' : '') +
+          '<span class="tl-msg-text">' + esc(m.message || '') + '</span>' +
+          (edited ? ' <span class="tl-edited-label">(edited)</span>' : '') +
+          '<span class="tl-msg-time">' + esc(fmtTime(m.created_at)) + '</span>' +
+          (reactions.length ? '<div class="tl-reactions">' +
+            reactions.map(function(r){ return '<span class="tl-reaction-badge">' + r.emoji + '</span>'; }).join('') +
+            '</div>' : '') +
+        '</div>' +
+        // Hover action icons (smiley + 3 dots)
+        '<div class="tl-msg-hover-actions">' +
+          '<button class="tl-react-btn" data-id="' + m.id + '" title="React">😊</button>' +
+          (mine && !deleted ? '<button class="tl-more-btn" data-id="' + m.id + '" title="More">⋯</button>' : '') +
+        '</div>' +
+        // Emoji picker (hidden)
+        '<div class="tl-emoji-picker" data-id="' + m.id + '">' +
+          EMOJIS.map(function(e){ return '<button class="tl-emoji-opt" data-emoji="' + e + '">' + e + '</button>'; }).join('') +
+        '</div>' +
+        // Three dots menu (hidden)
+        (mine && !deleted ?
+          '<div class="tl-more-menu" data-id="' + m.id + '">' +
+            '<button class="tl-menu-edit" data-id="' + m.id + '">Edit</button>' +
+            '<button class="tl-menu-delete" data-id="' + m.id + '">Unsend</button>' +
           '</div>' : '') +
-        '</div>' +
-        // Action buttons (visible on hover, always on mobile)
-        '<div class="tl-chat-actions" style="display:flex;gap:.25rem;margin-top:.15rem;opacity:0;transition:opacity .2s;font-size:.65rem">' +
-          (mine && !deleted ? '<button class="tl-edit-msg" data-id="' + m.id + '" style="color:#6b7280">edit</button>' : '') +
-          (mine && !deleted ? '<button class="tl-del-msg" data-id="' + m.id + '" style="color:#dc2626">delete</button>' : '') +
-          '<button class="tl-react-btn" data-id="' + m.id + '" style="color:#6b7280">😊 react</button>' +
-        '</div>' +
-        // Emoji picker (hidden by default)
-        '<div class="tl-emoji-picker tl-hidden" data-id="' + m.id + '" style="display:flex;gap:.25rem;padding:.25rem;background:#fff;border:1px solid #e5e7eb;border-radius:.5rem;margin-top:.25rem;flex-wrap:wrap">' +
-          EMOJIS.map(function(e){ return '<button class="tl-emoji-opt" data-emoji="' + e + '" style="font-size:1.1rem;background:none;border:none;cursor:pointer">' + e + '</button>'; }).join('') +
-        '</div>' +
+        // Inline edit form (hidden)
+        (mine && !deleted ?
+          '<div class="tl-edit-form" data-id="' + m.id + '">' +
+            '<input type="text" class="tl-edit-input" value="' + esc(m.message || '').replace(/"/g, '&quot;') + '" />' +
+            '<button class="tl-edit-save" data-id="' + m.id + '">Save</button>' +
+            '<button class="tl-edit-cancel" data-id="' + m.id + '">Cancel</button>' +
+          '</div>' : '') +
         '</div>';
     }
     container.innerHTML = html;
     container.scrollTop = container.scrollHeight;
-
-    // Show actions on hover (desktop) or always (mobile)
-    var wraps = container.querySelectorAll('.tl-chat-msg-wrap');
-    wraps.forEach(function(w) {
-      w.addEventListener('mouseenter', function() { var a = w.querySelector('.tl-chat-actions'); if (a) a.style.opacity = '1'; });
-      w.addEventListener('mouseleave', function() { var a = w.querySelector('.tl-chat-actions'); if (a) a.style.opacity = '0'; });
-    });
-
-    // Edit button
-    container.querySelectorAll('.tl-edit-msg').forEach(function(btn) {
-      btn.addEventListener('click', function(e) {
-        e.preventDefault(); e.stopPropagation();
-        var id = this.getAttribute('data-id');
-        var msgEl = this.closest('.tl-chat-msg');
-        var currentText = msgEl.childNodes[msgEl.childNodes.length - 2];
-        var newText = prompt('Edit message:', currentText ? currentText.textContent.trim() : '');
-        if (newText && newText.trim()) {
-          window.SUPABASE_CHAT.editMessage(id, newText.trim()).then(function() {
-            var fns = window.__TL_REFRESH__;
-            if (fns) fns();
-          });
-        }
-      });
-    });
-
-    // Delete button
-    container.querySelectorAll('.tl-del-msg').forEach(function(btn) {
-      btn.addEventListener('click', function(e) {
-        e.preventDefault(); e.stopPropagation();
-        if (!confirm('Delete this message?')) return;
-        var id = this.getAttribute('data-id');
-        window.SUPABASE_CHAT.deleteMessage(id).then(function() {
-          var fns = window.__TL_REFRESH__;
-          if (fns) fns();
-        });
-      });
-    });
 
     // React button - toggle emoji picker
     container.querySelectorAll('.tl-react-btn').forEach(function(btn) {
       btn.addEventListener('click', function(e) {
         e.preventDefault(); e.stopPropagation();
         var id = this.getAttribute('data-id');
-        var picker = container.querySelector('.tl-emoji-picker[data-id="' + id + '"]');
-        if (picker) picker.classList.toggle('tl-hidden');
+        var row = container.querySelector('.tl-msg-row[data-id="' + id + '"]');
+        var picker = row.querySelector('.tl-emoji-picker');
+        var wasOpen = picker.classList.contains('open');
+        // Close all other pickers
+        container.querySelectorAll('.tl-emoji-picker.open').forEach(function(p){ p.classList.remove('open'); });
+        if (!wasOpen) picker.classList.add('open');
       });
     });
 
-    // Emoji click
+    // More button (3 dots) - toggle menu
+    container.querySelectorAll('.tl-more-btn').forEach(function(btn) {
+      btn.addEventListener('click', function(e) {
+        e.preventDefault(); e.stopPropagation();
+        var id = this.getAttribute('data-id');
+        var row = container.querySelector('.tl-msg-row[data-id="' + id + '"]');
+        var menu = row.querySelector('.tl-more-menu');
+        var wasOpen = menu.classList.contains('open');
+        container.querySelectorAll('.tl-more-menu.open').forEach(function(m){ m.classList.remove('open'); });
+        if (!wasOpen) menu.classList.add('open');
+      });
+    });
+
+    // Emoji click - add/remove reaction
     container.querySelectorAll('.tl-emoji-opt').forEach(function(btn) {
       btn.addEventListener('click', function(e) {
         e.preventDefault(); e.stopPropagation();
         var emoji = this.getAttribute('data-emoji');
         var picker = this.closest('.tl-emoji-picker');
         var id = picker.getAttribute('data-id');
+        picker.classList.remove('open');
         window.SUPABASE_CHAT.toggleReaction(id, emoji).then(function() {
-          var fns = window.__TL_REFRESH__;
-          if (fns) fns();
+          if (window.__TL_REFRESH__) window.__TL_REFRESH__();
         });
       });
+    });
+
+    // Edit from menu - show inline form
+    container.querySelectorAll('.tl-menu-edit').forEach(function(btn) {
+      btn.addEventListener('click', function(e) {
+        e.preventDefault(); e.stopPropagation();
+        var id = this.getAttribute('data-id');
+        var row = container.querySelector('.tl-msg-row[data-id="' + id + '"]');
+        row.querySelector('.tl-more-menu').classList.remove('open');
+        var form = row.querySelector('.tl-edit-form');
+        var bubble = row.querySelector('.tl-msg-bubble');
+        bubble.style.display = 'none';
+        form.classList.add('open');
+        var input = form.querySelector('.tl-edit-input');
+        input.focus();
+        input.select();
+      });
+    });
+
+    // Save edit
+    container.querySelectorAll('.tl-edit-save').forEach(function(btn) {
+      btn.addEventListener('click', function(e) {
+        e.preventDefault(); e.stopPropagation();
+        var id = this.getAttribute('data-id');
+        var form = this.closest('.tl-edit-form');
+        var newText = form.querySelector('.tl-edit-input').value.trim();
+        if (!newText) return;
+        window.SUPABASE_CHAT.editMessage(id, newText).then(function() {
+          if (window.__TL_REFRESH__) window.__TL_REFRESH__();
+        });
+      });
+    });
+
+    // Cancel edit
+    container.querySelectorAll('.tl-edit-cancel').forEach(function(btn) {
+      btn.addEventListener('click', function(e) {
+        e.preventDefault(); e.stopPropagation();
+        var row = this.closest('.tl-msg-row');
+        row.querySelector('.tl-edit-form').classList.remove('open');
+        row.querySelector('.tl-msg-bubble').style.display = '';
+      });
+    });
+
+    // Delete from menu
+    container.querySelectorAll('.tl-menu-delete').forEach(function(btn) {
+      btn.addEventListener('click', function(e) {
+        e.preventDefault(); e.stopPropagation();
+        if (!confirm('Are you sure you want to unsend this message?')) return;
+        var id = this.getAttribute('data-id');
+        var row = container.querySelector('.tl-msg-row[data-id="' + id + '"]');
+        row.querySelector('.tl-more-menu').classList.remove('open');
+        window.SUPABASE_CHAT.deleteMessage(id).then(function() {
+          if (window.__TL_REFRESH__) window.__TL_REFRESH__();
+        });
+      });
+    });
+
+    // Close menus when clicking outside
+    container.addEventListener('click', function(e) {
+      if (!e.target.closest('.tl-msg-hover-actions') && !e.target.closest('.tl-emoji-picker') && !e.target.closest('.tl-more-menu') && !e.target.closest('.tl-edit-form')) {
+        container.querySelectorAll('.tl-emoji-picker.open, .tl-more-menu.open, .tl-edit-form.open').forEach(function(el){ el.classList.remove('open'); });
+        container.querySelectorAll('.tl-msg-bubble').forEach(function(b){ b.style.display = ''; });
+      }
     });
   }
 
