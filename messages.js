@@ -427,17 +427,12 @@
           container.querySelectorAll('.tl-row[data-id="' + id + '"]').forEach(function(r) {
             if (r.parentNode) r.parentNode.removeChild(r);
           });
-          if (window.__TL_RESET_SIG__) window.__TL_RESET_SIG__();
-          if (window.__TL_REFRESH__) window.__TL_REFRESH__();
-          // Safety net: remove row again after refresh in case renderMessages re-added it
-          setTimeout(function() {
-            container.querySelectorAll('.tl-row[data-id="' + id + '"]').forEach(function(r) {
-              if (r.parentNode) r.parentNode.removeChild(r);
-            });
-          }, 100);
-          window.SUPABASE_CHAT.deleteForMe(id).catch(function(err) {
+          window.SUPABASE_CHAT.deleteForMe(id).then(function() {
+            if (window.__TL_RESET_SIG__) window.__TL_RESET_SIG__();
+            if (window.__TL_REFRESH__) window.__TL_REFRESH__();
+          }).catch(function(err) {
             console.error('Delete for me failed:', err);
-            if (window.__TL_STATUS__) window.__TL_STATUS__('Delete for me: ' + (err.message || err));
+            if (window.__TL_STATUS__) window.__TL_STATUS__('Delete for me failed: ' + (err.message || err));
           });
           return;
         }
@@ -459,7 +454,7 @@
           return;
         }
 
-        // Delete for me from 3-dots menu on normal messages
+// Delete for me from 3-dots menu on normal messages
         var delmeBtn = e.target.closest('.tl-m-delme');
         if (delmeBtn) {
           e.preventDefault();
@@ -471,16 +466,12 @@
             if (menu) menu.classList.remove('show');
             if (r.parentNode) r.parentNode.removeChild(r);
           });
-          if (window.__TL_RESET_SIG__) window.__TL_RESET_SIG__();
-          if (window.__TL_REFRESH__) window.__TL_REFRESH__();
-          setTimeout(function() {
-            container.querySelectorAll('.tl-row[data-id="' + id + '"]').forEach(function(r) {
-              if (r.parentNode) r.parentNode.removeChild(r);
-            });
-          }, 100);
-          window.SUPABASE_CHAT.deleteForMe(id).catch(function(err) {
+          window.SUPABASE_CHAT.deleteForMe(id).then(function() {
+            if (window.__TL_RESET_SIG__) window.__TL_RESET_SIG__();
+            if (window.__TL_REFRESH__) window.__TL_REFRESH__();
+          }).catch(function(err) {
             console.error('Delete for me failed:', err);
-            if (window.__TL_STATUS__) window.__TL_STATUS__('Delete for me: ' + (err.message || err));
+            if (window.__TL_STATUS__) window.__TL_STATUS__('Delete for me failed: ' + (err.message || err));
           });
           return;
         }
@@ -559,14 +550,6 @@
     window.__TL_STATUS__ = function(msg) { setStatus(msg); };
     window.__TL_REFRESH__ = function() {
       if (currentOrderId) loadMessages(currentOrderId, false);
-      setTimeout(function() {
-        bodyEl.querySelectorAll('.tl-row').forEach(function(r) {
-          var id = r.getAttribute('data-id');
-          if (id && tlHiddenSet[String(id)]) {
-            if (r.parentNode) r.parentNode.removeChild(r);
-          }
-        });
-      }, 50);
     };
 
     function setStatus(msg) {
@@ -628,15 +611,6 @@
         if (sig !== lastSig) {
           lastSig = sig;
           renderMessages(bodyEl, msgs, session.id);
-          // Safety net: remove any hidden rows from DOM after render
-          setTimeout(function() {
-            bodyEl.querySelectorAll('.tl-row').forEach(function(r) {
-              var id = r.getAttribute('data-id');
-              if (id && tlHiddenSet[String(id)]) {
-                if (r.parentNode) r.parentNode.removeChild(r);
-              }
-            });
-          }, 0);
         }
         var isOpen = panel && !panel.classList.contains('tl-hidden');
         if (markRead || isOpen) {
@@ -991,15 +965,6 @@
         msgs = msgs.filter(function(m){ return !tlHiddenSet[String(m.id)]; });
         var sig = cid + ':' + oid + ':' + msgs.length + ':' + (msgs.length ? msgs[msgs.length - 1].id : 0);
         if (sig !== lastMsgSig) { lastMsgSig = sig; renderMessages(bodyEl, msgs, ADMIN_ID); }
-        // Safety net: remove any hidden rows from DOM after render
-        setTimeout(function() {
-          bodyEl.querySelectorAll('.tl-row').forEach(function(r) {
-            var id = r.getAttribute('data-id');
-            if (id && tlHiddenSet[String(id)]) {
-              if (r.parentNode) r.parentNode.removeChild(r);
-            }
-          });
-        }, 0);
         if (markRead) {
           window.SUPABASE_CHAT.markRead(oid, cid).then(function(){
             updateUnreadBadge();
@@ -1075,14 +1040,6 @@
     window.__TL_STATUS__ = function(msg) { setStatus(msg); };
     window.__TL_REFRESH__ = function() {
       if (currentClient && currentClient.order_id) loadConversation(false);
-      setTimeout(function() {
-        bodyEl.querySelectorAll('.tl-row').forEach(function(r) {
-          var id = r.getAttribute('data-id');
-          if (id && tlHiddenSet[String(id)]) {
-            if (r.parentNode) r.parentNode.removeChild(r);
-          }
-        });
-      }, 50);
     };
 
     function sendAdminReply() {
