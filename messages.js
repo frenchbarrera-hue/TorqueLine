@@ -1,6 +1,15 @@
 (function() {
   var POLL_MS = (window.TORQUELINE_CONFIG && window.TORQUELINE_CONFIG.POLL_MS) || 3000;
   var ADMIN_ID = (window.TORQUELINE_CONFIG && window.TORQUELINE_CONFIG.ADMIN_ID) || 'usr_admin';
+  var tlHiddenSet = {};
+  var tlOpenDelmeMenu = null;
+
+  function closeDelmeMenus(root) {
+    var scope = root || document;
+    var menus = scope.querySelectorAll('.tl-delme-menu');
+    for (var i = 0; i < menus.length; i++) menus[i].style.display = 'none';
+    tlOpenDelmeMenu = null;
+  }
 
   function getSession() {
     if (window.__DASHBOARD_SESSION__) return window.__DASHBOARD_SESSION__;
@@ -166,6 +175,13 @@
       '.tl-edit-no{background:#f3f4f6;color:#374151}' +
       '.tl-edit-no:hover{background:#e5e7eb}' +
       '@media (hover:none){.tl-hover{opacity:1}}' +
+      /* Delete-for-me dropdown on removed messages */
+      '.tl-delme-btn{background:#fff;border:1px solid #e5e7eb;border-radius:50%;width:1.5rem;height:1.5rem;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:.8rem;box-shadow:0 1px 3px rgba(0,0,0,.1);padding:0;flex-shrink:0}' +
+      '.tl-delme-btn:hover{background:#f3f4f6}' +
+      '.tl-delme-menu{display:none;position:absolute;top:1.2rem;right:0;background:#fff;border:1px solid #e5e7eb;border-radius:.5rem;padding:.2rem;z-index:10;box-shadow:0 4px 12px rgba(0,0,0,.12);min-width:6.5rem;animation:tl-fade .15s ease}' +
+      '.tl-row.them .tl-delme-menu{left:0;right:auto}' +
+      '.tl-delme-menu button{display:block;width:100%;text-align:left;padding:.35rem .55rem;border:none;background:none;border-radius:.25rem;font-size:.8rem;cursor:pointer;color:#dc2626;font-family:inherit}' +
+      '.tl-delme-menu button:hover{background:#fef2f2}' +
       '@media (max-width:640px){.tl-chat-panel{left:.5rem;right:.5rem;bottom:.5rem;width:auto;height:65vh}}';
     document.head.appendChild(style);
   }
@@ -185,17 +201,23 @@
       var reactions = Array.isArray(m.reactions) ? m.reactions : [];
       var deletedFor = Array.isArray(m.deleted_for) ? m.deleted_for : [];
       var myId = String(myId);
-      var hiddenForMe = deletedFor.indexOf(myId) !== -1;
+      var hiddenForMe = deletedFor.indexOf(myId) !== -1 || !!tlHiddenSet[String(m.id)];
 
-      if ((deleted && !hasImage) || (hiddenForMe && !hasImage)) {
-        var goneLabel = hiddenForMe && !deleted ? 'Message deleted for you' : 'This message was removed';
-        html += '<div style="display:flex;align-items:center;gap:.3rem;margin-bottom:4px;max-width:100%;' + (mine ? 'justify-content:flex-end' : 'justify-content:flex-start') + '">' +
-          '<span style="background:#f3f4f6;color:#9ca3af;font-style:italic;font-size:.8rem;padding:.45rem .7rem;border-radius:1rem">' + goneLabel + '</span>' +
-          (hiddenForMe ? '' : '<button type="button" class="tl-delme-btn" data-id="' + m.id + '" style="background:#fff;border:1px solid #d1d5db;border-radius:4px;padding:2px 6px;cursor:pointer;font-size:1rem;font-weight:bold;color:#374151;line-height:1;box-shadow:0 1px 2px rgba(0,0,0,.1)">⋯</button>' +
-          '<div class="tl-delme-menu" data-id="' + m.id + '" style="display:none;position:absolute;background:#fff;border:1px solid #e5e7eb;border-radius:.5rem;padding:.25rem;box-shadow:0 4px 12px rgba(0,0,0,.12);z-index:10;min-width:7rem">' +
-            '<button type="button" class="tl-delme-confirm" data-id="' + m.id + '" style="display:block;width:100%;text-align:left;padding:.4rem .6rem;border:none;background:none;border-radius:.25rem;font-size:.8rem;cursor:pointer;color:#dc2626">Delete for me</button>' +
-          '</div>') +
-          '</div>';
+      if (hiddenForMe) continue;
+
+      if ((deleted && !hasImage)) {
+        var goneLabel = 'This message was removed';
+        html += '<div class="tl-row ' + (mine ? 'me' : 'them') + '" data-id="' + m.id + '" style="margin-bottom:4px">' +
+          '<div class="tl-bubble" style="background:' + (mine ? '#dc2626' : '#f3f4f6') + ';padding:.45rem .7rem;border-radius:1rem">' +
+            '<span style="color:#9ca3af;font-style:italic;font-size:.8rem">' + esc(goneLabel) + '</span>' +
+          '</div>' +
+          '<div class="tl-hover" style="opacity:1">' +
+            '<button type="button" class="tl-delme-btn" data-id="' + m.id + '">⋯</button>' +
+          '</div>' +
+          '<div class="tl-delme-menu" data-id="' + m.id + '">' +
+            '<button type="button" class="tl-delme-confirm" data-id="' + m.id + '">Delete for me</button>' +
+          '</div>' +
+        '</div>';
         continue;
       }
 
@@ -209,21 +231,23 @@
             reactions.map(function(r){ return '<span class="tl-rx-b">' + r.emoji + '</span>'; }).join('') +
             '</div>' : '') +
         '</div>' +
-        '<div class="tl-hover">' +
-          '<button class="tl-react" data-id="' + m.id + '">😊</button>' +
-          (mine && !deleted ? '<button class="tl-more" data-id="' + m.id + '">⋯</button>' : '') +
-        '</div>' +
-        (mine && !deleted ?
+        (deleted ? '' :
+          '<div class="tl-hover">' +
+            '<button class="tl-react" data-id="' + m.id + '">😊</button>' +
+            '<button class="tl-more" data-id="' + m.id + '">⋯</button>' +
+          '</div>') +
+        (deleted ? '' :
           '<div class="tl-menu" data-id="' + m.id + '">' +
-            '<button class="tl-m-edit" data-id="' + m.id + '">Edit</button>' +
-            '<button class="tl-m-del" data-id="' + m.id + '">Unsend</button>' +
+            (mine ? '<button class="tl-m-edit" data-id="' + m.id + '">Edit</button>' : '') +
+            (mine ? '<button class="tl-m-del" data-id="' + m.id + '">Unsend</button>' : '') +
             '<button class="tl-m-delme" data-id="' + m.id + '">Delete for me</button>' +
           '</div>' +
-          '<div class="tl-edit" data-id="' + m.id + '">' +
-            '<input type="text" class="tl-edit-in" value="' + esc(m.message || '').replace(/"/g, '&quot;') + '" />' +
-            '<button class="tl-edit-ok" data-id="' + m.id + '">Save</button>' +
-            '<button class="tl-edit-no" data-id="' + m.id + '">Cancel</button>' +
-          '</div>' : '') +
+          (mine ?
+            '<div class="tl-edit" data-id="' + m.id + '">' +
+              '<input type="text" class="tl-edit-in" value="' + esc(m.message || '').replace(/"/g, '&quot;') + '" />' +
+              '<button class="tl-edit-ok" data-id="' + m.id + '">Save</button>' +
+              '<button class="tl-edit-no" data-id="' + m.id + '">Cancel</button>' +
+            '</div>' : '')) +
         '</div>';
     }
     container.innerHTML = html;
@@ -388,51 +412,95 @@
       });
     });
 
-    // Delete for me (hide for this user only)
-    container.querySelectorAll('.tl-m-delme, .tl-delme-x, .tl-delme-btn').forEach(function(btn) {
-      btn.addEventListener('click', function(e) {
-        e.preventDefault(); e.stopPropagation();
-        var id = this.getAttribute('data-id');
-        var row = container.querySelector('.tl-row[data-id="' + id + '"]');
-        if (!row) return;
-        row.querySelector('.tl-menu').classList.remove('show');
-        window.SUPABASE_CHAT.deleteForMe(id).then(function() {
+    // Delegated handler for all delete-for-me and menu toggle (survives innerHTML re-renders)
+    if (!container.__tlDelmeDelegated) {
+      container.__tlDelmeDelegated = true;
+      container.addEventListener('click', function(e) {
+        // Confirm delete for me on removed message
+        var confirmBtn = e.target.closest('.tl-delme-confirm');
+        if (confirmBtn) {
+          e.preventDefault();
+          e.stopPropagation();
+          var id = confirmBtn.getAttribute('data-id');
+          tlHiddenSet[String(id)] = true;
+          closeDelmeMenus(container);
+          container.querySelectorAll('.tl-row[data-id="' + id + '"]').forEach(function(r) {
+            if (r.parentNode) r.parentNode.removeChild(r);
+          });
           if (window.__TL_RESET_SIG__) window.__TL_RESET_SIG__();
           if (window.__TL_REFRESH__) window.__TL_REFRESH__();
-        }).catch(function(err) {
-          console.error('Delete for me failed:', err);
-          alert('Failed to delete. Make sure you ran supabase_setup.sql in Supabase.');
-        });
-      });
-    });
+          // Safety net: remove row again after refresh in case renderMessages re-added it
+          setTimeout(function() {
+            container.querySelectorAll('.tl-row[data-id="' + id + '"]').forEach(function(r) {
+              if (r.parentNode) r.parentNode.removeChild(r);
+            });
+          }, 100);
+          window.SUPABASE_CHAT.deleteForMe(id).catch(function(err) {
+            console.error('Delete for me failed:', err);
+            if (window.__TL_STATUS__) window.__TL_STATUS__('Delete for me: ' + (err.message || err));
+          });
+          return;
+        }
 
-    // Toggle menu on removed message 3-dots
-    container.querySelectorAll('.tl-delme-btn').forEach(function(btn) {
-      btn.addEventListener('click', function(e) {
-        e.preventDefault(); e.stopPropagation();
-        var id = this.getAttribute('data-id');
-        var menu = container.querySelector('.tl-delme-menu[data-id="' + id + '"]');
-        if (!menu) return;
-        var wasOpen = menu.style.display === 'block';
-        container.querySelectorAll('.tl-delme-menu').forEach(function(m){ m.style.display = 'none'; });
-        menu.style.display = wasOpen ? 'none' : 'block';
-      });
-    });
+        // Toggle menu on removed message 3-dots
+        var toggleBtn = e.target.closest('.tl-delme-btn');
+        if (toggleBtn) {
+          e.preventDefault();
+          e.stopPropagation();
+          var id = toggleBtn.getAttribute('data-id');
+          var menu = container.querySelector('.tl-delme-menu[data-id="' + id + '"]');
+          if (!menu) return;
+          var wasOpen = (menu === tlOpenDelmeMenu);
+          closeDelmeMenus(container);
+          if (!wasOpen) {
+            menu.style.display = 'block';
+            tlOpenDelmeMenu = menu;
+          }
+          return;
+        }
 
-    // Confirm delete for me on removed message
-    container.querySelectorAll('.tl-delme-confirm').forEach(function(btn) {
-      btn.addEventListener('click', function(e) {
-        e.preventDefault(); e.stopPropagation();
-        var id = this.getAttribute('data-id');
-        window.SUPABASE_CHAT.deleteForMe(id).then(function() {
+        // Delete for me from 3-dots menu on normal messages
+        var delmeBtn = e.target.closest('.tl-m-delme');
+        if (delmeBtn) {
+          e.preventDefault();
+          e.stopPropagation();
+          var id = delmeBtn.getAttribute('data-id');
+          tlHiddenSet[String(id)] = true;
+          container.querySelectorAll('.tl-row[data-id="' + id + '"]').forEach(function(r) {
+            var menu = r.querySelector('.tl-menu');
+            if (menu) menu.classList.remove('show');
+            if (r.parentNode) r.parentNode.removeChild(r);
+          });
           if (window.__TL_RESET_SIG__) window.__TL_RESET_SIG__();
           if (window.__TL_REFRESH__) window.__TL_REFRESH__();
-        }).catch(function(err) {
-          console.error('Delete for me failed:', err);
-          alert('Failed to delete. Make sure you ran supabase_setup.sql in Supabase.');
-        });
+          setTimeout(function() {
+            container.querySelectorAll('.tl-row[data-id="' + id + '"]').forEach(function(r) {
+              if (r.parentNode) r.parentNode.removeChild(r);
+            });
+          }, 100);
+          window.SUPABASE_CHAT.deleteForMe(id).catch(function(err) {
+            console.error('Delete for me failed:', err);
+            if (window.__TL_STATUS__) window.__TL_STATUS__('Delete for me: ' + (err.message || err));
+          });
+          return;
+        }
       });
-    });
+    }
+
+    // Close dropdown on outside click / Escape (registered once per container)
+    if (!container.__tlDelmeCloseBound) {
+      container.__tlDelmeCloseBound = true;
+      document.addEventListener('click', function(e) {
+        if (!e.target.closest('.tl-delme-btn') && !e.target.closest('.tl-delme-menu')) {
+          closeDelmeMenus(container);
+        }
+      });
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+          closeDelmeMenus(container);
+        }
+      });
+    }
   }
 
   function timeAgo(v) {
@@ -488,8 +556,17 @@
     var currentOrderId = null;
     var lastSig = '';
     window.__TL_RESET_SIG__ = function() { lastSig = ''; };
+    window.__TL_STATUS__ = function(msg) { setStatus(msg); };
     window.__TL_REFRESH__ = function() {
       if (currentOrderId) loadMessages(currentOrderId, false);
+      setTimeout(function() {
+        bodyEl.querySelectorAll('.tl-row').forEach(function(r) {
+          var id = r.getAttribute('data-id');
+          if (id && tlHiddenSet[String(id)]) {
+            if (r.parentNode) r.parentNode.removeChild(r);
+          }
+        });
+      }, 50);
     };
 
     function setStatus(msg) {
@@ -540,11 +617,26 @@
       var sb = window.SUPABASE_CHAT;
       sb.getMessages(oid).then(function(data){
         if (String(currentOrderId || '') !== oid || panel.classList.contains('tl-hidden')) return;
-        var msgs = data.messages || [];
+        var msgs = (data.messages || []);
+        // Populate tlHiddenSet from DB deleted_for so hidden messages stay hidden
+        for (var k = 0; k < msgs.length; k++) {
+          var df = Array.isArray(msgs[k].deleted_for) ? msgs[k].deleted_for : [];
+          if (df.indexOf(String(session.id)) !== -1) tlHiddenSet[String(msgs[k].id)] = true;
+        }
+        msgs = msgs.filter(function(m){ return !tlHiddenSet[String(m.id)]; });
         var sig = oid + ':' + msgs.length + ':' + (msgs.length ? msgs[msgs.length - 1].id : 0);
         if (sig !== lastSig) {
           lastSig = sig;
           renderMessages(bodyEl, msgs, session.id);
+          // Safety net: remove any hidden rows from DOM after render
+          setTimeout(function() {
+            bodyEl.querySelectorAll('.tl-row').forEach(function(r) {
+              var id = r.getAttribute('data-id');
+              if (id && tlHiddenSet[String(id)]) {
+                if (r.parentNode) r.parentNode.removeChild(r);
+              }
+            });
+          }, 0);
         }
         var isOpen = panel && !panel.classList.contains('tl-hidden');
         if (markRead || isOpen) {
@@ -592,20 +684,8 @@
         if (imgInput) imgInput.value = '';
         inputEl.placeholder = 'Type a message...';
         setStatus('');
-        var saved = res && res.message;
-        if (saved) {
-          var mine = String(saved.sender_id) === String(session.id);
-          // replace "no messages" placeholder or append
-          if (bodyEl && bodyEl.querySelector('p.text-gray-500')) bodyEl.innerHTML = '';
-          if (bodyEl) {
-            bodyEl.innerHTML += '<div class="tl-chat-msg ' + (mine ? 'me' : 'them') + '">' +
-              esc(saved.message) + '<span class="tl-chat-time">' + esc(fmtTime(saved.created_at)) + '</span></div>';
-            bodyEl.scrollTop = bodyEl.scrollHeight;
-          }
-          try { lastSig = oid + ':' + ((parseInt((lastSig || '').split(':')[1], 10) || 0) + 1) + ':' + saved.id; } catch(e) {}
-        } else {
-          loadMessages(oid, false);
-        }
+        lastSig = '';
+        loadMessages(oid, false);
       }).catch(function(err){
         var msg = err && err.message ? err.message : 'Failed to send message.';
         setStatus(msg);
@@ -808,6 +888,7 @@
       currentClient = null;
       lastMsgSig = '';
       setStatus('');
+      closeDelmeMenus(bodyEl);
       if (bodyEl) bodyEl.innerHTML = '';
       threadsEl.classList.remove('hidden');
       convoEl.classList.add('hidden');
@@ -837,29 +918,61 @@
       loadUsersCache();
       window.SUPABASE_CHAT.getThreads().then(function(data){
         var threads = data.threads || [];
-        if (!threads.length) {
-          threadsEl.innerHTML = '<p class="text-sm text-gray-500 text-center py-8">No client messages yet.</p>';
-          return;
-        }
-        var html = '';
-        for (var i = 0; i < threads.length; i++) {
-          var t = threads[i];
-          var name = nameFor(t.client_id);
-          var unread = Number(t.unread_count || 0);
-          var orderId = t.order_id ? String(t.order_id) : '';
-          var orderLabel = orderId ? ('Order ' + orderId) : 'No order';
-          html += '<button type="button" class="tl-thread" data-client-id="' + esc(t.client_id) + '" data-client-name="' + esc(name) + '" data-order-id="' + esc(orderId) + '">' +
-            '<div class="flex items-start justify-between gap-2"><div><p class="font-semibold text-gray-900 text-sm">' + esc(name) + '</p><p class="text-[11px] font-semibold text-red-700 mt-0.5">' + esc(orderLabel) + '</p></div>' +
-            (unread > 0 ? '<span class="text-[10px] font-bold bg-red-600 text-white px-2 py-0.5 rounded-full">' + unread + '</span>' : '') +
-            '</div>' +
-            '<p class="text-xs text-gray-600 mt-1 truncate">' + esc(t.last_message || '') + '</p>' +
-            '<p class="text-[11px] text-gray-400 mt-1">' + esc(fmtTime(t.last_created_at)) + '</p>' +
-            '</button>';
-        }
-        threadsEl.innerHTML = html;
+        // Also fetch orders so new orders without messages appear as threads
+        window.SUPABASE_CHAT.getOrders().then(function(oData){
+          var orders = oData.orders || [];
+          // Build a set of order_ids that already have message threads
+          var orderThreadIds = {};
+          for (var i = 0; i < threads.length; i++) {
+            if (threads[i].order_id) orderThreadIds[String(threads[i].order_id)] = true;
+          }
+          // Add orders that don't yet have a message thread
+          for (var j = 0; j < orders.length; j++) {
+            var o = orders[j];
+            var oid = String(o.id || o.order_number || '');
+            if (!oid || orderThreadIds[oid]) continue;
+            threads.push({
+              client_id: o.user_id || 'unknown',
+              order_id: oid,
+              last_message: 'New order - PHP ' + (o.total_php || 0) + ' · ' + (o.status || 'pending'),
+              last_created_at: o.placed_at || null,
+              last_sender_role: 'client',
+              unread_count: 0,
+              isOrderOnly: true
+            });
+          }
+          renderThreads(threads);
+        }).catch(function(err){
+          // If orders fetch fails, still render message threads
+          renderThreads(threads);
+        });
       }).catch(function(err){
         threadsEl.innerHTML = '<p class="text-sm text-red-600 text-center py-8">' + esc(err && err.message ? err.message : 'Unable to load messages.') + '</p>';
       });
+    }
+
+    function renderThreads(threads) {
+      if (!threads.length) {
+        threadsEl.innerHTML = '<p class="text-sm text-gray-500 text-center py-8">No client messages yet.</p>';
+        return;
+      }
+      var html = '';
+      for (var i = 0; i < threads.length; i++) {
+        var t = threads[i];
+        var name = nameFor(t.client_id);
+        var unread = Number(t.unread_count || 0);
+        var orderId = t.order_id ? String(t.order_id) : '';
+        var orderLabel = orderId ? ('Order ' + orderId) : 'No order';
+        var badgeClass = t.isOrderOnly ? 'bg-gray-500' : 'bg-red-600';
+        html += '<button type="button" class="tl-thread" data-client-id="' + esc(t.client_id) + '" data-client-name="' + esc(name) + '" data-order-id="' + esc(orderId) + '">' +
+          '<div class="flex items-start justify-between gap-2"><div><p class="font-semibold text-gray-900 text-sm">' + esc(name) + '</p><p class="text-[11px] font-semibold ' + (t.isOrderOnly ? 'text-gray-700' : 'text-red-700') + ' mt-0.5">' + esc(orderLabel) + '</p></div>' +
+          (unread > 0 ? '<span class="text-[10px] font-bold bg-red-600 text-white px-2 py-0.5 rounded-full">' + unread + '</span>' : '') +
+          '</div>' +
+          '<p class="text-xs text-gray-600 mt-1 truncate">' + esc(t.last_message || '') + '</p>' +
+          '<p class="text-[11px] text-gray-400 mt-1">' + esc(fmtTime(t.last_created_at)) + '</p>' +
+          '</button>';
+      }
+      threadsEl.innerHTML = html;
     }
 
     function loadConversation(markRead) {
@@ -869,9 +982,24 @@
       window.SUPABASE_CHAT.getMessages(oid, cid).then(function(data){
         // ignore stale response if admin switched to a different order/client
         if (!currentClient || currentClient.id !== cid || currentClient.order_id !== oid) return;
-        var msgs = data.messages || [];
+        var msgs = (data.messages || []);
+        // Populate tlHiddenSet from DB deleted_for so hidden messages stay hidden
+        for (var k = 0; k < msgs.length; k++) {
+          var df = Array.isArray(msgs[k].deleted_for) ? msgs[k].deleted_for : [];
+          if (df.indexOf(ADMIN_ID) !== -1) tlHiddenSet[String(msgs[k].id)] = true;
+        }
+        msgs = msgs.filter(function(m){ return !tlHiddenSet[String(m.id)]; });
         var sig = cid + ':' + oid + ':' + msgs.length + ':' + (msgs.length ? msgs[msgs.length - 1].id : 0);
         if (sig !== lastMsgSig) { lastMsgSig = sig; renderMessages(bodyEl, msgs, ADMIN_ID); }
+        // Safety net: remove any hidden rows from DOM after render
+        setTimeout(function() {
+          bodyEl.querySelectorAll('.tl-row').forEach(function(r) {
+            var id = r.getAttribute('data-id');
+            if (id && tlHiddenSet[String(id)]) {
+              if (r.parentNode) r.parentNode.removeChild(r);
+            }
+          });
+        }, 0);
         if (markRead) {
           window.SUPABASE_CHAT.markRead(oid, cid).then(function(){
             updateUnreadBadge();
@@ -910,6 +1038,7 @@
       currentClient = null;
       lastMsgSig = '';
       setStatus('');
+      closeDelmeMenus(bodyEl);
       if (bodyEl) bodyEl.innerHTML = '';
     }
 
@@ -943,8 +1072,17 @@
 
     // Refresh hook for edit/delete/reaction
     window.__TL_RESET_SIG__ = function() { lastMsgSig = ''; };
+    window.__TL_STATUS__ = function(msg) { setStatus(msg); };
     window.__TL_REFRESH__ = function() {
       if (currentClient && currentClient.order_id) loadConversation(false);
+      setTimeout(function() {
+        bodyEl.querySelectorAll('.tl-row').forEach(function(r) {
+          var id = r.getAttribute('data-id');
+          if (id && tlHiddenSet[String(id)]) {
+            if (r.parentNode) r.parentNode.removeChild(r);
+          }
+        });
+      }, 50);
     };
 
     function sendAdminReply() {
@@ -970,19 +1108,8 @@
         if (imgInput) imgInput.value = '';
         inputEl.placeholder = 'Type a reply...';
         setStatus('');
-        var saved = res && res.message;
-        if (saved) {
-          var mine = String(saved.sender_id) === String(ADMIN_ID);
-          if (bodyEl && bodyEl.querySelector('p.text-gray-500')) bodyEl.innerHTML = '';
-          if (bodyEl) {
-            bodyEl.innerHTML += '<div class="tl-chat-msg ' + (mine ? 'me' : 'them') + '">' +
-              esc(saved.message) + '<span class="tl-chat-time">' + esc(fmtTime(saved.created_at)) + '</span></div>';
-            bodyEl.scrollTop = bodyEl.scrollHeight;
-          }
-          try { lastMsgSig = cid + ':' + oid + ':' + ((parseInt((lastMsgSig || '').split(':')[2], 10) || 0) + 1) + ':' + saved.id; } catch(e) {}
-        } else {
-          loadConversation(false);
-        }
+        lastMsgSig = '';
+        loadConversation(false);
       }).catch(function(err){
         var msg = err && err.message ? err.message : 'Failed to send reply.';
         setStatus(msg);
