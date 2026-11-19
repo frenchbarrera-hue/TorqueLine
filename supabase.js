@@ -236,12 +236,20 @@
     });
   }
 
-  // GET admin unread count
-  function getAdminUnread() {
+// GET admin unread count
+function getAdminUnread() {
     var path = '/messages?receiver_id=eq.' + encodeURIComponent(ADMIN_ID) + '&is_read=eq.0&select=id';
     return req('GET', path).then(function(rows) {
       var count = rows ? rows.length : 0;
       return { total: count, per_conversation: {} };
+    });
+  }
+
+  // GET orders (admin) - all orders to show as threads even without messages
+  function getOrders() {
+    var path = '/orders?order=placed_at.desc&select=id,order_number,user_id,status,total_php,placed_at';
+    return req('GET', path).then(function(rows) {
+      return { orders: rows || [] };
     });
   }
 
@@ -260,6 +268,7 @@
     markAllRead: markAllRead,
     markOneRead: markOneRead,
     getThreads: getThreads,
-    getAdminUnread: getAdminUnread
+    getAdminUnread: getAdminUnread,
+    getOrders: getOrders
   };
 })();
