@@ -3,6 +3,31 @@
   var ADMIN_ID = (window.TORQUELINE_CONFIG && window.TORQUELINE_CONFIG.ADMIN_ID) || 'usr_admin';
   var tlHiddenSet = {};
   var tlOpenDelmeMenu = null;
+  var tlCurrentOrderId = '';
+
+  function tlHiddenKey(orderId) {
+    return 'tl_hidden_' + String(orderId);
+  }
+
+  function tlLoadHidden(orderId) {
+    try {
+      var raw = localStorage.getItem(tlHiddenKey(orderId));
+      if (raw) {
+        var arr = JSON.parse(raw);
+        if (Array.isArray(arr)) {
+          for (var i = 0; i < arr.length; i++) tlHiddenSet[String(arr[i])] = true;
+        }
+      }
+    } catch(e) {}
+  }
+
+  function tlSaveHidden(orderId) {
+    try {
+      var arr = [];
+      for (var k in tlHiddenSet) if (tlHiddenSet[k]) arr.push(k);
+      localStorage.setItem(tlHiddenKey(orderId), JSON.stringify(arr));
+    } catch(e) {}
+  }
 
   function closeDelmeMenus(root) {
     var scope = root || document;
@@ -427,6 +452,7 @@
           container.querySelectorAll('.tl-row[data-id="' + id + '"]').forEach(function(r) {
             if (r.parentNode) r.parentNode.removeChild(r);
           });
+          tlSaveHidden(tlCurrentOrderId);
           window.SUPABASE_CHAT.deleteForMe(id).then(function() {
             if (window.__TL_RESET_SIG__) window.__TL_RESET_SIG__();
             if (window.__TL_REFRESH__) window.__TL_REFRESH__();
@@ -466,6 +492,7 @@
             if (menu) menu.classList.remove('show');
             if (r.parentNode) r.parentNode.removeChild(r);
           });
+          tlSaveHidden(tlCurrentOrderId);
           window.SUPABASE_CHAT.deleteForMe(id).then(function() {
             if (window.__TL_RESET_SIG__) window.__TL_RESET_SIG__();
             if (window.__TL_REFRESH__) window.__TL_REFRESH__();
@@ -596,6 +623,8 @@
         if (bodyEl) bodyEl.innerHTML = '<p class="text-sm text-red-600 text-center py-8">Order ID is missing.</p>';
         return;
       }
+      tlCurrentOrderId = oid;
+      tlLoadHidden(oid);
       // ignore stale responses if the open order changed
       var sb = window.SUPABASE_CHAT;
       sb.getMessages(oid).then(function(data){
@@ -953,6 +982,8 @@
       if (!currentClient || !currentClient.order_id) return;
       var oid = currentClient.order_id;
       var cid = currentClient.id;
+      tlCurrentOrderId = oid;
+      tlLoadHidden(oid);
       window.SUPABASE_CHAT.getMessages(oid, cid).then(function(data){
         // ignore stale response if admin switched to a different order/client
         if (!currentClient || currentClient.id !== cid || currentClient.order_id !== oid) return;
